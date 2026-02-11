@@ -1,0 +1,196 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+@plugin "daisyui";
+
+/* --------------------------- */
+/* CSS Variables for Light/Dark */
+@layer base {
+  :root {
+    --bg: 248 247 244;
+    --fg: 38 38 38;
+    --muted: 115 115 115;
+    --surface: 255 255 255;
+    --accent: 22 101 52;
+    --hero-text-primary: 38 38 38;
+    --hero-text-secondary: 115 115 115;
+    --p: 99 102 241;
+    --pc: 255 255 255;
+    --color-primary: 99 102 241;
+  }
+
+  .dark {
+    --color-primary: 129 140 248;
+    --p: 129 140 248;
+    --pc: 17 24 39;
+  }
+
+  html.dark {
+    --bg: 18 18 18;
+    --fg: 229 229 229;
+    --muted: 163 163 163;
+    --surface: 30 30 30;
+    --accent: 34 197 94;
+    --hero-text-primary: 229 229 229;
+    --hero-text-secondary: 163 163 163;
+    --color-primary: 129 140 248;
+    --p: 129 140 248;
+    --pc: 17 24 39;
+  }
+
+  html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  body {
+    background-color: rgb(var(--bg));
+    color: rgb(var(--fg));
+  }
+}
+
+/* --------------------------- */
+/* Hero Section Styling */
+@layer components {
+
+.hero-wrapper .hero {
+  background-image: var(--hero-image);
+  background-size: cover;
+  background-position: center 20%;
+  height: 100vh;            /* lock hero height to viewport */
+  overflow: hidden;         /* prevent scroll jumping */
+  display: flex;
+  align-items: center;
+  padding-top: 10rem;
+  padding-bottom: 8rem;
+  position: relative;
+  color: rgb(var(--hero-text-primary));
+  will-change: transform;   /* smooth background painting */
+}
+
+.hero-wrapper .hero-content {
+  max-width: 65ch;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.hero-title {
+  @apply font-[heading] font-bold tracking-tight leading-[1.05] max-w-[18ch];
+  color: rgb(var(--hero-text-primary));
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  -webkit-text-size-adjust: 100%; /* prevent mobile scaling */
+}
+
+.hero-body {
+  @apply mt-6 text-lg sm:text-xl leading-relaxed max-w-prose;
+  color: rgb(var(--hero-text-secondary));
+  -webkit-text-size-adjust: 100%;
+}
+
+.hero--image {
+  --hero-text-primary: rgba(255, 255, 255, 1);
+  --hero-text-secondary: rgba(255, 255, 255, 0.9);
+}
+
+.hero--light {
+  --hero-text-primary: rgb(var(--fg));
+  --hero-text-secondary: rgb(var(--muted));
+}
+
+.hero--image .hero-title {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- LOCK HERO TEXT BACKGROUND FOR NIGHT SHIFT ---------- */
+.hero-text-bg {
+  background: rgb(255, 255, 255); 
+  padding: 1.5rem 2rem;
+  border-radius: 0.75rem;
+}
+
+.hero--image .hero-text-bg {
+  background: rgb(255, 255, 255);
+}
+
+.hero--light .hero-text-bg {
+  background: rgb(var(--surface));
+}
+
+/* ---------- Menu & Form Styling ---------- */
+.mobile-menu-btn i {
+  color: rgb(var(--fg));
+}
+
+.mobile-menu-btn.btn-soft {
+  background-color: rgb(var(--surface));
+}
+
+.dark .mobile-menu-btn.btn-soft {
+  background-color: rgb(var(--surface));
+}
+
+.form-input {
+  @apply border border-gray-400 focus:border-gray-600 focus:ring-0;
+}
+
+.form-field {
+  @apply block w-full px-4 py-3 mb-6 rounded-md
+    bg-white dark:bg-gray-800
+    text-gray-900 dark:text-gray-100
+    placeholder-gray-500 dark:placeholder-gray-400
+    border border-gray-300 dark:border-gray-600
+    transition duration-150 ease-in-out
+    focus:outline-none;
+}
+
+.form-label {
+  @apply sr-only;
+}
+
+.form-message {
+  @apply text-gray-700 dark:text-gray-200;
+}
+
+}
+
+/* --------------------------- */
+/* Hero Background Gradient */
+@media (min-width: 768px) {
+  .hero-bg {
+    background-image:
+      linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+      var(--hero-image);
+  }
+
+  
+}
+
+/* --------------------------- */
+/* Smooth text/color transitions */
+@layer base {
+  .prose, .prose *,
+  .hero-title, .hero-body, main {
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+}
+
+
+.hero-text-bg {
+  background: rgb(255, 255, 255); 
+  border-radius: 0.75rem;
+
+  /* Mobile-first: smaller padding */
+  padding: 1rem 1rem;
+
+  /* Medium screens (sm and up) */
+  @screen sm {
+    padding: .75rem .70rem;
+  }
+
+  /* Large screens (lg and up) */
+  @screen lg {
+    padding: 1.5rem 2rem;
+  }
+}

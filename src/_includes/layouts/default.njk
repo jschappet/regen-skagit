@@ -1,0 +1,50 @@
+---
+title: Regenerate Skagit
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <script type="module" src="/assets/js/alpine_custom.js"></script>
+
+    {# Favicon #}
+    <link rel="icon" href="{{ '/assets/images/favicon/favicon.ico?v=' ~ favicon.hash | url }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/images/favicon/favicon-32x32.png?v=' ~ favicon.hash | url }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/images/favicon/favicon-16x16.png?v=' ~ favicon.hash | url }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/images/favicon/apple-touch-icon.png?v=' ~ favicon.hash | url }}">
+
+    <link rel="stylesheet" href="/assets/css/index.css">
+    <link rel="stylesheet" href="/assets/uicons/css/all/all.css">
+
+    <script src="/assets/js/alpine.min.js?v=3.12.0" defer></script>
+    {# Open Graph Meta Tags for social sharing #}
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description | default("A bioregional culture rooted in the Skagit watershed, connecting humans, land, and water through listening and collective action.") }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://regenerateskagit.org/">
+    <meta property="og:image" content="https://regenerateskagit.org/assets/images/og-image.jpg">
+    <meta property="og:image:alt" content="Regenerate Skagit — Skagit River Valley landscape with mountains and river">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ title }}">
+    <meta name="twitter:description" content="A bioregional culture rooted in the Skagit watershed, connecting humans, land, and water through listening and collective action.">
+    <meta name="twitter:image" content="https://regenerateskagit.org/assets/images/og-image.jpg">
+    <meta name="twitter:image:alt" content="Regenerate Skagit — Skagit River Valley landscape with mountains and river">
+  </head>
+
+  <body class="bg-bg text-fg font-sans leading-relaxed flex flex-col min-h-screen">
+
+    {% include("components/navbar.njk") %}
+
+    <main class="flex-1 px-4 sm:px-6 lg:px-10">
+      {{ content | safe }}
+    </main>
+
+    {% include("components/footer.njk") %}
+
+    <script src="/assets/js/theme.js" defer></script>
+  </body>
+</html>

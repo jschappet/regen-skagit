@@ -1,0 +1,42 @@
+---
+date: 2026-02-04
+layout: layouts/default.njk
+eleventyNavigation:
+  key: main
+  title: Events
+  order: 2
+---
+
+<main class="flex-grow">
+
+  {% set featured = collections.events | featuredFilter %}
+
+{% if featured | length %}
+<section class="max-w-6xl mx-auto px-6 pb-20">
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
+    {% for card in featured %}
+    <article class="bg-surface rounded-2xl shadow-sm p-6 flex flex-col items-center text-center max-w-[320px] w-full">
+      {% if card.data.images %}
+        <a href="{{ card.url }}" class="block mb-4">
+          {% image card.data.images[0], card.data.title, {
+                class: "w-full rounded-xl object-cover h-48"
+              }
+          %}
+        </a>
+      {% endif %}
+      <a href="{{ card.url }}" class="hover:text-accent">
+        <h2 class="text-2xl font-semibold mb-1">{{ card.data.title }}</h2>
+      </a>
+      {% if card.data.subtitle %}
+        <h3 class="text-lg italic text-muted mb-4">{{ card.data.subtitle }}</h3>
+      {% endif %}
+      {% if card.data.summary %}
+        <p class="text-fg">{{ card.data.summary | safe }}</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+</main>

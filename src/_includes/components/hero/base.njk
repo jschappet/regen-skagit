@@ -1,0 +1,23 @@
+{% if heroData.image %}
+  <section
+    data-aos="fade-up"
+    class="hero hero--image min-h-screen flex items-center px-[8vw] py-24 bg-cover bg-center"
+    style="
+      --hero-image: url('{{ bgUrl }}');
+      background-image: var(--hero-image); /* direct image, no gradient */
+      background-color: rgb(255,255,255); /* opaque for presentation */
+    "
+  >
+{% else %}
+  <section
+    data-aos="fade-up"
+    class="hero hero--light min-h-screen flex items-center px-[8vw] py-24 bg-base-100 text-neutral-800"
+  >
+{% endif %}
+
+  <div class="mx-auto max-w-4xl px-6 md:px-8 lg:px-10">
+    <div class="hero-text-bg">
+      {% block heroContent %}{% endblock %}
+    </div>
+  </div>
+</section>

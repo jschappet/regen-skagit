@@ -1,0 +1,71 @@
+{% set navPages = collections.all | eleventyNavigation %}
+
+<header class="w-full shadow-sm">
+  <nav class="navbar w-full max-w-7xl mx-auto
+              bg-surface dark:bg-surface-dark text-fg dark:text-fg-dark">
+
+    <!-- Left: Logo + Mobile Dropdown -->
+    <div class="navbar-start">
+
+      <!-- Mobile dropdown -->
+      <div class="dropdown lg:hidden">
+<label tabindex="0"
+  class="btn bg-surface dark:bg-surface-dark
+         text-fg dark:text-fg-dark
+         shadow-sm mobile-menu-btn">
+          <i class="fi fi-sc-menu-burger "></i>
+        </label>
+
+        <ul tabindex="-1"
+  class="menu menu-sm dropdown-content rounded-box z-50 mt-3 w-52 p-2
+         bg-surface dark:bg-surface-dark
+         border border-black/10 dark:border-white/10
+         shadow-lg backdrop-blur-sm
+         text-fg dark:text-fg-dark">
+
+          {% for entry in navPages %}
+            <li>
+              <a href="{{ entry.url | url }}" class="block py-1 hover:text-accent dark:hover:text-accent">
+                {{ entry.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Logo -->
+      <a href="/" class="btn btn-ghost text-xl text-fg dark:text-fg-dark">
+        Regenerate Skagit
+      </a>
+    </div>
+
+    <!-- Center: Desktop Menu -->
+    <div class="navbar-center hidden lg:flex">
+      <ul class="menu menu-horizontal px-1 text-fg dark:text-fg-dark">
+        {% for entry in navPages %}
+          <li>
+            <a href="{{ entry.url | url }}" class="block py-1 hover:text-accent dark:hover:text-accent">
+              {{ entry.title }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Right: Theme Toggle -->
+    {# Disableing theme toggle for now since it doesn't work well with DaisyUI's dark mode and we don't have a good custom solution yet. #}
+    {# 
+    <div class="navbar-end">
+      <button id="theme-toggle"
+        class="btn btn-ghost relative "
+        aria-label="Toggle theme">
+        <!-- Sun (show in dark mode) -->
+        <i id="sun-icon" class="fi fi-br-brightness absolute hidden dark:inline"></i>
+        <i id="moon-icon" class="fi fi-br-moon absolute inline dark:hidden"></i>
+
+      </button>
+
+    </div>
+    #}
+  </nav>
+</header>

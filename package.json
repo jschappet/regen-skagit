@@ -1,0 +1,30 @@
+{
+  "name": "regen-skagit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "eleventy --serve",
+    "watch": " eleventy --watch --serve",
+    "build": " eleventy",
+    "favicon": "npm run favicon:png && npm run favicon:ico",
+    "favicon:png": "magick logo_source/logo.png -gravity center -extent 1024x1024 -resize 180x180 src/assets/images/favicon/apple-touch-icon.png && magick logo_source/logo.png -gravity center -extent 1024x1024 -resize 48x48 src/assets/images/favicon/favicon-48x48.png && magick logo_source/logo.png -gravity center -extent 1024x1024 -resize 32x32 src/assets/images/favicon/favicon-32x32.png && magick logo_source/logo.png -gravity center -extent 1024x1024 -resize 16x16 -unsharp 0x1 src/assets/images/favicon/favicon-16x16.png",
+    "favicon:ico": "magick src/assets/images/favicon/favicon-16x16.png src/assets/images/favicon/favicon-32x32.png src/assets/images/favicon/favicon-48x48.png src/assets/images/favicon/favicon.ico"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@11ty/eleventy": "^3.1.2",
+    "@11ty/eleventy-img": "^6.0.4",
+    "@11ty/eleventy-navigation": "^1.0.5",
+    "@flaticon/flaticon-uicons": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@tailwindcss/typography": "^0.5.19",
+    "daisyui": "^5.5.14",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
+  }
+}

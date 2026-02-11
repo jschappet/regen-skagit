@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="fog" data-mode="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Regenerate Skagit — Theme Lab</title>
+
+  <style>
+    /* -----------------------------
+       Base + Reset
+    ------------------------------ */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      transition: background 0.3s ease, color 0.3s ease, font-family 0.3s ease;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* -----------------------------
+       Layout
+    ------------------------------ */
+    .page {
+      max-width: 80ch; /* slightly wider */
+      padding: 4rem 8vw;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 4rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-end;
+    }
+
+    .themes {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    button {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.7rem;
+      border-radius: 0.4rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    button:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .mode label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    input[type="range"] { width: 80px; }
+
+    /* -----------------------------
+       Hero Section
+    ------------------------------ */
+    .hero {
+      background: var(--surface);
+      padding: 3rem 2rem;
+      border-radius: 0.8rem;
+      border: 1px solid var(--border);
+      text-align: center;
+      margin-bottom: 3rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .hero h1 {
+      font-size: 2.6rem;
+      margin: 0;
+    }
+
+    .hero p {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+    }
+
+    /* -----------------------------
+       Content styling
+    ------------------------------ */
+    h1, h2, h3 { line-height: 1.25; margin-top: 2.5rem; }
+    h1 { font-size: 2.2rem; margin-top: 0; }
+    h2 { font-size: 1.6rem; }
+    h3 { font-size: 1.1rem; color: var(--muted); }
+    p { margin: 1.2rem 0; }
+    ul { padding-left: 1.2rem; }
+    li { margin: 0.5rem 0; }
+    blockquote {
+      margin: 2rem 0;
+      padding-left: 1.2rem;
+      border-left: 3px solid var(--border);
+      color: var(--muted);
+      font-style: italic;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin: 2.5rem 0;
+    }
+
+    /* -----------------------------
+       Themes + Fonts
+    ------------------------------ */
+    /* Fog & Paper */
+    html[data-theme="fog"][data-mode="light"] {
+      --bg: #f7f6f2; --surface: #ffffff; --text: #1f2a24;
+      --muted: #5e6b63; --accent: #5a7f6b; --border: #d8ddd7;
+      --font: "Georgia", "Palatino Linotype", Palatino, "Times New Roman", serif;
+    }
+    /* Forest Dusk */
+    html[data-theme="forest"][data-mode="light"] {
+      --bg: #f6f7f3; --surface: #ffffff; --text: #262c24;
+      --muted: #6b7365; --accent: #6b7f4f; --border: #d7dbd2;
+      --font: "Merriweather", "Georgia", serif;
+    }   
+
+    html[data-theme="fog"][data-mode="dark"] {
+      --bg: #1e2724; --surface: #26302c; --text: #e0ebe3;
+      --muted: #9db1a5; --accent: #6fa38b; --border: #3b4a44;
+      --font: "Georgia", "Palatino Linotype", Palatino, "Times New Roman", serif;
+    }
+
+    /* River Stone */
+    html[data-theme="river"][data-mode="light"] {
+      --bg: #f3f4f1; --surface: #ffffff; --text: #24302c;
+      --muted: #66736d; --accent: #4f7f8c; --border: #d4dad7;
+      --font: "Inter", "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+    }
+    html[data-theme="river"][data-mode="dark"] {
+      --bg: #0f1820; --surface: #19232c; --text: #e4ecef;
+      --muted: #8fa5b0; --accent: #4b90a0; --border: #2a3a44;
+      --font: "Inter", "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+    }
+
+
+    html[data-theme="forest"][data-mode="dark"] {
+      --bg: #1a1e16; --surface: #242823; --text: #e7ebe4;
+      --muted: #a2b09b; --accent: #8f9f6d; --border: #353b30;
+      --font: "Merriweather", "Georgia", serif;
+    }
+
+    body { font-family: var(--font); }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <strong>Regenerate Skagit — Theme Lab</strong>
+
+      <div class="controls">
+        <div class="themes">
+          <button onclick="setTheme('fog')">Fog & Paper</button>
+          <button onclick="setTheme('river')">River Stone</button>
+          <button onclick="setTheme('forest')">Forest Dusk</button>
+        </div>
+
+        <div class="mode">
+          <label>
+            Light
+            <input type="range" min="0" max="1" step="1" value="0"
+                   oninput="setMode(this.value)">
+            Dark
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero">
+      <h1>Rooted in Land, Water, and People</h1>
+      <p>Regenerate Skagit invites us to listen, imagine, and belong within the bioregion of the Skagit watershed.</p>
+    </div>
+
+    <main>
+      <p>
+        This page exists to test atmosphere. Not components. Not dashboards.
+        Just tone, contrast, and whether the page invites you to stay.
+      </p>
+
+      <blockquote>
+        “Place is not just where something happens. It is part of what happens.”
+      </blockquote>
+
+      <h2>What we’re cultivating</h2>
+
+      <ul>
+        <li>A sense of place grounded in land and water</li>
+        <li>Human relationships that are reciprocal, not extractive</li>
+        <li>Stories that carry memory forward</li>
+      </ul>
+
+      <div class="card">
+        <h3>Theme intent</h3>
+        <p>
+          Each theme reflects the same valley at different times and moods. Calm. Legible. Unrushed. If it feels like an app, the theme needs adjustment.
+        </p>
+      </div>
+
+      <hr />
+
+      <p>
+        Links should be visible but not loud.
+        <a href="#">This is a link.</a>
+        It should feel like part of the text, not a call to action.
+      </p>
+    </main>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    function setTheme(theme) { root.dataset.theme = theme; }
+    function setMode(value) { root.dataset.mode = value === "1" ? "dark" : "light"; }
+  </script>
+</body>
+</html>

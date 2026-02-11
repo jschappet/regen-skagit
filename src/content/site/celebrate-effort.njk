@@ -1,0 +1,288 @@
+---
+title: Celebrate Your Effort
+layout: layouts/page.njk
+eleventyNavigation:
+  key: main
+  title: Celebrate Effort
+  order: 5
+seo:
+  title: Celebrate Your Contribution
+  description: Share the energy and time you've contributed to Regenerate Skagit.
+permalink: /celebrate-effort/
+---
+<div class="relative bg-white dark:bg-gray-900">
+  <div class="relative mx-auto max-w-7xl lg:grid lg:grid-cols-5">
+
+    <!-- LEFT COLUMN -->
+    <div class="px-4 py-4
+                bg-gray-50 dark:bg-gray-800
+                sm:px-6 lg:col-span-2 lg:px-8 lg:py-8 xl:pr-12">
+      <div class="max-w-lg mx-auto">
+        <h2 class="text-3xl font-extrabold leading-8 tracking-tight
+                   text-gray-600 dark:text-gray-100">
+          Thank You for Your Effort!
+        </h2>
+
+        <p class="mt-4 text-gray-500 dark:text-gray-300">
+          This is a space to honor your energy, creativity, and time. Every contribution—big or small—helps grow our shared vision for the Skagit Valley.
+        </p>
+
+        <dl class="mt-8 text-base leading-6
+                   text-gray-500 dark:text-gray-300">
+          <div class="mt-6">
+            <dd class="flex">
+              <i class="fi fi-rr-envelope flex-shrink-0 w-8 h-8
+                        text-gray-400"></i>
+              <span class="ml-3">
+                <a class="hover:underline"
+                   href="mailto:skagit@regeneratecascadia.org">
+                  skagit@regeneratecascadia.org
+                </a>
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="px-4 py-16
+                bg-white dark:bg-gray-900
+                sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
+      <div class="max-w-lg mx-auto lg:max-w-none"
+           x-data="effortForm()"   x-init="loadConfig()"
+>
+
+        <!-- SUCCESS -->
+        <div x-show="status === 'success'" x-cloak
+             class="form-message">
+          <h2 class="text-xl font-semibold mb-2">Thank You!</h2>
+          <p>Your effort has been recorded. We’re grateful for your contribution!</p>
+        </div>
+
+        <!-- ERROR -->
+        <div x-show="status === 'error'" x-cloak
+             class="form-message">
+          <h2 class="text-xl font-semibold mb-2">Something went wrong</h2>
+          <p>
+            Please email us at
+            <a class="underline text-primary-600 dark:text-primary-400"
+               href="mailto:skagit@regeneratecascadia.org">
+              skagit@regeneratecascadia.org
+            </a>
+          </p>
+        </div>
+
+        <!-- FORM -->
+        <form
+          x-show="status === 'idle'"
+          @submit.prevent="submit"
+          name="effort"
+          method="POST"
+          data-netlify="true"
+          data-netlify-honeypot="bot-field"
+          class="grid grid-cols-1 row-gap-6"
+        >
+          <input type="hidden" name="form-name" value="effort" />
+
+          <p class="hidden">
+            <label>
+              Don’t fill this out if you're human:
+              <input name="bot-field" />
+            </label>
+          </p>
+
+          <div>
+            <label class="form-label" for="name">Full Name</label>
+            <input
+              id="name"
+              name="name"
+              placeholder="Full name"
+              class="form-field"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="form-label" for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              class="form-field"
+            />
+          </div>
+
+          <div class="relative">
+  <label class="form-label" for="context">Project / Event</label>
+
+  <!-- visible input -->
+  <input
+    id="context"
+    type="text"
+    placeholder="Start typing a project or event…"
+    class="form-field"
+    x-model="contextQuery"
+    @input="filterContexts"
+    @focus="filterContexts"
+    autocomplete="off"
+    required
+  />
+  <!-- visible input -->
+  <input
+    id="hours"
+    type="number"
+    placeholder="Hours of effort"
+    class="form-field"
+    x-model="hours"
+    autocomplete="off"
+  />
+  <!-- hidden canonical value -->
+  <input
+    type="hidden"
+    name="context_id"
+    :value="selectedContext?.key || ''"
+  />
+
+  <!-- dropdown -->
+  <ul
+    x-show="filteredContexts.length > 0"
+    x-cloak
+    class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800
+           border border-gray-200 dark:border-gray-700
+           rounded-md shadow-lg max-h-48 overflow-y-auto"
+  >
+    <template x-for="context in filteredContexts" :key="context.key">
+      <li
+        @click="selectContext(context)"
+        class="px-4 py-2 cursor-pointer
+               hover:bg-gray-100 dark:hover:bg-gray-700"
+      >
+        <span class="font-medium" x-text="context.value"></span>
+        <span class="ml-2 text-xs text-gray-500" x-text="context.key"></span>
+      </li>
+    </template>
+  </ul>
+</div>
+          <div>
+            <label class="form-label" for="effort">Your Contribution</label>
+            <textarea
+              id="effort"
+              name="effort"
+              rows="4"
+              placeholder="Describe your activity, what you noticed, or what you enjoyed"
+              class="form-field"
+              required
+            ></textarea>
+          </div>
+
+          <div>
+            <span class="inline-flex rounded-md shadow-sm">
+              <button
+                type="submit"
+                :disabled="loading"
+                class="py-4 px-6 my-4 rounded-lg
+                  {{ colors.buttonDefault.text or colors.buttonCustom.text }}
+                  hover:{{ colors.buttonDefault.textHover or colors.buttonCustom.textHover }}
+                  {{ colors.buttonDefault.bg or colors.buttonCustom.bg }}
+                  hover:{{ colors.buttonDefault.bgHover or colors.buttonCustom.bgHover }}
+                  {{ colors.buttonDefault.border or colors.buttonCustom.border }}"
+              >
+                <span x-show="!loading">Submit</span>
+                <span x-show="loading">Sending…</span>
+              </button>
+            </span>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+ function effortForm() {
+  return {
+    status: 'idle', // idle | success | error
+    loading: false,
+
+        // config-driven state
+    contexts: [],
+    filteredContexts: [],
+    contextQuery: '',
+    selectedContext: null,
+
+async loadConfig() {
+  try {
+    const config = await Alpine.store("api").call(
+      "get_config_api",
+      {},
+      null
+    );
+
+    this.contexts = config.contexts || [];
+    this.filteredContexts = []; // 👈 important
+  } catch (e) {
+    console.error("Failed to load config:", e);
+  }
+},
+     filterContexts() {
+  const q = this.contextQuery.trim().toLowerCase();
+this.selectedContext = null;
+
+  if (!q) {
+    this.filteredContexts = [];
+    this.selectedContext = null;
+    return;
+  }
+
+  this.filteredContexts = this.contexts.filter(c =>
+    c.value.toLowerCase().includes(q) ||
+    c.key.toLowerCase().includes(q)
+  );
+},
+
+
+    selectContext(context) {
+      this.selectedContext = context;
+      this.contextQuery = context.value;
+      this.filteredContexts = [];
+    },
+
+    async submit(event) {
+      event.preventDefault();
+      this.loading = true;
+
+      const form = event.target;
+      const formData = Object.fromEntries(new FormData(form));
+
+// overwrite / inject canonical context info
+if (this.selectedContext) {
+  formData.context_id = this.selectedContext.key;
+  formData.context_name = null;
+} else {
+  formData.context_id = null;
+  formData.context_name = this.contextQuery.trim();
+}
+
+      try {
+        const response = await Alpine.store("api").call(
+          "create_contribute_event",
+          {},
+          formData
+        );
+
+        console.log("Response:", response);
+        this.status = 'success';
+      } catch (e) {
+        console.error("Effort submission error:", e);
+        this.status = 'error';
+      } finally {
+        this.loading = false;
+      }
+    }
+  };
+}
+
+</script>

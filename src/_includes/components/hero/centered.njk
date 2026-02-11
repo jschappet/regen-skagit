@@ -1,0 +1,23 @@
+{% extends "components/hero/base.njk" %}
+
+{% block heroContent %}
+  <div class="max-w-4xl">
+
+    <h2 class="hero-title">
+      {{ heroData.title }}
+    </h2>
+
+    {% if heroData.subtitle %}
+      <h3 class="hero-subtitle mt-2">
+        {{ heroData.subtitle }}
+      </h3>
+    {% endif %}
+
+    {% if heroData.description %}
+      <p class="hero-body mt-4">
+        {{ heroData.description | safe }}
+      </p>
+    {% endif %}
+
+  </div>
+{% endblock %}

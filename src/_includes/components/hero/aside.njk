@@ -1,0 +1,35 @@
+{% extends "components/hero/base.njk" %}
+
+{% block heroContent %}
+<div class="max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+  <!-- Main text area -->
+  <div class="lg:col-span-2">
+    <h2 class="hero-title ">
+      {{ heroData.title }}
+    </h2>
+
+    <p class="hero-body">
+      {{ heroData.description | safe }}
+    </p>
+  </div>
+
+  <!-- Aside text area -->
+  <aside
+    class="hero-aside 
+      lg:col-span-1
+      text-base
+      text-gray-700
+      leading-relaxed
+      rounded-xl
+      p-6
+      bg-white/60
+      backdrop-blur-sm
+      shadow-[0_8px_24px_rgba(0,0,0,0.08)]
+    "
+  >
+    {{ heroData.subtitle }}
+  </aside>
+
+</div>
+{% endblock %}

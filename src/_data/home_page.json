@@ -1,0 +1,53 @@
+[
+  {
+    "title": "Regenerate Skagit",
+    "subtitle": "Regenerate Skagit Taking Root",
+    "description": "A bioregional culture rooted in the Skagit watershed, where humans live in relationship by attuning with land, water, and each other. We listen deeply, imagining together, and remembering that we are of the land that sustains us.",
+    "format": "left",
+    "image": "src/assets/images/barney_lake_flood.jpeg",
+    "order": 1
+  },
+    {
+    "title": "Get Involved",
+    "subtitle": "",
+    "description": "Join our Mailing List to stay connected and hear about upcoming events and opportunities to contribute. <a href='/contact/' class='btn btn-sm btn-secondary link link-hover'>Sign Up</a>",
+    "format": "centered",
+    "image": "",
+    "order": 3,
+    "bullets": [
+      "Join a Monthly Conversation Gathering—Meet neighbors and listen together",
+      "Stay Connected—Sign up for our email list to hear what’s happening and where you can contribute",
+      "See, Feel, and Act in the Watershed—Check upcoming events at our website and step into shared projects"
+    ]
+  },
+  {
+    "title": "Skagit River Valley",
+    "subtitle": "From Snow-Capped Mountains to the Salish Sea",
+    "description": "The Skagit River watershed stretches from the glaciers of the North Cascades all the way to the Salish Sea, sustaining communities and food systems for generations.",
+    "format": "left",
+    "image": "src/assets/images/FencePost.png",
+    "order": 2
+  },
+
+  {
+    "title": "The Indigenous People of the Skagit Valley",
+    "subtitle": "This place has been lived with, cared for, and known for thousands of years. We acknowledge the Upper Skagit, Swinomish, Samish, and Sauk-Suiattle peoples and honor their enduring presence, stewardship, and relationship to this land. We commit to listening and learning with respect.",
+    "description": "",
+    "format": "aside",
+    "image": "src/assets/images/IMG_0411.PNG",
+    "order": 4,
+    "link": "https://www.washingtontribes.org/the-tribes-of-washington/"
+  },
+  
+  
+  {
+    "title": "OUR MISSION",
+    "subtitle": "Regenerate Skagit Taking Root",
+    "description": "To cultivate bioregional awareness and belonging by inviting people of all ages to see, feel, and imagine life from the perspectives of the watershed—its rivers, trees, animals, farms, and communities. We do this through the practice of deep listening, shared art-making, embodied conversation, and collective attunement to the land and one another.",
+    "format": "centered",
+    "image": "",
+    "order": 5
+  }
+  
+  
+]

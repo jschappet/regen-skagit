@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Regenerate Skagit</title>
+
+    <style>
+      :root {
+        --bg: #f8f7f4;
+        --text: #1f2933;
+        --muted: #1f2933;
+        --accent: #2f855a;
+        --card-bg: #f1f3f0;
+        --shadow: rgba(0,0,0,0.05);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      main {
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem;
+      }
+
+      /* Header with background photo and overlay */
+      header {
+        position: relative;
+        padding: 2rem 1.5rem;
+        margin-bottom: 2.5rem;
+        background: var(--card-bg) url("/assets/images/1jEpupgChO-960.webp") no-repeat center center;
+        background-size: cover;
+        border-radius: 1rem;
+        box-shadow: 0 3px 8px var(--shadow);
+        text-align: center;
+        color: var(--text);
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248,247,244,0.6);
+        /* semi-transparent overlay */
+        border-radius: 1rem;
+        z-index: 0;
+      }
+
+      header > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      header strong {
+        font-size: 1rem;
+        color: var(--muted);
+      }
+
+      h1 {
+        font-size: 2rem;
+        line-height: 1.25;
+        margin-bottom: 1rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+      h3 {
+        font-size: 1.15rem;
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+      }
+      .muted {
+        color: var(--muted);
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 1rem;
+        padding: 2rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 3px 8px var(--shadow);
+      }
+
+      .values {
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        color: var(--muted);
+        background: var(--card-bg);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 5px var(--shadow);
+        text-align: center;
+      }
+
+ .cta {
+  position: relative; /* ← this is critical */
+  text-align: center;
+  margin-top: 2rem;
+  background: var(--card-bg) url("/assets/images/UQvFmhqMg3-960.webp") no-repeat center center;
+  background-size: cover; /* ensures image scales nicely */
+  border-radius: 1rem;
+  padding: 2rem 1.5rem; /* make space for content */
+  box-shadow: 0 3px 8px var(--shadow);
+  color: white; /* optional if overlay is dark */
+}
+
+.cta::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(248,247,244,0.6); /* semi-transparent overlay */
+  border-radius: 1rem;
+  z-index: 0; /* sits behind content */
+}
+
+/* ensure the content is above the overlay */
+.cta > * {
+  position: relative;
+  z-index: 1;
+}
+
+      .cta a {
+        display: inline-block;
+        padding: 1rem 1.5rem;
+        background: var(--accent);
+
+        color: white;
+        border-radius: 0.6rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.2s, background 0.2s;
+      }
+      .cta a:hover {
+        transform: translateY(-2px);
+        background: #2b7c50;
+      }
+
+      footer {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e5e7eb;
+        font-size: 0.9rem;
+        color: var(--muted);
+        text-align: center;
+      }
+      footer a {
+        margin: 0 0.5rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      @media(min-width:768px) {
+        h1 {
+          font-size: 2.4rem;
+        }
+        h2 {
+          font-size: 1.6rem;
+        }
+        h3 {
+          font-size: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+
+      <!-- Header Card with Background Photo -->
+      <header>
+        <strong>Regenerate Skagit</strong>
+        <h1>A community rooted in the Skagit watershed.</h1>
+        <p class="muted">
+        Learning how to live well with land, water, and each other—locally and for the long term.
+      </p>
+        <div class="values">People first · Place-based · Long-term</div>
+      </header>
+
+      <!-- Meaning / Orientation Card -->
+      <div class="card">
+        <h2>Big systems feel distant and overwhelming.</h2>
+        <p>
+        Food systems, climate systems, economic systems—most are too large to see clearly or feel agency within.
+      </p>
+
+        <h3>Regeneration happens at human scale.</h3>
+        <p>
+        It grows through relationships, shared learning, and practical action grounded in place. 
+        It starts with paying attention to where we live, who we live with, and how choices ripple through land and water.
+      </p>
+
+        <p>This is bioregional work: beginning with the watershed, the farms, the towns, and the people who share them.</p>
+
+        <h3>You don’t have to agree with everything.<br>You just have to show up.</h3>
+        <p>Regenerate Skagit brings people together to listen, learn, and practice living in better relationship with place and each other.</p>
+      </div>
+
+      <!-- CTA Card -->
+      <div class="card cta">
+        <h2>Get Involved</h2>
+        <a href="/content/site/get-involved/">Get Involved</a>
+        <p class="muted">Events, conversations, and ways to participate.<br>No expertise required.</p>
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        <p>Rooted in the Skagit watershed, Cascadia.</p>
+        <p>
+          <a href="#">Contact</a>
+          <a href="#">Newsletter</a>
+          <a href="#">Instagram</a>
+        </p>
+      </footer>
+
+    </main>
+  </body>
+</html>

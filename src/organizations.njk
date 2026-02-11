@@ -1,0 +1,49 @@
+---
+date: 2026-01-28
+layout: layouts/default.njk
+eleventyNavigation:
+  key: main
+  title: Organizations # as it will appear in the nav
+  order: 3 # order to display in the nav
+---
+
+<main class="flex-grow">
+
+{% set orgs = collections.organizations %}
+
+{% if orgs | length %}
+<section class="max-w-6xl mx-auto px-6 py-16">
+  <h1 class="text-3xl md:text-4xl font-semibold mb-8 text-center">
+    Organizations in the Regenerate Skagit Network
+  </h1>
+
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
+    {% for org in orgs %}
+    <article class="bg-surface rounded-2xl shadow-sm p-6 flex flex-col items-center text-center max-w-[320px] w-full">
+      {% if org.data.images %}
+        <a href="{{ org.url }}" class="block mb-4">
+          {% image org.data.images[0], org.data.title, {
+                class: "w-full rounded-xl object-cover h-48"
+              }
+          %}
+        </a>
+      {% endif %}
+
+      <a href="{{ org.url }}" class="hover:text-accent">
+        <h2 class="text-2xl font-semibold mb-1">{{ org.data.title }}</h2>
+      </a>
+
+      {% if org.data.subtitle %}
+        <h3 class="text-lg italic text-muted mb-4">{{ org.data.subtitle }}</h3>
+      {% endif %}
+
+      {% if org.data.summary %}
+        <p class="text-fg">{{ org.data.summary | safe }}</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% else %}
+<p class="text-center text-muted py-16">No organizations listed yet.</p>
+{% endif %}

@@ -1,0 +1,94 @@
+[
+  {
+    "title": "Regenerate Skagit",
+    "description": "From snow-capped mountains to the Salish Sea, the Skagit River watershed carries water, soil, and stories through one of Cascadia’s most life-giving landscapes.",
+    "image": "src/assets/images/FencePost.png",
+    "format": "left",
+    "order": 1,
+    "tags": ["home_page"]
+  },
+  {
+    "title": "Story of Place",
+    "description": "The Skagit River watershed stretches from the glaciers of the North Cascades to the Salish Sea, feeding an alluvial floodplain layered with some of the top 2% of agricultural soils in the world. Water, land, farms, forests, and people shape each other here.",
+    "image": "src/assets/images/PotluckOutside.png",
+    "format": "centered",
+    "order": 2,
+    "tags": ["home_page"]
+  },
+  {
+    "title": "Indigenous Roots",
+    "description": "The Skagit Valley is home to the Upper Skagit Indian Tribe, Swinomish Indian Tribal Community, Sauk-Suiattle Indian Tribe, and Samish Indian Nation. These peoples have lived in deep relationship with the river, delta, forests, and islands for countless generations.",
+    "aside": "Colonial disruption reshaped these relationships, yet Indigenous presence, knowledge, and stewardship continue to guide what it means to belong to this watershed.",
+    "image": "src/assets/images/IMG_0411.PNG",
+    "format": "aside",
+    "order": 3,
+    "tags": ["home_page"]
+  },
+  {
+    "title": "Regenerate Skagit's Mission",
+    "description": "To cultivate bioregional awareness and belonging by inviting people of all ages to see, feel, and imagine life from the perspectives of the watershed—its rivers, trees, animals, farms, and communities.",
+    "format": "triptych",
+    "order": 4,
+    "tags": ["home_page"],
+    "panels": [
+      {
+        "title": "Vision",
+        "text": "A bioregional culture rooted in the Skagit watershed, where humans live in relationship with land, water, and all living beings to regenerate ecological and social health.",
+        "image": {
+          "src": "src/assets/images/skagit_valley/IMG_1213.jpg",
+          "alt": "Aerial view of the Skagit watershed"
+        }
+      },
+      {
+        "title": "How We Practice",
+        "text": "By making art, sharing embodied conversation, Deep listening to land and people, Collective attunement to place",
+        "image": {
+          "src": "src/assets/images/skagit_valley/20240605_121213.png",
+          "alt": "Group of people working together outdoors"
+        }
+      }
+    ]
+  },
+  {
+    "title": "Our Vision",
+    "description": "A bioregional culture rooted in the Skagit watershed, where humans live in relationship",
+    "image": "src/assets/images/TulipField.png",
+    "format": "left",
+    "order": 5,
+    "tags": ["home_page"]
+  },
+  {
+    "title": "Relationship First",
+    "description": "To cultivate bioregional awareness and belonging by inviting people of all ages to see, feel, and imagine life from the perspectives of the watershed—its rivers, trees, animals, farms, and communities.",
+    "image": "src/assets/images/skagit_valley/20210905_150700.jpg",
+    "format": "triptych",
+    "order": 1,
+    "tags": ["home_page"],
+    "panels": [
+      {
+        "title": "Food",
+        "text": "Weekly potlucks bring people together through shared effort, meals, and conversation.",
+        "image": {
+          "src": "src/assets/images/skagit_valley/20210905_150700.jpg",
+          "alt": "Aerial view of the Skagit watershed"
+        }
+      },
+      {
+        "title": "People",
+        "text": "Small projects tackled together—harvesting garlic, tearing down old sheds—build trust through doing.",
+        "image": {
+          "src": "src/assets/images/skagit_valley/20240605_121213.png",
+          "alt": "Group of people working together outdoors"
+        }
+      },
+      {
+        "title": "Land",
+        "text": "Land is not for us. We are of it. When relationship is restored, life coheres.",
+        "image": {
+          "src": "src/assets/images/skagit_valley/IMG_1148.png",
+          "alt": "Flooded Barney Lake with mountains in the background"
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+{% extends "components/hero/base.njk" %}
+
+{% block heroContent %}
+  <div class="max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+
+    <!-- Main content + image -->
+    <div class="lg:col-span-2 space-y-6">
+      <h2 class="hero-title" data-aos="fade-up" data-aos-delay="100">
+        {{ heroData.title }}
+      </h2>
+
+      <p class="hero-body" data-aos="fade-up" data-aos-delay="200">
+        {{ heroData.description }}
+      </p>
+
+      {% if heroData.mainImage %}
+        {{ imageHtml[heroData.mainImage] | safe }}
+      {% endif %}
+    </div>
+
+    <!-- Aside with secondary image -->
+    <aside class="space-y-4 border-l border-gray-300 lg:pl-6">
+      {% if heroData.asideImage %}
+          {{ imageHtml[heroData.asideImage] | safe }}
+
+      {% endif %}
+
+      <p class="text-base text-gray-700 leading-relaxed">
+        {{ heroData.aside }}
+      </p>
+    </aside>
+
+  </div>
+{% endblock %}

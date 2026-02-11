@@ -1,0 +1,209 @@
+---
+title: Contact
+date: 2020-08-05
+layout: layouts/page.njk
+eleventyNavigation:
+  key: main
+  title: Contact  # as it will appear in the nav
+  order: 4        # order to display in the nav
+seo:
+  title: Contact Us!
+  description: Use this handy form to contact us. 
+
+permalink: /contact/
+---
+<div class="relative bg-white dark:bg-gray-900">
+  <div class="relative mx-auto max-w-7xl lg:grid lg:grid-cols-5">
+
+    <!-- LEFT COLUMN -->
+    <div class="px-4 py-4
+                bg-gray-50 dark:bg-gray-800
+                sm:px-6 lg:col-span-2 lg:px-8 lg:py-8 xl:pr-12">
+      <div class="max-w-lg mx-auto">
+        <h2 class="text-3xl font-extrabold leading-8 tracking-tight
+                   text-gray-600 dark:text-gray-100">
+          Get in touch
+        </h2>
+
+        <dl class="mt-8 text-base leading-6
+                   text-gray-500 dark:text-gray-300">
+          <div class="mt-6">
+            <dd class="flex">
+              <i class="fi fi-rr-phone-call flex-shrink-0 w-8 h-8
+                        text-gray-400"></i>
+              <span class="ml-3">
+                <a class="hover:underline" href="tel:4435642064">
+                  (443)564-2064
+                </a>
+              </span>
+            </dd>
+          </div>
+
+          <div class="mt-3">
+            <dd class="flex">
+              <i class="fi fi-rr-envelope flex-shrink-0 w-8 h-8
+                        text-gray-400"></i>
+              <span class="ml-3">
+                <a class="hover:underline"
+                   href="mailto:skagit@regeneratecascadia.org">
+                  skagit@regeneratecascadia.org
+                </a>
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="px-4 py-16
+                bg-white dark:bg-gray-900
+                sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
+      <div class="max-w-lg mx-auto lg:max-w-none"
+           x-data="contactForm()">
+
+        <!-- SUCCESS -->
+        <div x-show="status === 'success'" x-cloak
+             class="form-message">
+          <h2 class="text-xl font-semibold mb-2">Thank you!</h2>
+          <p>Your form has been submitted successfully.</p>
+        </div>
+
+        <!-- ERROR -->
+        <div x-show="status === 'error'" x-cloak
+             class="form-message">
+          <h2 class="text-xl font-semibold mb-2">
+            Something went wrong
+          </h2>
+          <p>
+            Please email us at
+            <a class="underline text-primary-600 dark:text-primary-400"
+               href="mailto:{{ meta.address.email }}">
+              {{ meta.address.email }}
+            </a>
+          </p>
+        </div>
+
+        <!-- FORM -->
+        <form
+          x-show="status === 'idle'"
+          @submit.prevent="submit"
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          data-netlify-honeypot="bot-field"
+          data-netlify-recaptcha="true"
+          class="grid grid-cols-1 row-gap-6"
+        >
+          <input type="hidden" name="form-name" value="contact" />
+
+          <p class="hidden">
+            <label>
+              Don’t fill this out if you're human:
+              <input name="bot-field" />
+            </label>
+          </p>
+
+          <div>
+            <label class="form-label" for="name">Full name</label>
+            <input
+              id="name"
+              name="name"
+              placeholder="Full name"
+              class="form-field"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="form-label" for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              class="form-field"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="form-label" for="tel">Phone</label>
+            <input
+              id="tel"
+              name="tel"
+              placeholder="Phone"
+              class="form-field"
+            />
+          </div>
+
+          <div>
+            <label class="form-label" for="message">Message</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              placeholder="Message"
+              class="form-field"
+              required
+            ></textarea>
+          </div>
+
+          <div data-netlify-recaptcha="true"></div>
+
+          <div>
+            <span class="inline-flex rounded-md shadow-sm">
+              <button
+                type="submit"
+                :disabled="loading"
+                class="py-4 px-6 my-4 rounded-lg
+                  {{ colors.buttonDefault.text or colors.buttonCustom.text }}
+                  hover:{{ colors.buttonDefault.textHover or colors.buttonCustom.textHover }}
+                  {{ colors.buttonDefault.bg or colors.buttonCustom.bg }}
+                  hover:{{ colors.buttonDefault.bgHover or colors.buttonCustom.bgHover }}
+                  {{ colors.buttonDefault.border or colors.buttonCustom.border }}"
+              >
+                <span x-show="!loading">Submit</span>
+                <span x-show="loading">Sending…</span>
+              </button>
+            </span>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function contactForm() {
+    return {
+      status: 'idle', // idle | success | error
+      loading: false,
+
+      async submit(event) {
+        this.loading = true;
+
+        const form = event.target;
+        const formData = Object.fromEntries(new FormData(form));
+
+        try {
+          const response = await fetch('/api/mail/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          });
+
+          if (!response.ok) throw new Error('Network error');
+
+          this.status = 'success';
+        } catch (e) {
+          console.error(e);
+          this.status = 'error';
+        } finally {
+          this.loading = false;
+        }
+      }
+    };
+  }
+</script>

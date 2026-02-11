@@ -1,0 +1,68 @@
+{% extends "components/hero/base.njk" %}
+
+{% set align = heroData.align or "left" %}
+
+{% block heroContent %}
+<div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+  {% if align == "left" %}
+    <!-- Left-aligned text -->
+    <div class="flex flex-col justify-center">
+      <h2 class="hero-title ">
+        {{ heroData.title }}
+      </h2>
+      <h3 class="hero-subtitle ">
+        {{ heroData.subtitle }}
+      </h3>
+
+      {% if heroData.description %}
+        <p class="hero-body mb-8 ">
+          {{ heroData.description  | safe}}
+        </p>
+      {% endif %}
+
+      {% if heroData.bullets %}
+        <ul class="hero-bullets space-y-4 text-xlg">
+          {% for bullet in heroData.bullets %}
+            <li class="flex items-start gap-4">
+              <span class="mt-2 h-2 w-2 rounded-full bg-green-dark flex-shrink-0"></span>
+              <span class="leading-relaxed">{{ bullet }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <!-- Empty spacer column for right balance -->
+    <div class="hidden lg:block"></div>
+
+  {% else %}
+    <!-- Right-aligned text -->
+    <div class="hidden lg:block"></div>
+
+    <div class="flex flex-col justify-center lg:pl-8">
+      <h2 class="hero-title ">
+        {{ heroData.title }}
+      </h2>
+
+      {% if heroData.description %}
+        <p class="hero-body leading-relaxed mb-8 max-w-prose">
+          {{ heroData.description }}
+        </p>
+      {% endif %}
+
+      {% if heroData.bullets %}
+        <ul class="space-y-4 text-xlg">
+          {% for bullet in heroData.bullets %}
+            <li class="flex items-start gap-4">
+              <span class="mt-2 h-2 w-2 rounded-full bg-green-dark flex-shrink-0"></span>
+              <span class="leading-relaxed">{{ bullet }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+---
+layout: layouts/default.njk
+---
+
+<main class="flex-grow max-w-5xl mx-auto px-6 py-16">
+
+  <!-- Organization Title -->
+  <h1 class="text-4xl font-bold mb-4">{{ title }}</h1>
+  {% if subtitle %}
+    <h2 class="text-xl italic text-muted mb-6">{{ subtitle }}</h2>
+  {% endif %}
+
+  <!-- Organization Images -->
+  {% if images %}
+    <div class="grid gap-6 mb-8 md:grid-cols-2">
+      {% for img in images %}
+        {% image img, title, 
+          { class: "w-full rounded-xl shadow-md object-cover h-64 md:h-80" } %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Organization Details -->
+  <section class="bg-surface dark:bg-surface-dark p-6 rounded-xl shadow mb-8">
+    <h3 class="text-2xl font-semibold mb-4">Organization Details</h3>
+    <ul class="space-y-2">
+      {% if location %}
+        <li><strong>Location:</strong> {{ location }}</li>
+      {% endif %}
+      {% if website %}
+        <li><strong>Website:</strong> <a href="{{ website }}" class="text-accent hover:underline" target="_blank" rel="noopener">{{ website }}</a></li>
+      {% endif %}
+      {% if status %}
+        <li><strong>Status:</strong> {{ status }}</li>
+      {% endif %}
+      {% if tags %}
+        <li>
+          <strong>Tags:</strong>
+          {% for tag in tags %}
+            <span class="inline-block bg-accent/20 text-accent px-2 py-0.5 rounded mr-2 text-sm">{{ tag }}</span>
+          {% endfor %}
+        </li>
+      {% endif %}
+    </ul>
+  </section>
+
+  <!-- Organization Content -->
+  <article class="content dark:prose-invert max-w-none">
+    {{ content | safe }}
+  </article>
+
+</main>

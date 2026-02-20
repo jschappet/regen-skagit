@@ -1,7 +1,8 @@
+dist
+
 # Custom Local 
 project
 _project
-
 .DS_Store
 webserver/config/application.toml
 

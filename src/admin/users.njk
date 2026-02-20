@@ -1,0 +1,197 @@
+---
+layout: "layouts/admin.njk"
+title: "Users Admin"
+//permalink: "/{{admin.slug}}/"
+permalink: "/admin/users/"
+---
+<div x-data="userAdmin()" x-init="init()" class="admin-users">
+
+  <h1>Users & Memberships</h1>
+
+  <!-- USER LIST -->
+  <div class="panel">
+    <h2>Users</h2>
+
+    <input type="text"
+           placeholder="Search users…"
+           x-model="search"
+           @input.debounce.300ms="filterUsers()"
+           class="input" />
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>User Name</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <template x-for="user in filteredUsers" :key="user.id">
+          <tr>
+            <td x-text="user.username || '—'"></td>
+            <td x-text="user.email"></td>
+            <td>
+              <button @click="selectUser(user)">
+                Manage
+              </button>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- MEMBERSHIPS PANEL -->
+  <div class="panel" x-show="selectedUser">
+
+    <h2>
+      Memberships:
+      <span x-text="selectedUser?.email"></span>
+    </h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Host</th>
+          <th>Role</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <template x-for="m in memberships" :key="m.id">
+          <tr>
+            <td x-text="hostName(m.host_id)"></td>
+            <td x-text="roleName(m.role_id)"></td>
+            <td>
+              <button @click="removeMembership(m.id)">
+                Remove
+              </button>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+
+    <!-- ADD MEMBERSHIP -->
+    <div class="form-row">
+      <select x-model="newMembership.host_id">
+        <option value="">Select Host</option>
+        <template x-for="host in hosts" :key="host.id">
+          <option :value="host.id" x-text="host.display_name"></option>
+        </template>
+      </select>
+
+      <select x-model="newMembership.role_id">
+        <option value="">Select Role</option>
+        <template x-for="role in roles" :key="role.id">
+          <option :value="role.id" x-text="role.name"></option>
+        </template>
+      </select>
+
+      <button @click="addMembership()">Add</button>
+    </div>
+
+  </div>
+
+</div>
+<script>
+function userAdmin() {
+  return {
+    users: [],
+    filteredUsers: [],
+    memberships: [],
+    roles: [],
+    hosts: [],
+    selectedUser: null,
+    search: "",
+
+    newMembership: {
+      host_id: "",
+      role_id: ""
+    },
+
+    async init() {
+      await Promise.all([
+        this.loadUsers(),
+        this.loadRoles(),
+        this.loadHosts()
+      ]);
+    },
+
+    async loadUsers() {
+      this.users = await Alpine.store("api")
+          .call("user_list");
+      this.filteredUsers = this.users;
+    },
+
+    async loadRoles() {
+      this.roles = await Alpine.store("api")
+          .call("roles_list");
+    },
+
+    async loadHosts() {
+        console.log("Loading Hosts...")
+      // adjust if your hosts come from a different endpoint
+      this.hosts = await Alpine.store("api")
+          .call("admin_host_list")
+        .catch(() => []);
+    },
+
+    filterUsers() {
+      const q = this.search.toLowerCase();
+
+      this.filteredUsers = this.users.filter(u =>
+        u.email.toLowerCase().includes(q) ||
+        (u.name && u.name.toLowerCase().includes(q))
+      );
+    },
+
+    async selectUser(user) {
+      this.selectedUser = user;
+      await this.loadMemberships(user.id);
+    },
+
+    async loadMemberships(userId) {
+      this.memberships = await Alpine.store("api")
+          .call(
+        "get_memberships_for_user_api",
+        { id: userId }
+      );
+    },
+
+    hostName(hostId) {
+    return this.hosts.find(h => h.id === hostId)?.display_name || hostId;
+    },
+
+    roleName(roleId) {
+      return this.roles.find(r => r.id === roleId)?.name || roleId;
+    },
+
+    async addMembership() {
+      if (!this.newMembership.host_id || !this.newMembership.role_id) return;
+
+      await Alpine.store("api")
+          .call("create_membership_api", {}, {
+        user_id: this.selectedUser.id,
+        host_id: this.newMembership.host_id,
+        role_id: this.newMembership.role_id
+      });
+
+      this.newMembership.host_id = "";
+      this.newMembership.role_id = "";
+
+      await this.loadMemberships(this.selectedUser.id);
+    },
+
+    async removeMembership(id) {
+      await Alpine.store("api")
+          .call("delete_membership_api", { id });
+      this.memberships = this.memberships.filter(m => m.id !== id);
+    }
+  };
+}
+</script>

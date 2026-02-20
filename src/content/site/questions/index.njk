@@ -1,0 +1,210 @@
+---
+title: Weekly Questions
+date: 2026-02-19
+layout: layouts/default.njk
+permalink: /ask/
+seo:
+  title: Weekly Questions!
+  description: Feel free to answer any or all of these questions.
+---
+
+<div 
+  x-data="weeklyQuestions"
+  x-init="init"
+ class="relative bg-white w-full">
+  <!-- Page container with bigger gutters -->
+  <div class="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
+
+    <!-- Intro section -->
+    <div class="mb-12 p-6 bg-teal-50 rounded-lg shadow-sm">
+      <p class="text-xl sm:text-2xl font-semibold text-teal-900 mb-4 leading-relaxed">
+        We are inviting you to share your story of why regeneration matters here in the Skagit Valley. 
+        What calls us to regenerate this place we call home? 
+        Why does this work matter to you, to our community, and to future generations?
+      </p>
+      <p class="text-lg sm:text-xl text-teal-800 leading-relaxed">
+        Your response can be personal, ecological, cultural, or spiritual. 
+        It can reflect your hopes, concerns, or vision for Skagit. 
+        Every answer helps us weave together a shared story — 
+        one that reflects our collective “why” and guides our next steps.
+      </p>
+    </div>
+    <div class="relative mx-auto w-full">
+      <div class="px-4 py-16 bg-white sm:px-6 lg:col-span-5 lg:py-24 lg:px-8 xl:pl-12 w-full">
+        <div class="w-full">
+          <div id="thankYouMessage" style="display: none;">
+            <h2>Thank You!</h2>
+            <p>Your responses have been submitted successfully.</p>
+          </div>
+          <div id="sorryMessage" style="display: none;">
+            <h2>Sorry, something went wrong.</h2>
+            <p>Please email us at: 
+            <a href="mailto:{{ meta.address.email }}">{{ meta.address.email }}</a>
+            </p>
+          </div>
+          <form x-show="!submitted && !error" @submit.prevent="submit" class="grid grid-cols-1 row-gap-6 w-full">
+            <div class="w-full">
+              <label for="full_name" class="sr-only">Full name</label>
+              <div class="relative rounded-md shadow-sm w-full">
+                <input x-model="name" name="name" class="block w-full px-4 py-3 mb-6 placeholder-gray-500 form-input" placeholder="Full name">
+              </div>
+            </div>
+
+            <div class="w-full">
+              <label for="email" class="sr-only">Email</label>
+              <div class="relative rounded-md shadow-sm w-full">
+                <input x-model="email" name="email" type="email" class="block w-full px-4 py-3 mb-6 placeholder-gray-500 form-input" placeholder="Email">
+              </div>
+            </div>
+
+            <template x-for="q in questions" :key="q.uuid">
+              <div class="mb-6">
+
+                <label
+                class="block mb-2 font-medium"
+                x-text="q.question"
+              ></label>
+
+                <textarea
+                class="w-full border rounded p-3"
+                rows="4"
+                :name="q.uuid"
+                x-model="answers[q.uuid]"
+                placeholder="Your answer here..."
+              ></textarea>
+
+              </div>
+            </template>
+
+            <div x-show="submitted">
+              <h2>Thank You!</h2>
+              <p>Your responses have been submitted successfully.</p>
+            </div>
+
+            <div x-show="error">
+              <h2>Sorry, something went wrong.</h2>
+              <p>Please email us at:
+    <a href="mailto:{{ meta.address.email }}">{{ meta.address.email }}</a>
+              </p>
+            </div>
+
+            <div class="w-full">
+              <span class="inline-flex rounded-md shadow-sm">
+                <button :disabled="submitted" :class="py-4 px-6 my-4 rounded-lg text-white hover:text-white bg-teal-700 hover:bg-teal-700 border-teal-900 {'opacity-50': submitted}">
+                Submit
+              </button>
+              </span>
+            </div>
+          </form>
+        </div>
+        <div x-show="submitted" class="mt-8 space-y-4">
+          <template x-for="s in summaries" :key="s.question_uuid">
+            <div class="p-4 border rounded bg-gray-50">
+              <strong x-text="questionText(s.question_uuid)"></strong>
+              <p x-text="s.summary"></p>
+              <small x-text="'Answers counted: ' + s.answers_count"></small>
+            </div>
+          </template>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function weeklyQuestions() {
+      return {
+        questions: [],
+        answers: {},
+        name: "",
+        email: "",
+        submitted: false,
+        error: false,
+        summaries: [],
+
+        async init() {
+          const all = await this.fetchQuestions();
+          this.questions = all; //pickRandom(all, 5);
+
+          this
+            .questions
+            .forEach(q => {
+              this.answers[q.uuid] = "";
+            });
+        },
+        async fetchQuestions() {
+          try {
+            const res = await fetch('/assets/json/questions.json', {cache: 'no-store'});
+
+            if (!res.ok) {
+              throw new Error(`HTTP ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            console.log("questions:", data);
+
+            if (Array.isArray(data)) {
+              return data;
+            }
+
+          } catch (e) {
+            console.warn("Failed to load questions.json, using fallback", e);
+          }
+
+          return this.fallbackQuestions();
+        },
+
+        fallbackQuestions() {
+          return [
+            {
+              uuid: 'fallback1',
+              question: "What’s something small that brought you joy this week?"
+            }, {
+              uuid: 'fallback2',
+              question: "If your mood right now had a flavor or color, what would it be?"
+            }, {
+              uuid: 'fallback3',
+              question: "Who or what inspired you recently, and why?"
+            }, {
+              uuid: 'fallback4',
+              question: "What’s the funniest thing that happened to you this month?"
+            }, {
+              uuid: 'fallback5',
+              question: "If you could instantly master any skill, what would it be?"
+            }
+          ];
+        },
+        async submit() {
+          const payload = {
+            name: this.name,
+            email: this.email,
+            answers: Object
+              .entries(this.answers)
+              .map(([uuid, answer]) => ({uuid, answer}))
+          };
+
+          try {
+            const response = await Alpine
+              .store("api")
+              .call("weekly_answers_submit", {}, payload);
+
+            this.summaries = response;
+            this.submitted = true;
+          } catch (e) {
+            console.error("Submission failed", e);
+            this.error = true;
+          }
+        },
+        questionText(uuid) {
+          const q = this
+            .questions
+            .find(q => q.uuid === uuid);
+          return q
+            ? q.question
+            : uuid;
+        }
+
+      }
+    }
+  </script>

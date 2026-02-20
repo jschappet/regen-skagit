@@ -1,0 +1,258 @@
+---
+title: Regenerate Skagit Profile
+layout: layouts/default.njk
+permalink: /login/
+---
+
+<div x-data="authApp()" x-init="init()" class="bg-white p-8 rounded-xl shadow-md w-full max-w-md mx-auto mt-12">
+
+  <h1  class="text-2xl font-bold mb-4 text-center">Welcome to Regenerate Skagit</h1>
+
+  <!-- Toggle Links -->
+  <div class="text-center mb-4" x-show="!$store.auth.user">
+    <button @click="mode='register'" :class="mode==='register' ? 'text-green-600' : 'text-gray-600'" class="hover:underline mr-2">Register</button>
+    <button @click="mode='login'" :class="mode==='login' ? 'text-blue-600' : 'text-gray-600'" class="hover:underline">Login</button>
+  </div>
+
+  <!-- Register Form -->
+  <form x-show="mode==='register' && !$store.auth.user" @submit.prevent="register" class="mb-6">
+    <h2 class="font-semibold mb-2">Register</h2>
+    <!-- 
+    <input type="text" x-model="reg.username" placeholder="Username" class="w-full mb-2 p-2 border rounded">
+    <input type="email" x-model="reg.email" placeholder="Email" class="w-full mb-2 p-2 border rounded">
+    <input type="password" x-model="reg.password" placeholder="Password" autocomplete="new-password"
+ class="w-full mb-2 p-2 border rounded">
+    -->
+    <!-- USERNAME FIELD -->
+    <div class="space-y-2">
+
+      <div class="flex justify-between items-baseline">
+        <label class="font-medium text-gray-700">
+            Username
+        </label>
+
+        <p class="text-sm text-gray-500"
+           :class="{'text-red-500': 15 - reg.username.length < 0}">
+          <span x-text="15 - reg.username.length"></span> characters remaining
+        </p>
+      </div>
+
+      <input  x-ref="input"
+            x-model="reg.username"
+            maxlength="15"
+            autocomplete="username"
+            type="text"
+            class="w-full border rounded p-2"
+            placeholder="Choose a username">
+    </div>
+
+    <!-- EMAIL FIELD -->
+    <div class="space-y-2" >
+      <label class="block font-medium text-gray-700">
+            Email Address
+        </label>
+
+      <input  x-ref="email"
+                x-model="reg.email"
+                autocomplete="email"
+                type="email"
+                class="w-full border rounded p-2"
+                placeholder="Please provide a valid email address">
+    </div>
+
+    <br/>
+
+    <button type="submit" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Register</button>
+  </form>
+
+  <!-- Login Form -->
+  <form x-show="mode==='login' && !$store.auth.user" @submit.prevent="login" class="mb-6">
+    <h2 class="font-semibold mb-2">Login</h2>
+    <input type="text" x-model="loginData.username" 
+    autocomplete="username"
+    placeholder="Username" class="w-full mb-2 p-2 border rounded">
+    <input type="password" x-model="loginData.password" placeholder="Password" 
+    autocomplete="current-password"
+    class="w-full mb-2 p-2 border rounded">
+    <a href="/login/forgot-password/" class="text-sm text-blue-600 hover:underline mb-4 inline-block">Forgot Password?</a>
+    <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Login</button>
+  </form>
+
+  <form x-show="mode==='setPassword'" @submit.prevent="setPassword" class="mb-6">
+    <h2 class="font-semibold mb-2">Set Your Password</h2>
+
+    <input type="text" x-model="setPasswordData.username" placeholder="Username"
+         class="w-full mb-2 p-2 border rounded">
+
+    <input type="password" x-model="setPasswordData.password" placeholder="Password"
+         autocomplete="new-password" class="w-full mb-2 p-2 border rounded">
+
+    <input type="password" x-model="setPasswordData.confirm_password" placeholder="Confirm Password"
+         autocomplete="new-password" class="w-full mb-2 p-2 border rounded">
+
+    <button type="submit" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">
+    Set Password
+  </button>
+  </form>
+
+  <!-- Logout -->
+  <button x-show="$store.auth.user" @click="logout" class="w-full bg-red-600 text-white p-2 rounded mt-4 hover:bg-red-700">
+    Logout
+  </button>
+
+  <div x-text="message" class="mt-4 text-center text-gray-700"></div>
+</div>
+
+<script>
+  //
+  // Character counter
+  //
+
+  function authApp() {
+    return {
+      mode: 'login',
+
+      message: '',
+
+      reg: {
+        username: '',
+        email: '',
+        password: ''
+      },
+      showPassword: false,
+      loginData: {
+        username: '',
+        password: ''
+      },
+      currentUser() {
+        // Implement logic to get the current user
+        return $store.auth.user;
+      },
+      charCounter(max = 100, obj) {
+        return {
+          max,
+          remaining() {
+            //console.log("obj:", obj);
+            //const val = obj.$refs.input?.value || "";
+            const val = obj || "";
+            return this.max - val.length;
+          }
+        };
+      },
+      setPasswordData: {
+        username: '', // optionally prefill from token / store
+        password: '',
+        confirm_password: ''
+      },
+      async setPassword() {
+        if (this.setPasswordData.password !== this.setPasswordData.confirm_password) {
+          this.message = "Passwords do not match!";
+          return;
+        }
+
+        try {
+        await Alpine.store("api").call("set_password_new", {}, {
+          username: this.setPasswordData.username,
+          password: this.setPasswordData.password  
+
+        });
+          this.message = "Password set successfully! You can now log in.";
+          this.mode = 'login';
+          this.setPasswordData.password = '';
+          this.setPasswordData.confirm_password = '';
+          // optionally prefill username in login form
+          this.loginData.username = this.setPasswordData.username;
+
+        //alert("Password reset instructions sent.");
+      } catch (e) {
+        const error = await res.json();
+        this.message = "Failed to set password: " + error.message;
+        console.error("Reset failed:", e);
+        //alert("Could not send reset email. Try again.");
+      } 
+      },
+      togglePassword() {
+        this.showPassword = !this.showPassword;
+      },
+      init() {
+        // Initialize any state or logic here
+        this
+          .$store
+          .auth
+          .load();
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('verified') === '1') {
+          this.mode = 'setPassword';
+          this.message = "Your account has been verified! Please set your password.";
+        } else if (params.get('error') !== null) {
+          this.mode = 'login';
+          this.message = params.get('error');
+        } else {
+          
+          this.mode = 'login';
+        }
+
+      },
+      remaining() {
+        const val = this.$refs.input
+          ?.value || "";
+        return this.max - val.length;
+      },
+
+      async register() {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.reg)
+        });
+        if (res.ok) {
+          this.message = "Registered successfully! You can now log in.";
+          this.mode = 'login';
+          this.reg.username = '';
+          this.reg.email = '';
+          this.reg.password = '';
+        } else {
+          const error = await res.json();
+          this.message = "Registration failed! " + error.message;
+        }
+      },
+
+      async login() {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams(this.loginData)
+        });
+        if (res.ok) {
+          // Immediately redirect after login
+          this.$store.auth.user = await res.json();
+          this.$store.auth.loaded = true;
+          this.message = "Logged in successfully!";
+
+          window.location.href = "/profile/";
+          return;
+
+        } else {
+          this.message = "Login failed!";
+        }
+      },
+
+      async logout() {
+        const res = await fetch('/api/auth/logout', {method: 'POST'});
+        if (res.ok) {
+          this.message = "Logged out!";
+          //this.currentUser = null;
+          this.$store.auth.user = null;
+          this.$store.auth.loaded = false;
+
+          this.loginData.username = '';
+          this.loginData.password = '';
+        }
+      }
+    }
+  }
+</script>

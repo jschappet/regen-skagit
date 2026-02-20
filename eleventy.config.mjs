@@ -12,6 +12,7 @@ import heroBlockShortcode from "./src/_11ty/heroBlock.js";
 
 export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/assets/js/');
+  eleventyConfig.addPassthroughCopy('src/assets/json/');
 
   eleventyConfig.addPlugin(eleventyNavigationPlugin);
   eleventyConfig.addNunjucksAsyncShortcode("image", imageShortcode);
@@ -25,13 +26,19 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy(
     {"src/assets/images/favicon": "assets/images/favicon"});
 
+    eleventyConfig.addPassthroughCopy(
+    {"src/content/slides/slides.txt": "slides/slides.md"});
+  eleventyConfig.addPassthroughCopy(
+    {"src/content/slides/images/*.jpg": "slides/images/"});
+  
+
   eleventyConfig.addPassthroughCopy(
     {"src/_data/home_page.json": "/editor/data.json"});
   eleventyConfig.addPassthroughCopy(
     {"src/assets/images/og-image.jpeg": "assets/images/og-image.jpg"});
 
   eleventyConfig.addPassthroughCopy(
-    {"node_modules/@flaticon/flaticon-uicons/css": "assets/uicons/css"});
+    {"node_modules/@flaticon/flaticon-uicons/css/regular": "assets/uicons/css"});
 
 
   eleventyConfig.on('eleventy.before', async () => {

@@ -1,0 +1,267 @@
+---
+layout: "layouts/admin.njk"
+title: "Content Admin"
+//permalink: "/{{admin.slug}}/"
+permalink: "/admin/"
+---
+
+<section x-data="contentAdmin()" class="max-w-7xl mx-auto px-6 py-10">
+    <!-- Filters -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div>
+            <label class="label">Doc Type</label>
+            <select x-model="filters.docType" @change="loadDrafts()" class="select select-bordered w-full">
+                <option value="">All</option>
+                <template x-for="type in docTypes" :key="type">
+                    <option :value="type" x-text="type"></option>
+                </template>
+            </select>
+        </div>
+
+        <div>
+            <label class="label">Status</label>
+            <select x-model="filters.status" @change="loadDrafts()" class="select select-bordered w-full">
+                <option value="">All</option>
+                <template x-for="status in statuses" :key="status">
+                    <option :value="status" x-text="status.replace('_',' ')"></option>
+                </template>
+            </select>
+        </div>
+
+        <div>
+            <label class="label">Author</label>
+            <input x-model="filters.author" @change="loadDrafts()" class="input select-bordered w-full">
+        </div>
+
+        <div>
+            <label class="label">Date From</label>
+            <input type="date" x-model="filters.dateFrom" @change="loadDrafts()" class="input input-bordered w-full">
+        </div>
+
+        <div>
+            <label class="label">Date To</label>
+            <input type="date" x-model="filters.dateTo" @change="loadDrafts()" class="input input-bordered w-full">
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+        <div x-show="selected.size > 0" class="flex gap-2 mb-4 bg-base-200 p-3 rounded">
+            <span x-text="`${selected.size} selected`"></span>
+            <button class="btn btn-success btn-sm" @click.stop="bulkApprove()">Approve</button>
+            <button class="btn btn-warning btn-sm" @click="bulkRequestChanges()">Request Changes</button>
+            <button class="btn btn-error btn-sm" @click="bulkReject()">Reject</button>
+        </div>
+
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" class="checkbox" @change="toggleAll($event.target.checked)">
+                    </th>
+                    <th class="cursor-pointer" @click="sortBy('doc_type')">
+  Doc Type <span x-show="sortKey === 'doc_type'" x-text="sortAsc ? '▲' : '▼'"></span>
+                    </th>
+                    <th class="cursor-pointer" @click="sortBy('title')">
+    Title
+    <span x-show="sortKey === 'title'" x-text="sortAsc ? '▲' : '▼'"></span>
+                    </th>
+
+                    <th class="cursor-pointer" @click="sortBy('author')">
+  Author <span x-show="sortKey === 'author'" x-text="sortAsc ? '▲' : '▼'"></span>
+                    </th>
+                    <th class="cursor-pointer" @click="sortBy('status')">
+  Status <span x-show="sortKey === 'status'" x-text="sortAsc ? '▲' : '▼'"></span>
+                    </th>
+                    <th class="cursor-pointer" @click="sortBy('submitted_at')">
+  Submitted <span x-show="sortKey === 'submitted_at'" x-text="sortAsc ? '▲' : '▼'"></span>
+                    </th>
+
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="draft in drafts" :key="draft.id">
+                    <tr 
+                        class="hover:bg-base-200 cursor-pointer">
+                        <td>
+                            <input type="checkbox" class="checkbox"
+                     :checked="selected.has(draft.id)"
+                     @change="toggleOne(draft.id, $event.target.checked)">
+                        </td>
+                        <td x-text="draft.doc_type"></td>
+                        <td tabindex="0"
+                        role="button"
+                        @click="openDraft(draft)"
+                        @keydown.enter="openDraft(draft)" class="font-medium" x-text="draft.title"></td>
+                        <td x-text="draft.author"></td>
+                        <td>
+                            <span class="badge"
+                    :class="{
+                      'badge-warning': draft.status==='submitted',
+                      'badge-info': draft.status==='changes_requested',
+                      'badge-success': draft.status==='approved'
+                    }"
+                    x-text="draft.status.replace('_',' ')"></span>
+                        </td>
+                        <td x-text="formatDate(draft.submitted_at)"></td>
+                        <td class="text-right space-x-2">
+                            <button class="btn btn-sm btn-outline" @click="openPreview(draft.body_md)">Preview</button>
+                            <a :href="`/admin/edit/?doc_type=${draft.doc_type}&id=${draft.id}`" class="btn btn-sm btn-outline">Edit</a>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Preview Modal -->
+    <div x-show="previewOpen" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @keydown.escape.window="previewOpen=false">
+        <div class="bg-white max-w-3xl w-full p-6 rounded-lg shadow-xl overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold">Preview</h2>
+                <button class="btn btn-sm btn-circle" @click="previewOpen=false">✕</button>
+            </div>
+            <div class="prose max-w-full" x-html="previewMarkdown"></div>
+        </div>
+    </div>
+
+</section>
+
+<script>
+function contentAdmin() {
+  return {
+    drafts: [],
+    docTypes: ['recipe','organization','event','post'],
+    statuses: ['draft','submitted','changes_requested','approved'],
+    authors: [],
+    filters: {
+      docType: '',
+      status: '',
+      author: '',
+      dateFrom: '',
+      dateTo: ''
+    },
+
+    selected: new Set(),
+    previewOpen: false,
+    previewMarkdown: '',
+    sortKey: null,
+    sortAsc: true,
+
+    sortBy(key) {
+      if (this.sortKey === key) {
+        this.sortAsc = !this.sortAsc;
+      } else {
+        this.sortKey = key;
+        this.sortAsc = true;
+      }
+
+      this.drafts.sort((a, b) => {
+        let A = a[key] ?? '';
+        let B = b[key] ?? '';
+
+        if (key === 'submitted_at') {
+          A = A ? new Date(A) : 0;
+          B = B ? new Date(B) : 0;
+        }
+
+        if (typeof A === 'string') {
+          A = A.toLowerCase();
+          B = B.toLowerCase();
+        }
+
+        if (A < B) return this.sortAsc ? -1 : 1;
+        if (A > B) return this.sortAsc ? 1 : -1;
+        return 0;
+      });
+    },
+
+    async init() {
+      await this.loadDrafts();
+    },
+
+    async loadDrafts() {
+      try {
+        console.log("Filters: ", this.filters);
+        const data = await Alpine.store("api")
+          .call("draft_list", this.filters);
+
+        this.drafts = data?.drafts ?? [];
+
+        if (this.sortKey) this.sortBy(this.sortKey);
+
+      } catch (e) {
+        console.error("Failed loading drafts", e);
+      }
+    },
+
+    openPreview(md) {
+      this.previewMarkdown = marked.parse(md || '');
+      this.previewOpen = true;
+    },
+
+    toggleOne(id, checked) {
+      checked ? this.selected.add(id) : this.selected.delete(id);
+    },
+
+    toggleAll(checked) {
+      this.selected.clear();
+      if (checked) {
+        this.drafts.forEach(d => this.selected.add(d.id));
+      }
+    },
+
+    formatDate(ts) {
+      return ts ? new Date(ts).toLocaleDateString() : '';
+    },
+
+    async bulkApprove() {
+      if (!this.selected.size) return;
+
+      await Alpine.store("api").call("draft_bulk_approve", {}, {
+        ids: [...this.selected]
+      });
+
+      this.selected.clear();
+      this.loadDrafts();
+    },
+
+    async bulkRequestChanges() {
+      const notes = prompt('Notes for changes?');
+      if (!notes) return;
+
+      // uses single draft endpoint for bulk change if backend supports notes
+      await Alpine.store("api").call("request_changes_api", {}, {
+        ids: [...this.selected],
+        notes
+      });
+
+      this.selected.clear();
+      this.loadDrafts();
+    },
+
+    async bulkReject() {
+      if (!this.selected.size) return;
+      if (!confirm('Reject selected drafts?')) return;
+
+      await Alpine.store("api").call("delete_draft_api", {}, {
+        ids: [...this.selected]
+      });
+
+      this.selected.clear();
+      this.loadDrafts();
+    },
+
+    openDraft(draft) {
+      const base = '/admin/edit/';
+      const params = new URLSearchParams({
+        id: draft.id,
+        doc_type: draft.doc_type
+      });
+
+      window.location.href = `${base}/?${params.toString()}`;
+    }
+  }
+}
+</script>

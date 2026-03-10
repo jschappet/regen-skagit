@@ -1,6 +1,6 @@
 ---
 title: Contact
-date: 2020-08-05
+date: 2026-02-20
 layout: layouts/page.njk
 eleventyNavigation:
   key: main
@@ -12,21 +12,20 @@ seo:
 
 permalink: /contact/
 ---
-<div class="relative bg-white dark:bg-gray-900">
+<div class="relative bg-white ">
   <div class="relative mx-auto max-w-7xl lg:grid lg:grid-cols-5">
 
     <!-- LEFT COLUMN -->
     <div class="px-4 py-4
-                bg-gray-50 dark:bg-gray-800
+                bg-gray-50 
                 sm:px-6 lg:col-span-2 lg:px-8 lg:py-8 xl:pr-12">
       <div class="max-w-lg mx-auto">
-        <h2 class="text-3xl font-extrabold leading-8 tracking-tight
-                   text-gray-600 dark:text-gray-100">
+        <h2 class="text-3xl font-extrabold leading-8 tracking-tight text-gray-600 ">
           Get in touch
         </h2>
 
         <dl class="mt-8 text-base leading-6
-                   text-gray-500 dark:text-gray-300">
+                   text-gray-500 ">
           <div class="mt-6">
             <dd class="flex">
               <i class="fi fi-rr-phone-call flex-shrink-0 w-8 h-8
@@ -57,7 +56,7 @@ permalink: /contact/
 
     <!-- RIGHT COLUMN -->
     <div class="px-4 py-16
-                bg-white dark:bg-gray-900
+                bg-white 
                 sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
       <div class="max-w-lg mx-auto lg:max-w-none"
            x-data="contactForm()">
@@ -77,7 +76,7 @@ permalink: /contact/
           </h2>
           <p>
             Please email us at
-            <a class="underline text-primary-600 dark:text-primary-400"
+            <a class="underline text-primary-600"
                href="mailto:{{ meta.address.email }}">
               {{ meta.address.email }}
             </a>

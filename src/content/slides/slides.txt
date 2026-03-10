@@ -1,190 +1,65 @@
-
-<!-- .element: data-background-image="images/slide_1.jpg" -->
-
-# Regenerate Skagit
-## A Place-Based Reciprocity Experiment
-
-A living map of how we relate to this Valley
-
+<!-- .element: data-background-image="uu_feb22/processed-000.png" --> 
 ---
-
-<!-- .element: data-background-image="images/welcome_to_cascadia.jpg" -->
-
+<!-- .element: data-background-image="uu_feb22/processed-001.png" --> 
 ---
-
-<!-- .element: data-background-image="images/globe_view_cascadia.jpg" -->
-
+<!-- .element: data-background-image="uu_feb22/processed-002.png" --> 
 ---
-
-The Skagit Valley has been lived with, cared for, and known for thousands of years.
-
-We acknowledge the Upper Skagit, Swinomish, Samish, and Sauk-Suiattle peoples 
-and honor their enduring presence, stewardship, and relationship to this land.
-
-Skagit means 'A Place of Refuge'
-
-We commit to listening and learning with respect.
-
+<!-- .element: data-background-image="uu_feb22/processed-003.png" --> 
 ---
-
-<!-- .element: data-background-image="images/map_skagit_river.jpg" -->
-
-## The Skagit Watershed 
-
-The Skagit River flows from glacier to sea.  
-
-This is one living system.  
-
-Our lives are woven into this place.
-
+<!-- .element: data-background-image="uu_feb22/processed-004.png" --> 
 ---
-
-### Slow down in this moment to be with this group of people 
-
-What do you depend on? for your food, your water?
-What does this community depend on?
-
+<!-- .element: data-background-image="uu_feb22/processed-005.png" --> 
 ---
-
-Ask the person sitting next to you 
-
-## What's one thing in your daily life you depend on but don't know where it comes from?
-
+<!-- .element: data-background-image="uu_feb22/processed-006.png" --> 
 ---
-What would it be like to live in a place:  
-
-Where we know each other.  
-
-Where resources circulate locally.
-
-Where land and water are part of daily decisions.
-
+<!-- .element: data-background-image="uu_feb22/processed-007.png" --> 
 ---
-
-Think about the last flood. What gaps did it expose? 
-
-Did you wish to be:
-
-- More connected?
-
-- More prepared?
-
-- More "in this together?"
-
-What if we built that connection now —
-before the water rises?
-
+<!-- .element: data-background-image="uu_feb22/processed-008.png" --> 
 ---
-
-## Our First Step - Mapping
-
-And by mapping we mean, asking:  
-- Who is here? 
-    - People, animals, plants, organizations... 
-- What do we need to live here?
-- What are we growing, making, building, tending?
-- What are the stories that build the myths of this place?
-
-
+<!-- .element: data-background-image="uu_feb22/processed-009.png" --> 
 ---
-## What We’re Mapping
- 🌾 Food & Soil  
- 💧 Water & Watershed  
- 🛠 Shelter & Building  
- 🎨 Arts & Culture  
- 🔌 Infrastructure & Tech  
- 👩‍👧 Care & Belonging  
- 💰 Local Exchange  
-
-We believe this web already exists.  
-We just can’t fully see it yet.
-
+<!-- .element: data-background-image="uu_feb22/processed-010.png" --> 
 ---
-The Work of Mapping 
-
-- Listening at Farmer's Market 
-
-- Hosting a mapping Workshop
-
-- Building systems for Recording and Documenting 
-
+<!-- .element: data-background-image="uu_feb22/processed-011.png" --> 
 ---
-
-We’ll be at the Farmer’s Market:
-
-- Dreaming from the perspective of this place  
-- Asking simple questions
-- Listening to the stories of the Valley
-- Making art inspired by native plants
- 
-This is a conversation table
+<!-- .element: data-background-image="uu_feb22/processed-012.png" --> 
 ---
-
-Mapping Workshop
-
-help us figure out who should be here 
-
+<!-- .element: data-background-image="uu_feb22/processed-013.png" --> 
 ---
-
-## The Infrastructure Behind It
-Behind the scenes, we are building open-source software  
-to help map and visualize local networks.  
-
-If you code —  
-or know someone who does —  
-we’d love to talk.  
-
-This is long-term infrastructure work.
-
+<!-- .element: data-background-image="uu_feb22/processed-014.png" --> 
 ---
-
-## Were not just Mapping 
-
+<!-- .element: data-background-image="uu_feb22/processed-015.png" --> 
 ---
-
-## Learning on the Land
-We will host learning journeys at Childs Creek Farm.  
-
-A living example of:  
-- Reforestation  
-- Food forest systems  
-- Humans participating in ecological repair  
-
-What does it feel like to reforest land?  
-How do plants relate in a food forest?  
-
-Regeneration is something we can walk and feel.
-
+<!-- .element: data-background-image="uu_feb22/processed-016.png" --> 
 ---
-
-Monthly Gatherings 
-
+<!-- .element: data-background-image="uu_feb22/processed-017.png" --> 
 ---
-
-## Part of a Larger Bioregion
-Regenerate Skagit is part of a pilot cohort within the broader Regenerate Cascadia network.  
-
-Ten teams across our bioregion  
-are experimenting with place-based regeneration.  
-
-Each watershed is unique.  
-
-Our focus is here — Skagit.
-
+<!-- .element: data-background-image="uu_feb22/processed-018.png" --> 
 ---
-
-## It is an experiment in cooperation.  
-
-A practice of talking and listening.  
-
-A way to make the invisible web visible.
-
+<!-- .element: data-background-image="uu_feb22/processed-019.png" --> 
 ---
-
-## How to Participate
-- Add your name when mapping forms go live  
-- Come talk with us at the farmer’s market  
-- Share your skills  
-- Join the email list for updates and invitations  
-
-Your participation builds culture
+<!-- .element: data-background-image="uu_feb22/processed-020.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-021.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-022.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-023.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-024.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-025.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-026.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-027.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-028.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-029.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-030.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-031.png" --> 
+---
+<!-- .element: data-background-image="uu_feb22/processed-032.png" --> 

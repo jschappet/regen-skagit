@@ -40,14 +40,13 @@ title: Regenerate Skagit
 
     {% include("components/navbar.njk") %}
 
-    <main class="flex-1 px-4 sm:px-6 lg:px-10">
-      {{ content | safe }}
-    </main>
+    {{ content | safe }}
+    
 
     {% include("components/footer.njk") %}
 
     <script src="/assets/js/theme.js" defer></script>
-    <link rel="stylesheet" href="/assets/uicons/css/all.css">
+    <link rel="stylesheet" href="/assets/uicons/css/all/all.css">
 
   </body>
 </html>

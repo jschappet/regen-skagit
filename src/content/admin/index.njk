@@ -8,6 +8,9 @@ permalink: "/admin/"
 <section x-data="contentAdmin()" class="max-w-7xl mx-auto px-6 py-10">
     <!-- Filters -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div>
+        <button @click="newDocument=true">New Document</button>
+      </div>
         <div>
             <label class="label">Doc Type</label>
             <select x-model="filters.docType" @change="loadDrafts()" class="select select-bordered w-full">
@@ -126,14 +129,25 @@ permalink: "/admin/"
         </div>
     </div>
 
+    <div x-show="newDocument" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @keydown.escape.window="newDocument=false">
+          <template x-for="doc in docTypes" :key="doc">
+        <a
+            class="btn btn-active m-1"
+            :href="`/admin/edit/?doc_type=${doc}`"
+            x-text="doc"
+        ></a>
+    </template>
+    </div>
+
 </section>
 
 <script>
 function contentAdmin() {
   return {
     drafts: [],
-    docTypes: ['recipe','organization','event','post'],
-    statuses: ['draft','submitted','changes_requested','approved'],
+    newDocument: false,
+    docTypes: ['organization','event','post'],
+    statuses: ['draft','submitted','changes_requested','approved','deployed'],
     authors: [],
     filters: {
       docType: '',

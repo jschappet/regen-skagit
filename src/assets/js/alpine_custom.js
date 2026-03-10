@@ -61,8 +61,11 @@ async function apiCall(fnName, params = {}, body = null) {
   if (!route) {
     throw new Error(`Unknown API function: ${fnName}`);
   }
-
-  let url = fillUrl(route.url, params);
+  let url = "";
+  if (params != {}) {
+    url = fillUrl(route.url, params);
+  }
+  
 
   // prevent path params from also becoming query params
   if (route.method === "GET") {
@@ -74,7 +77,7 @@ async function apiCall(fnName, params = {}, body = null) {
     );
 
     const query = buildQuery(queryParams);
-    if (query) url += `? ${query} `;
+    if (query) url += `?${query} `;
 
 
   }
@@ -171,3 +174,5 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("Failed to preload capabilities:", err)
   );
 });
+
+window.loadRoutes = loadRoutes;

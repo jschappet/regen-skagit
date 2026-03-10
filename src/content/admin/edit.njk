@@ -1,0 +1,420 @@
+---
+title: "Edit Content"
+layout: "layouts/admin.njk"
+//permalink: "/{{admin.slug}}/edit/"
+permalink: "/admin/edit/"
+---
+
+<form
+  x-data="documentForm()"
+  x-init="init"
+  @submit.prevent="submit"
+  class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow space-y-6"
+>
+
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-semibold">
+            <span x-text="doc?.title || schema?.label || 'Document'"></span>
+            (<span x-text="id || 'new'"></span>)
+        </h1>
+
+        <span class="badge badge-outline" x-text="doc_type"></span>
+    </div>
+
+    <!-- Errors -->
+    <div x-show="error" class="alert alert-error">
+        <span x-text="error"></span>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- LEFT: Details -->
+        <div class="space-y-4 lg:sticky lg:top-6 self-start">
+
+            <template x-if="schema && Array.isArray(schema.fields)">
+                <template x-for="field in schema.fields" :key="field.key">
+                    <template x-if="field.key !== 'body_md'">
+                        <div>
+                            <label class="label">
+                                <span x-text="field.label"></span>
+                                <span x-show="field.required" class="text-red-500">*</span>
+                            </label>
+
+                            <!-- Text -->
+                            <template x-if="field.type === 'text'">
+                                <input
+                  type="text"
+                  class="input input-bordered w-full"
+                  x-model="doc[field.key]"
+                  :required="field.required"
+/>
+                            </template>
+                            <!-- Text -->
+                            <template x-if="field.type === 'number'">
+                                <input
+                  type="number"
+                  class="input input-bordered w-full"
+                  x-model.number="doc[field.key]"
+                  :required="field.required"
+/>
+                            </template>
+
+                            <!-- Textarea -->
+                            <template x-if="field.type === 'textarea'">
+                                <textarea
+                  class="textarea textarea-bordered w-full"
+                  rows="3"
+                  x-model="doc[field.key]"
+                  :required="field.required"
+                ></textarea>
+                            </template>
+                            <!-- Checkboxes -->
+                            <template x-if="field.type === 'checkbox'">
+                                <div class="space-y-2">
+                                    <template x-for="opt in field.options" :key="opt.label">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input
+          type="checkbox"
+          class="checkbox"
+          :checked="doc[field.key] && doc[field.key].includes(opt.value)"
+          @change="handleCheckboxChange(field.key, opt.value, $event.target.checked)"
+/>
+                                            <span x-text="opt.label"></span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Hidden -->
+                            <template x-if="field.type === 'hidden'">
+                                <input type="hidden" x-model="doc[field.key]"/>
+                            </template>
+
+                            <!-- Date -->
+                            <template x-if="field.type === 'date'">
+                                <input type="date" x-model="doc[field.key]"/>
+                            </template>
+
+                            <!-- Tags -->
+                            <template x-if="field.type === 'tags'">
+                                <input
+                  type="text"
+                  class="input input-bordered w-full"
+                  placeholder="comma separated"
+                  x-model="doc[field.key]"
+/>
+                            </template>
+
+                            <!-- Select -->
+                            <template x-if="field.type === 'select'">
+                                <select
+                  class="select select-bordered w-full"
+                  x-model="doc[field.key]"
+                >
+                                    <option value="">Select…</option>
+                                    <template x-for="opt in field.options" :key="opt.label">
+                                        <option :value="opt.value" x-text="opt.label"></option>
+                                    </template>
+                                </select>
+                            </template>
+
+                            <!-- Multi Select -->
+                            <template x-if="field.type === 'multiselect'">
+                                <select
+        class="select select-bordered w-full"
+        x-model="doc[field.key]"
+        multiple
+    >
+                                    <template x-for="opt in field.options" :key="opt.value">
+                                        <option :value="opt.value" x-text="opt.label"></option>
+                                    </template>
+                                </select>
+                            </template>
+                        </div>
+                    </template>
+                </template>
+            </template>
+
+        </div>
+
+        <!-- RIGHT: Markdown -->
+        <div class="lg:col-span-2 space-y-4">
+
+            <template x-if="schema?.has_markdown">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="font-semibold">Content</h2>
+                        <!-- Actions -->
+                        <button type="button" class="btn btn-sm btn-ghost" @click="save">
+      Save Draft
+    </button>
+
+                        <button type="submit" class="btn btn-sm  btn-primary">
+      Submit
+    </button>
+
+                        <button
+              type="button"
+              class="btn btn-sm btn-outline"
+              @click="preview = !preview"
+            >
+                            <span x-text="preview ? 'Edit' : 'Preview'"></span>
+                        </button>
+                    </div>
+
+                    <textarea
+            x-show="!preview"
+            x-model="doc.body_md"
+            rows="20"
+            class="textarea textarea-bordered w-full font-mono"
+          ></textarea>
+
+                    <div
+            x-show="preview"
+            class="prose max-w-none border border-base-300 rounded p-4"
+            x-html="renderedMarkdown"
+          ></div>
+                </div>
+            </template>
+
+        </div>
+    </div>
+
+    <!-- Status -->
+    <div x-show="ui_message" class="alert alert-info">
+        <span x-text="ui_message"></span>
+    </div>
+
+</form>
+
+<script>
+    function documentForm() {
+        return {
+            id: null,
+            doc_type: null,
+            schema: {
+                label: '',
+                fields: []
+            },
+            doc: {
+                dietary: []
+            },
+            preview: false,
+            error: null,
+            ui_message: '',
+
+            async init() {
+
+                const params = new URLSearchParams(window.location.search);
+                this.id = params.get('id');
+                this.doc_type = params.get('doc_type');
+
+                if (!this.doc_type) {
+                    this.error = 'Missing document type';
+                    return;
+                }
+
+                await this.loadSchema();
+                await this.loadDraft();
+            },
+
+            async loadSchema() {
+                //const res = await fetch('/api/admin/drafts/doc_schema');
+                //const schemas = await res.json();
+                const schemas = await Alpine
+                    .store("api")
+                    .call("draft_doc_schema", {}, {});
+                this.schema = schemas.types[this.doc_type] || {
+                    label: '',
+                    fields: []
+                };
+
+                if (!this.schema) {
+                    this.error = `Unknown document type: ${this.doc_type}`;
+                    return;
+                }
+
+                // ✅ Initialize all checkbox fields as arrays
+                this
+                    .schema
+                    .fields
+                    .forEach(f => {
+                        if (f.type === 'checkbox') {
+                            if (!Array.isArray(this.doc[f.key])) {
+                                this.doc[f.key] = [];
+                            }
+                        } else if (!(f.key in this.doc)) {
+                            this.doc[f.key] = '';
+                        }
+                    });
+            },
+            handleCheckboxChange(key, value, checked) {
+                if (!Array.isArray(this.doc[key])) {
+                    this.doc[key] = [];
+                }
+                if (checked) {
+                    if (!this.doc[key].includes(value)) {
+                        //console.log("Value: " , value);
+                        this
+                            .doc[key]
+                            .push(value);
+                    }
+                } else {
+                    this.doc[key] = this
+                        .doc[key]
+                        .filter(v => v !== value);
+                }
+            },
+
+            async loadDraft() {
+                // AlpineJS helper to safely read nested meta fields
+                const getNested = (obj, path, key) => {
+                    if (!path) return obj[key];
+                    const parts = path.split('.');
+                    let current = obj;
+                    for (const part of parts) {
+                        if (!current || typeof current !== 'object' || !(part in current)) return undefined;
+                        current = current[part];
+                    }
+                    return current[key];
+                };
+
+                if (!this.id) {
+                    this.doc = {
+                        doc_type: this.doc_type
+                    };
+                    return;
+                }
+
+                //const res = await fetch(`/api/admin/drafts/${this.id}`);
+                //const data = await res.json();
+                const data = await Alpine
+                    .store("api")
+                    .call("draft_get", {
+                        "id": this.id
+                    }, {});
+
+                this.doc = {
+                    ...data,
+                    ...(data.meta || {
+                        dietary: []
+                    })
+                }; // reset
+                for (const field of this.schema.fields) {
+                    if (field.storage === 'meta') {
+                        this.doc[field.key] = getNested(data.meta, field.path, field.key);
+                    } else {
+                        this.doc[field.key] = data[field.key];
+                    }
+                }
+                {# this.doc = {
+                    ...data,
+                    ...(data.meta || {
+                        dietary: []
+                    })
+                }; #}
+            },
+            buildPayload() {
+                const meta = {};
+                const columns = {};
+
+                // Helper: set value in nested object by path + key
+                const setNested = (obj, path, key, value) => {
+                    if (!path) {
+                        obj[key] = value;
+                        return;
+                    }
+                    const parts = path.split('.');
+                    let current = obj;
+                    for (const part of parts) {
+                        if (!(part in current) || typeof current[part] !== 'object') {
+                            current[part] = {};
+                        }
+                        current = current[part];
+                    }
+                    current[key] = value;
+                };
+
+                for (const field of this.schema.fields) {
+                    const value = this.doc[field.key];
+                    if (value === undefined) 
+                        continue;
+                    
+                    if (field.storage === 'meta') {
+                        setNested(meta, field.path, field.key, value);
+                    } else {
+                        columns[field.key] = value;
+                    }
+                }
+
+                return {
+                    ...columns,
+                    meta,
+                    doc_type: this.doc_type
+                };
+            },
+            buildPayloadOld() {
+                const meta = {};
+                const columns = {};
+
+                for (const field of this.schema.fields) {
+                    const value = this.doc[field.key];
+                    if (value === undefined) 
+                        continue;
+                    
+                    if (field.storage === 'meta') {
+                        meta[field.key] = value;
+                    } else {
+                        columns[field.key] = value;
+                    }
+                }
+                return {
+                    ...columns,
+                    meta,
+                    doc_type: this.doc_type
+                };
+            },
+
+            get renderedMarkdown() {
+                console.log("Render Markdown");
+                return this.doc.body_md
+                    ? marked.parse(this.doc.body_md)
+                    : '';
+            },
+
+            async save() {
+
+                const payload = this.buildPayload();
+                var data = {};
+                if  (this.id) {
+
+                    data = await Alpine
+                        .store("api")
+                        .call("draft_update", {
+                         "id": this.id
+                        }, payload);
+
+                } else {
+                    data = await Alpine
+                        .store("api")
+                        .call("draft_create",{},payload);
+                }
+                
+                this.id = data.id;
+                this.ui_message = 'Draft saved';
+            },
+            async submit() {
+                await this.save();
+                await Alpine
+                    .store("api")
+                    .call("draft_submit", {
+                        "id": this.id
+                    }, {});
+
+                window.location.href = '/admin/';
+            }
+        };
+    }
+</script>

@@ -2,30 +2,27 @@
 
 <header class="w-full shadow-sm">
   <nav class="navbar w-full max-w-7xl mx-auto
-              bg-surface dark:bg-surface-dark text-fg dark:text-fg-dark">
+              bg-surface dark:bg-surface-dark text-fg ">
 
     <!-- Left: Logo + Mobile Dropdown -->
     <div class="navbar-start">
 
       <!-- Mobile dropdown -->
       <div class="dropdown lg:hidden">
-<label tabindex="0"
-  class="btn bg-surface dark:bg-surface-dark
-         text-fg dark:text-fg-dark
-         shadow-sm mobile-menu-btn">
-          <i class="fi fi-sc-menu-burger "></i>
+        <label tabindex="0" class="btn btn-square btn-ghost mobile-menu-btn">
+          <i class="fi fi-rr-menu-burger text-lg"></i>
         </label>
 
         <ul tabindex="-1"
   class="menu menu-sm dropdown-content rounded-box z-50 mt-3 w-52 p-2
-         bg-surface dark:bg-surface-dark
-         border border-black/10 dark:border-white/10
+         bg-surface 
+         border border-black/10
          shadow-lg backdrop-blur-sm
-         text-fg dark:text-fg-dark">
+         text-fg ">
 
           {% for entry in navPages %}
             <li>
-              <a href="{{ entry.url | url }}" class="block py-1 hover:text-accent dark:hover:text-accent">
+              <a href="{{ entry.url | url }}" class="block py-1 hover:text-accent ">
                 {{ entry.title }}
               </a>
             </li>
@@ -34,7 +31,7 @@
       </div>
 
       <!-- Logo -->
-      <a href="/" class="btn btn-ghost text-xl text-fg dark:text-fg-dark">
+      <a href="/" class=" text-xl text-fg ">
         Regenerate Skagit
       </a>
     </div>

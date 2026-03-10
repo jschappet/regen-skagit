@@ -18,6 +18,13 @@
   color: #ffffff;
 }
 
+.reveal section img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover; /* fills frame, crops overflow */
+  display: block;
+}
+
 .reveal h1,
 .reveal h2, 
 .reveal h3,
@@ -64,6 +71,7 @@
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/markdown/markdown.js"></script>
 <script>
   Reveal.initialize({
+    margin: 0.4,
     hash: true,
     slideNumber: true,
     overview: true,

@@ -1,0 +1,51 @@
+---
+permalink: "/admin/ledger/flows/"
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Resource Flow Graph</title>
+</head>
+<body>
+
+<div style="padding:10px;border-bottom:1px solid #ccc;margin-bottom:10px;">
+  
+  <label>Entity:</label>
+  <select id="entityFilter">
+    <option value="">All</option>
+  </select>
+
+  <label style="margin-left:20px;">Resource:</label>
+  <select id="resourceFilter">    
+    <option value="account">All</option>
+  </select>
+
+  <label style="margin-left:20px;">Start:</label>
+  <input type="date" id="startDate">
+
+  <label>End:</label>
+  <input type="date" id="endDate">
+
+</div>
+
+<svg>
+  <defs>
+    <marker id="arrowhead" viewBox="0 -5 10 10" refX="25" refY="0" 
+            markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,-5L10,0L0,5" fill="#999"/>
+    </marker>
+  </defs>
+</svg>
+
+<div style="border:1px solid #ccc;overflow:auto;width:100%;height:650px;">
+  <svg id="mySvg" width="1600" height="900"></svg>
+</div>
+<div class="tooltip" style="position:absolute;opacity:0;background:#fff;border:1px solid #ccc;padding:5px;font-size:12px;border-radius:4px;"></div>
+
+<script type="module">
+  import { renderFlows } from '/assets/js/d3-flows.js';
+
+  // Call the function with your SVG, slider, week label, and JSON path
+  renderFlows('#mySvg', '#timeline', '#week-label', '/api/ledger/ledger.json');
+</script>

@@ -1,0 +1,104 @@
+---
+layout: "layouts/admin.njk"
+title: "Mailing List Admin"
+//permalink: "/{{admin.slug}}/"
+permalink: "/admin/maillist/"
+---
+<div x-data="maillistAdmin" x-init="init" class="admin-maillist">
+
+  <!-- USER LIST -->
+  <div class="panel">
+    <h2>Contacts Requests</h2>
+
+    <input type="text"
+           placeholder="Search users…"
+           x-model="search"
+           @input.debounce.300ms="filterUsers()"
+           class="input"/>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>User Name</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <template x-for="user in filteredUsers" :key="user.name">
+          <tr>
+            <td x-text="user.name || '—'"></td>
+            <td>
+              <a
+                x-show="user.email"
+                :href="`mailto:${user.email}`"
+                x-text="user.email"></a>
+            </td>
+            <td>
+              <button @click="selectUser(user)">
+                Manage
+              </button>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<script>
+  function maillistAdmin() {
+    return {
+      users: [],
+      filteredUsers: [],
+      memberships: [],
+      roles: [],
+      hosts: [],
+      selectedUser: null,
+      search: "",
+
+      newMembership: {
+        host_id: "",
+        role_id: ""
+      },
+
+      async init() {
+        await Promise.all([
+          this.loadUsers(),
+          //this.loadRoles(),
+          //this.loadHosts()
+        ]);
+      },
+
+      async loadUsers() {
+        this.users = await Alpine
+          .store("api")
+          .call("list_subscribers");
+        this.filteredUsers = this.users;
+      },
+
+      filterUsers() {
+        const q = this
+          .search
+          .toLowerCase();
+
+        this.filteredUsers = this
+          .users
+          .filter(u => u.email.toLowerCase().includes(q) || (u.name && u.name.toLowerCase().includes(q)));
+      },
+
+      async selectUser(user) {
+        this.selectedUser = user;
+        //await this.loadMemberships(user.id);
+      },
+
+      hostName(hostId) {
+        return this
+          .hosts
+          .find(h => h.id === hostId)
+            ?.display_name || hostId;
+      }
+    };
+  }
+</script>

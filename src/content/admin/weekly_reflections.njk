@@ -1,0 +1,134 @@
+---
+layout: "layouts/admin.njk"
+title: "Weekly Responses Admin"
+permalink: "/admin/weekly-reflections/"
+---
+
+<div x-data="weeklyAdmin()" x-init="init()" class="admin-weekly">
+
+  <h1>Weekly Reflection Responses</h1>
+
+  <!-- RESPONDENTS LIST -->
+  <div class="panel">
+    <h2>Respondents</h2>
+
+    <input type="text"
+           placeholder="Search…"
+           x-model="search"
+           @input.debounce.300ms="filterRespondents()"
+           class="input" />
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <template x-for="person in filteredRespondents" :key="person.email">
+          <tr>
+            <td x-text="person.name || '—'"></td>
+            <td x-text="person.email"></td>
+            <td>
+              <button @click="selectRespondent(person)">
+                View
+              </button>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- RESPONSES PANEL -->
+  <div class="panel" x-show="selectedRespondent">
+
+    <h2>
+      Responses:
+      <span x-text="selectedRespondent?.name"></span>
+    </h2>
+
+    <template x-if="loading">
+      <p>Loading responses…</p>
+    </template>
+
+    <template x-for="r in responses" :key="r.id">
+      <div class="response-card" style="margin-bottom:1rem; padding:1rem; border:1px solid #ddd;">
+        <div class="meta" style="font-size:0.85rem; margin-bottom:0.5rem;">
+          <strong>Question:</strong>
+          <span x-text="r.question"></span>
+        </div>
+        <div x-text="r.answer"></div>
+      </div>
+    </template>
+
+  </div>
+
+</div>
+
+
+<script>
+function weeklyAdmin() {
+  return {
+
+    respondents: [],
+    filteredRespondents: [],
+    selectedRespondent: null,
+    responses: [],
+    search: "",
+    loading: false,
+
+    async init() {
+      await this.loadRespondents();
+    },
+
+    async loadRespondents() {
+      const data = await Alpine.store("api")
+        .call("weekly_answers_all_respondance");
+
+      // backend returns keyed object → convert to array
+      this.respondents = Object.values(data);
+      this.filteredRespondents = this.respondents;
+    },
+
+    filterRespondents() {
+      const q = this.search.toLowerCase();
+
+      this.filteredRespondents = this.respondents.filter(p =>
+        p.email.toLowerCase().includes(q) ||
+        (p.name && p.name.toLowerCase().includes(q))
+      );
+    },
+
+    async selectRespondent(person) {
+      this.selectedRespondent = person;
+      this.responses = [];
+      this.loading = true;
+
+      // Fetch all responses in parallel
+      this.responses = await Promise.all(
+        person.question_uuids.map((uuid, i) =>
+          Alpine.store("api")
+            .call("weekly_answers_get_response", {
+              uuid: uuid,
+              id: person.response_ids[i]
+            })
+            .then(r => ({
+              uuid: uuid,
+              id: person.response_ids[i],
+              answer: r.response,
+              question: r.question
+            }))
+        )
+      );
+
+      this.loading = false;
+    }
+
+  };
+}
+</script>

@@ -151,7 +151,7 @@ permalink: /login/
         }
 
         try {
-        await Alpine.store("api").call("set_password_new", {}, {
+        await Alpine.store("api").call("set_password", {}, {
           username: this.setPasswordData.username,
           password: this.setPasswordData.password  
 
@@ -165,7 +165,7 @@ permalink: /login/
 
         //alert("Password reset instructions sent.");
       } catch (e) {
-        const error = await res.json();
+        const error = e;
         this.message = "Failed to set password: " + error.message;
         console.error("Reset failed:", e);
         //alert("Could not send reset email. Try again.");

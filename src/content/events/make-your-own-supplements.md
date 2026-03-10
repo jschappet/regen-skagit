@@ -1,7 +1,7 @@
 ---
-type: event
+
 title: "Make Your Own Supplements"
-subtitle: "A hands-on at the Farm, with a deep focus on gut health and practical skills you can actually use"
+subtitle: "Join us for a hands-on workshop focused on gut health and practical plant-based skills."
 description: "Join us March 21 at the Farm for a hands-on **Make Your Own Supplements** workshop focused on gut health and practical plant-based skills. Together we’ll identify medicinal plants, harvest responsibly, and prepare gut-supportive supplements while exploring how to use them for your own health and resilience."
 author: "Danielle"
 tags: ["supplements", "health"]
@@ -10,7 +10,6 @@ location: "Mount Vernon, WA"
 featured: true
 images: 
  - src/assets/images/events/make_your_own_supplements.jpg
-
 ---
 
 On March 21, I’m hosting a hands-on “Make Your Own Supplements” workshop at the Farm, with a deep focus on gut health and practical skills you can actually use.
@@ -24,8 +23,7 @@ We’ll be:
 - Preparing real gut-supportive supplements together
 - Talking through why and how to use them based on your body and lifestyle
 
-Because gut health is personal, participants are invited to book a short Health & Fitness Consult before the workshop. This helps me understand your focus areas 
-(digestion, inflammation, stress, energy, recovery, etc.) so you get more out of the day.
+Because gut health is personal, participants are invited to book a short Health & Fitness Consult before the workshop. This helps me understand your focus areas (digestion, inflammation, stress, energy, recovery, etc.) so you get more out of the day.
 
 If you’re interested in:
 - Learning traditional plant-based skills
@@ -34,7 +32,7 @@ If you’re interested in:
 
 I’d love to have you there.
 
-👉 RSVP to the workshop
+👉 <a href="https://www.fieldsofrecovery.com/contact-us" target="_blank" class="btn btn-sucess">RSVP</a> to the workshop
 
 👉 Book a pre-workshop consult (optional but encouraged)
 

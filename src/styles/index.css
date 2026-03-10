@@ -47,6 +47,9 @@
   }
 }
 
+.mobile-menu-btn i {
+  color: rgb(var(--fg));
+}
 
 h1, h2, h3, h4, h5, h6 {
   /* @apply font-bold; */
@@ -184,10 +187,10 @@ p {
 
 .form-field {
   @apply block w-full px-4 py-3 mb-6 rounded-md
-    bg-white dark:bg-gray-800
-    text-gray-900 dark:text-gray-100
-    placeholder-gray-500 dark:placeholder-gray-400
-    border border-gray-300 dark:border-gray-600
+    bg-white 
+    text-gray-900 
+    placeholder-gray-500 
+    border border-gray-300 
     transition duration-150 ease-in-out
     focus:outline-none;
 }
@@ -201,6 +204,12 @@ p {
 }
 
 }
+button {
+  @apply inline-flex items-center mt-6 px-5 py-3 
+      rounded-lg bg-emerald-600 text-white 
+      font-medium hover:bg-emerald-700 transition;
+}
+
 
 /* --------------------------- */
 /* Hero Background Gradient */

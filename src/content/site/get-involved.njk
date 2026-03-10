@@ -1,122 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Get Involved · Regenerate Skagit</title>
+---
+title: Get Involved
+permalink: /get-involved/
+layout: layouts/default.njk
+---
+  <div class="max-w-3xl py-10 mx-auto px-6 sm:px-8 lg:px-12">
 
-  <style>
-    :root {
-      --bg: #f8f7f4;
-      --text: #1f2933;
-      --muted: #5f6c7b;
-      --accent: #2f855a;
-      --card-bg: #f1f3f0;
-      --card: #ffffff;
-      --border: #e5e7eb;
-      --shadow: rgba(0,0,0,0.05);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-                   "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    main {
-      max-width: 42rem;
-      margin: 0 auto;
-      padding: 2rem 1rem 3rem;
-    }
-
-    header {
-      padding: 2rem 1.5rem;
-      margin-bottom: 2.5rem;
-      background: var(--card-bg);
-      border-radius: 1rem;
-      box-shadow: 0 3px 8px var(--shadow);
-      text-align: center;
-    }
-
-    header strong {
-      font-size: 1rem;
-      color: var(--muted);
-    }
-
-    h1 { font-size: 2rem; line-height: 1.25; margin-bottom: 1rem; }
-    h2 { font-size: 1.35rem; margin-bottom: 1rem; }
-    h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
-
-    p { margin-bottom: 1rem; }
-    .muted { color: var(--muted); }
-
-    .section { margin-top: 2.5rem; }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 3px 8px var(--shadow);
-    }
-
-    .featured {
-      margin-top: 1rem;
-      padding: 0.75rem 1rem;
-      background: var(--card);
-      border-radius: 0.5rem;
-      box-shadow: 0 1px 5px var(--shadow);
-      font-size: 0.95rem;
-      text-align: center;
-    }
-
-    .featured strong { font-weight: 600; }
-
-    .details {
-      margin-top: 0.75rem;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .divider {
-      margin: 3rem 0;
-      border-top: 1px solid var(--border);
-    }
-
-    footer {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.9rem;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    footer a {
-      color: var(--muted);
-      text-decoration: none;
-      margin: 0 0.5rem;
-    }
-
-    @media(min-width:768px){
-      main { padding: 3rem 2rem; }
-      h1 { font-size: 2.4rem; }
-      h2 { font-size: 1.6rem; }
-      h3 { font-size: 1.25rem; }
-    }
-  </style>
-</head>
-<body>
-  <main>
-
-    <!-- Header -->
-    <header>
-      <strong>Regenerate Skagit</strong>
       <h1>Three Paths to Get Involved</h1>
       <p class="muted">
         Regeneration is participatory. It begins with attention and grows through relationship.
@@ -126,28 +14,32 @@
       </p>
     </header>
 
-    <section class="section">
-
+    <section class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 p-8 md:p-10">
       <!-- Path One -->
       <div class="card">
-        <h3>Path One · Learn About Regeneration</h3>
+        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900">
+          Path One · Learn About Regeneration
+        </h2>
         <p>Regeneration starts with understanding how living systems work — ecologically, socially, and culturally.</p>
         <p>Watch Joe Brewer introduce the deeper patterns behind regenerative design and place-based work.</p>
 
         <div class="featured">
           <strong>Start here</strong><br>
           Watch the Introduction Video<br>
-          Explore the Design School for Regenerating Earth
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/hNWocH8XPew?si=w-dsNwk2fX2BsMSW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <p>Explore the Design School for Regenerating Earth</p>
+          <a target="_blank" class="btn btn-active" href="https://www.bioregionalearth.org/pathway/design-school">Visit the Design School</a>
         </div>
 
         <div class="details">
           Systems thinking · Watershed awareness · Learning journeys · Global context
         </div>
       </div>
-
-      <!-- Path Two -->
+</section>
+<section class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 p-8 md:p-10">      <!-- Path Two -->
       <div class="card">
-        <h3>Path Two · Join Our Monthly Gathering</h3>
+        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900">
+          Path Two · Join Our Monthly Gathering</h2>
         <p>Regeneration is not only projects. It is relationships.</p>
         <p>Each month we gather to practice deep listening, shared reflection, and collective sensemaking about what is emerging in the Skagit watershed.</p>
 
@@ -161,16 +53,20 @@
           Deep listening · Curiosity · Conversation · No preparation required
         </div>
       </div>
-
+</section>
+<section class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 p-8 md:p-10">
       <!-- Path Three -->
       <div class="card">
-        <h3>Path Three · Map Regeneration in Skagit</h3>
+        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900">Path Three · Map Regeneration in Skagit</h2>
         <p>Regeneration is already happening — in farms, schools, watershed groups, small businesses, and neighborhood initiatives.</p>
         <p>We are building a living map of regenerative efforts across Skagit County.</p>
 
         <div class="featured">
-          <strong>Contribute to the Map</strong><br>
+           <a href="/ask/" class="btn btn-active"><strong>Contribute to the Map </strong></a>
+           <br>
+           <p>
           Share a project, organization, or story of regeneration
+         </p>
         </div>
 
         <div class="details">
@@ -182,22 +78,10 @@
 
     <div class="divider"></div>
 
-    <section>
-      <h2>Start where you are</h2>
+    <section class="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 p-8 md:p-10">
+      <h2 class="text-3xl md:text-3xl font-semibold tracking-tight text-gray-900">Start where you are</h2>
       <p>There are no membership requirements and no fixed commitments.</p>
       <p>Some people begin by learning. Others begin by gathering. Some begin by noticing and sharing what is already alive here.</p>
       <p>Regeneration grows through participation, at the pace of relationship.</p>
     </section>
-
-    <footer>
-      <p>Rooted in the Skagit watershed, Cascadia.</p>
-      <p>
-        <a href="#">Contact</a>
-        <a href="#">Newsletter</a>
-        <a href="#">Instagram</a>
-      </p>
-    </footer>
-
-  </main>
-</body>
-</html>
+</div>

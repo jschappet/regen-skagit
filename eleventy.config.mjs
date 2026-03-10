@@ -30,6 +30,8 @@ export default function (eleventyConfig) {
     {"src/content/slides/slides.txt": "slides/slides.md"});
   eleventyConfig.addPassthroughCopy(
     {"src/content/slides/images/*.jpg": "slides/images/"});
+    eleventyConfig.addPassthroughCopy(
+    {"src/content/slides/uu_feb22/*.png": "slides/uu_feb22/"});
   
 
   eleventyConfig.addPassthroughCopy(
@@ -38,7 +40,7 @@ export default function (eleventyConfig) {
     {"src/assets/images/og-image.jpeg": "assets/images/og-image.jpg"});
 
   eleventyConfig.addPassthroughCopy(
-    {"node_modules/@flaticon/flaticon-uicons/css/regular": "assets/uicons/css"});
+    {"node_modules/@flaticon/flaticon-uicons/css": "assets/uicons/css"});
 
 
   eleventyConfig.on('eleventy.before', async () => {

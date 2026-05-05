@@ -59,7 +59,7 @@ permalink: /contact/
                 bg-white 
                 sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12">
       <div class="max-w-lg mx-auto lg:max-w-none"
-           x-data="contactForm()">
+           x-data="contactForm()"  x-init="form_started_at = Math.floor(Date.now() / 1000)">
 
         <!-- SUCCESS -->
         <div x-show="status === 'success'" x-cloak
@@ -95,6 +95,20 @@ permalink: /contact/
           class="grid grid-cols-1 row-gap-6"
         >
           <input type="hidden" name="form-name" value="contact" />
+          <input type="hidden" name="form_started_at" :value="form_started_at" />
+
+          <p class="hidden">
+            <label>Don’t fill this out: <input name="bot-field" /></label>
+          </p>
+          <p class="hidden">
+            <label>Don’t fill this out: <input name="nickname" /></label>
+          </p>
+          <p class="hidden">
+            <label>Don’t fill this out: <input name="company" /></label>
+          </p>
+          <p class="hidden">
+            <label>Don’t fill this out: <input name="website" /></label>
+          </p>
 
           <p class="hidden">
             <label>
@@ -179,13 +193,17 @@ permalink: /contact/
     return {
       status: 'idle', // idle | success | error
       loading: false,
+      form_started_at: null,
+
 
       async submit(event) {
         this.loading = true;
 
         const form = event.target;
         const formData = Object.fromEntries(new FormData(form));
-
+      if (formData.form_started_at) {
+        formData.form_started_at = parseInt(formData.form_started_at, 10);
+      }
         try {
           const response = await fetch('/api/mail/subscribe', {
             method: 'POST',

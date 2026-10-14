@@ -6,8 +6,8 @@ import { CookieJar } from "tough-cookie";
 /**
  * CONFIG
  */
-const BASE_URL = "https://dev.regenerateskagit.org";
-const RECIPES_DIR = path.resolve("src/content/events");
+const BASE_URL = "https://regenerateskagit.org";
+const RECIPES_DIR = path.resolve("src/content/post");
 
 const EMAIL = "schappet";
 const PASSWORD = "1432Audrey";

@@ -8,11 +8,10 @@ permalink: /login/
 
   <h1  class="text-2xl font-bold mb-4 text-center">Welcome to Regenerate Skagit</h1>
 
-  <!-- Toggle Links -->
+  {# <!-- Toggle Links -->
   <div class="text-center mb-4" x-show="!$store.auth.user">
-    <button @click="mode='register'" :class="mode==='register' ? 'text-green-600' : 'text-gray-600'" class="hover:underline mr-2">Register</button>
-    <button @click="mode='login'" :class="mode==='login' ? 'text-blue-600' : 'text-gray-600'" class="hover:underline">Login</button>
-  </div>
+    
+  </div> #}
 
   <!-- Register Form -->
   <form x-show="mode==='register' && !$store.auth.user" @submit.prevent="register" class="mb-6">
@@ -63,6 +62,8 @@ permalink: /login/
     <br/>
 
     <button type="submit" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Register</button>
+        <a @click="mode='login'" :class="mode==='login' ? 'text-blue-600' : 'text-gray-600'" class=" btn btn-sm hover:underline">Sign In...</a>
+
   </form>
 
   <!-- Login Form -->
@@ -70,12 +71,15 @@ permalink: /login/
     <h2 class="font-semibold mb-2">Login</h2>
     <input type="text" x-model="loginData.username" 
     autocomplete="username"
+    autocapitalize="none"
+    spellcheck="false" 
     placeholder="Username" class="w-full mb-2 p-2 border rounded">
     <input type="password" x-model="loginData.password" placeholder="Password" 
     autocomplete="current-password"
     class="w-full mb-2 p-2 border rounded">
     <a href="/login/forgot-password/" class="text-sm text-blue-600 hover:underline mb-4 inline-block">Forgot Password?</a>
     <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Login</button>
+    <a @click="mode='register'" :class="mode==='register' ? 'text-green-600' : 'text-gray-600'" class=" btn btn-sm hover:underline mr-2">Don't have an account? Sign up</a>
   </form>
 
   <form x-show="mode==='setPassword'" @submit.prevent="setPassword" class="mb-6">
@@ -233,7 +237,7 @@ permalink: /login/
           this.$store.auth.loaded = true;
           this.message = "Logged in successfully!";
 
-          window.location.href = "/profile/";
+          window.location.href = "/?profle";
           return;
 
         } else {

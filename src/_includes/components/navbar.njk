@@ -48,7 +48,61 @@
         {% endfor %}
       </ul>
     </div>
+<div class="navbar-end" >
 
+  <!-- Logged OUT -->
+  {# <template x-if="!$store.auth.authenticated && $store.auth.loaded">
+    <a href="/login" class="btn btn-primary btn-sm">
+      Login
+    </a>
+  </template> #}
+
+  <!-- Logged IN -->
+  <template x-if="$store.auth.authenticated">
+    <div class="dropdown dropdown-end">
+      
+      <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+        <div class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
+          <span x-text="$store.auth.user?.name?.charAt(0) ?? 'U'"></span>
+        </div>
+      </div>
+
+      <ul tabindex="0"
+          class="mt-3 z-1 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+
+        <li class="menu-title px-2 py-1">
+          <span x-text="$store.auth.user?.name"></span>
+        </li>
+
+        <li>
+          <a href="/member/profile/">Profile</a>
+        </li>
+        <li x-show="$store.auth.hasRole('admin')">
+          <a href="/admin/">Edit Content</a>
+        </li>
+        <li x-show="$store.auth.hasRole('admin')">
+          <a href="/admin/ledger/">Ledger</a>
+        </li>
+        <li x-show="$store.auth.hasRole('admin')">
+          <a href="/admin/workbench/">Workbench</a>
+        </li>
+
+        <li>
+          <a href="/settings/">Settings</a>
+        </li>
+
+        <li>
+          <button
+            @click="localStorage.removeItem('auth_token'); location.reload();">
+            Logout
+          </button>
+        </li>
+
+      </ul>
+    </div>
+  </template>
+
+</div>
     <!-- Right: Theme Toggle -->
     {# Disableing theme toggle for now since it doesn't work well with DaisyUI's dark mode and we don't have a good custom solution yet. #}
     {# 

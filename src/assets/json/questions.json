@@ -1,17 +1,22 @@
 [
-  {"uuid":"8c7f6c9e-6f7c-4d6a-b2f3-6a5f6a1b3c91","question":"Are there any people, places, or projects in the valley that need more attention?","type":"skagit"},
-  {"uuid":"c1a6f2e4-8b9d-4e1c-9f72-6d3a5b7e0c19","question":"Please share your thoughts and stories with us.","type":"skagit"},
-  {"uuid":"2d1e5b9a-9c2b-4a7e-8f64-3b6f4a2d9e0c","question":"Which groups or initiatives are making a real difference?","type":"skagit"},
-  {"uuid":"f4a3d8b2-1c6e-4f9a-9a7d-5e2c8b1f0d44","question":"What’s one thing this valley has taught you?","type":"skagit"},
-  {"uuid":"8e9f3a2e-6f4a-4c9b-bb37-0c2a5e5f9d41","question":"How did you hear about, Regenerate Skagit?","type":"skagit"}
-  
+  {
+    "uuid": "1f7c9b2a-3d6e-4a91-8c5f-2b7e9a6d1c43",
+    "question": "Where does your food come from, and how connected do you feel to those sources? Is that something you’d like to change or deepen?",
+    "type": "skagit"
+  },
+  {
+    "uuid": "5a2d8c7e-9f1b-4c6a-b3d2-7e4f1a9c0b55",
+    "question": "Who are you in relationship with (people, farms, businesses, organizations) in ways that help you or your community get what you need? Who depends on you?",
+    "type": "skagit"
+  },
+  {
+    "uuid": "8b6e1f4a-2c9d-4e7b-9a35-6d2f0c8e1a77",
+    "question": "Where in your life or community do you see cooperation working well? What makes it work? And where do you wish there was more—more sharing, more mutual support, more working together toward something?",
+    "type": "skagit"
+  },
+  {
+    "uuid": "3c9a7e2d-5b1f-4a8c-9d6e-0f2b7c4a8e19",
+    "question": "What if cooperation in Skagit deepened across farms, households, businesses, and neighborhoods? What would you most hope to see?",
+    "type": "skagit"
+  }
 ]
-
-
-
-
-
-
-
-
-

@@ -84,6 +84,7 @@ permalink: /celebrate-effort/
           class="grid grid-cols-1 row-gap-6"
         >
           <input type="hidden" name="form-name" value="effort" />
+          <input type="hidden" name="form.context_id" :value="selectedContext?.key || ''"/>
 
           <p class="hidden">
             <label>
@@ -97,6 +98,7 @@ permalink: /celebrate-effort/
             <input
               id="name"
               name="name"
+              x-model="form.name"
               placeholder="Full name"
               class="form-field"
               required
@@ -109,6 +111,7 @@ permalink: /celebrate-effort/
               id="email"
               name="email"
               type="email"
+              x-model="form.email"
               placeholder="Email"
               class="form-field"
             />
@@ -123,28 +126,59 @@ permalink: /celebrate-effort/
     type="text"
     placeholder="Start typing a project or event…"
     class="form-field"
-    x-model="contextQuery"
+    x-model="form.contextQuery"
     @input="filterContexts"
     @focus="filterContexts"
     autocomplete="off"
     required
   />
-  <!-- visible input -->
-  <input
-    id="hours"
-    type="number"
-    placeholder="Hours of effort"
-    class="form-field"
-    x-model="hours"
-    autocomplete="off"
-  />
-  <!-- hidden canonical value -->
-  <input
-    type="hidden"
-    name="context_id"
-    :value="selectedContext?.key || ''"
-  />
+<div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                Quantity
+            </label>
+            <input
+                name="quantity_value"
+                type="number"
+                step="0.01"
+                x-model.number="form.quantity_value"
+                required
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            >
+        </div>
+          <!-- hidden canonical value -->
+  
+<div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                Resource Type
+            </label>
+            <select
+                name="resource_type" 
+                x-model="form.resource_type" @change="form.quantity_unit = units[0]"
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            >
+                <option value="Hours">Hours</option>
+                <option value="Dollars">Dollars</option>
+                <option value="Tools">Tools</option>
+            </select>
+        </div>
 
+<div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+            <input type="hidden" name="quantity_unit" :value="form.quantity_unit" />  
+            <span
+                x-text="form.quantity_unit"
+                class="inline-block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 bg-white text-center text-gray-500"
+            ></span>
+            {# <select
+    x-model="form.quantity_unit"
+    class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-green-500"
+  >
+                <template x-for="unit in units" :key="unit">
+                    <option :value="unit" x-text="unit"></option>
+                </template>
+            </select> #}
+
+        </div>
   <!-- dropdown -->
   <ul
     x-show="filteredContexts.length > 0"
@@ -174,6 +208,7 @@ permalink: /celebrate-effort/
               placeholder="Describe your activity, what you noticed, or what you enjoyed"
               class="form-field"
               required
+              x-model="form.effort_description"
             ></textarea>
           </div>
 
@@ -204,31 +239,71 @@ permalink: /celebrate-effort/
 <script>
  function effortForm() {
   return {
+    resourceUnits: {
+                Hours: ["hours"],
+                Meals: ["meals"],
+                Dollars: ["USD"],
+                Plants: ["plants"],
+                Tools: ["tools"],
+                Product: ["count"]
+            },
     status: 'idle', // idle | success | error
     loading: false,
+    form: {
+      name: '',
+      email: '',
+      contextQuery: '',
+      context_id: null,
+      effort_description: '',
+      quantity_value: null,
+      resource_type: 'Hours',
+      quantity_unit: 'hours',
+    },
+
+        // config-driven state
+    name: '',
+    email: '',
 
         // config-driven state
     contexts: [],
     filteredContexts: [],
     contextQuery: '',
     selectedContext: null,
+    get units() {
+        return this.resourceUnits[this.form.resource_type] || [];
+    },
+    init() {
+      this.$watch('$store.auth.user', (user) => {
+        if (user) {
+          this.form.name = user.display_name || '';
+          this.form.email = user.email || '';
+        }
+      });
+
+      // also run once in case it's already loaded
+      const user = Alpine.store("auth").user;
+      if (user) {
+        this.form.name = user.display_name || '';
+        this.form.email = user.email || '';
+      }
+    },
 
 async loadConfig() {
   try {
     const config = await Alpine.store("api").call(
-      "get_config_api",
+      "list_all_effort_context",
       {},
       null
     );
-
-    this.contexts = config.contexts || [];
-    this.filteredContexts = []; // 👈 important
+    console.log("Loaded config:", config);
+    this.contexts = config || [];
+    thisfilteredContexts = []; // 👈 important
   } catch (e) {
     console.error("Failed to load config:", e);
   }
 },
      filterContexts() {
-  const q = this.contextQuery.trim().toLowerCase();
+  const q = this.form.contextQuery.trim().toLowerCase();
 this.selectedContext = null;
 
   if (!q) {
@@ -246,7 +321,7 @@ this.selectedContext = null;
 
     selectContext(context) {
       this.selectedContext = context;
-      this.contextQuery = context.value;
+      this.form.contextQuery = context.value;
       this.filteredContexts = [];
     },
 
@@ -255,8 +330,10 @@ this.selectedContext = null;
       this.loading = true;
 
       const form = event.target;
+      console.log("Submitting form with data:", form);
       const formData = Object.fromEntries(new FormData(form));
-
+      console.log("Form data before processing:", formData);
+      formData.quantity_value = formData.quantity_value ? Number(formData.quantity_value) : null;
 // overwrite / inject canonical context info
 if (this.selectedContext) {
   formData.context_id = this.selectedContext.key;

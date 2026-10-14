@@ -1,0 +1,6 @@
+{
+	"layout": "post",
+	"permalink": "/{{ page.date  }}/{{ title | slugify }}/index.html",
+	"tags": ["farm_tour"],
+	"author": "{{ meta.author }}"
+}

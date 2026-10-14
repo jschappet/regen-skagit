@@ -131,7 +131,7 @@ permalink: "/admin/ledger/entities/"
             </div>
 
             <div class="mt-2 text-lg">
-              → <span class="font-semibold" x-text="flow.to.name"></span>
+              → <span class="font-semibold" x-text="entMap[flow.to_entity]?.name"></span>
             </div>
 
             <div class="text-gray-700">
@@ -156,7 +156,10 @@ permalink: "/admin/ledger/entities/"
             </div>
 
             <div class="mt-2 text-lg">
-              ← <span class="font-semibold" x-text="flow.from.name"></span>
+              ← <span class="font-semibold" x-text="entMap[flow.from_entity]?.name"></span>
+            </div>
+            <div class="mt-2 text-sm text-gray-500">
+              <span class="font-semibold" x-text="flow.notes"></span>
             </div>
 
             <div class="text-gray-700">
@@ -247,6 +250,7 @@ function entityManager() {
     selectedEntity: null,
     inflows: [],
     outflows: [],
+    entMap: {},
 
     showCreateModal: false,
 
@@ -267,6 +271,11 @@ function entityManager() {
 
       this.inflows = data.inflows
       this.outflows = data.outflows
+
+      // convert entity list to lookup table
+      this.entMap = Object.fromEntries(data.entities.map(e => [e.id, e]));
+      console.log(this.entMap);
+
     },
 
     async createEntity() {

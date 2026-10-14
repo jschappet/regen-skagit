@@ -1,0 +1,166 @@
+---
+title: "Add an Idea to the Idea Bank"
+layout: "layouts/default.njk"
+//permalink: "/{{admin.slug}}/edit/"
+permalink: "/ideas/plant_a_seed/"
+---
+
+<form
+  x-data="ideaForm()"
+  @submit.prevent="submit"
+  class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow space-y-6"
+>
+
+  <h1 class="text-2xl font-semibold">Submit an Idea</h1>
+
+  <div x-show="error" class="alert alert-error">
+    <span x-text="error"></span>
+  </div>
+
+  <div>
+    <label class="label">Idea Title</label>
+    <input
+      type="text"
+      class="input input-bordered w-full"
+      x-model="form.title"
+      required
+    />
+  </div>
+
+  <div>
+    <label class="label">Description</label>
+    <textarea
+      class="textarea textarea-bordered w-full"
+      rows="4"
+      x-model="form.description"
+      required
+    ></textarea>
+  </div>
+
+  <div>
+    <label class="label">Why It Matters</label>
+    <textarea
+      class="textarea textarea-bordered w-full"
+      rows="3"
+      x-model="form.why"
+    ></textarea>
+  </div>
+
+  <div>
+    <label class="label">What Could Happen Next</label>
+    <textarea
+      class="textarea textarea-bordered w-full"
+      rows="3"
+      x-model="form.next_steps"
+    ></textarea>
+  </div>
+
+  <div>
+    <label class="label">Tags</label>
+    <input
+      type="text"
+      class="input input-bordered w-full"
+      placeholder="water, community, art"
+      x-model="form.tags"
+    />
+  </div>
+
+  <div>
+    <label class="label">Help Wanted</label>
+    <input
+      type="text"
+      class="input input-bordered w-full"
+      placeholder="designers, farmers, coders"
+      x-model="form.help"
+    />
+  </div>
+
+  <button class="btn btn-primary">
+    Plant This Idea 🌱
+  </button>
+
+  <div x-show="ui_message" class="alert alert-info">
+    <span x-text="ui_message"></span>
+  </div>
+
+</form>
+
+<script>
+function ideaForm() {
+  return {
+
+    form: {
+      title: '',
+      description: '',
+      why: '',
+      next_steps: '',
+      tags: '',
+      help: ''
+    },
+
+    error: null,
+    ui_message: '',
+
+    buildPayload() {
+
+      return {
+        doc_type: "idea",
+
+        title: this.form.title,
+
+        body_md: `
+## Idea
+
+${this.form.description}
+
+## Why It Matters
+
+${this.form.why}
+
+## What Could Happen Next
+
+${this.form.next_steps}
+
+## Help Wanted
+
+${this.form.help}
+`,
+
+        meta: {
+          tags: this.form.tags
+            ? this.form.tags.split(',').map(t => t.trim())
+            : []
+        }
+      }
+    },
+
+    async submit() {
+
+      this.error = null;
+
+      try {
+
+        const payload = this.buildPayload();
+
+        
+        const data = await Alpine
+                        .store("api")
+                        .call("draft_create_public",{},payload);
+
+        //const json = await data.json();
+
+        this.ui_message = "Idea planted 🌱";
+
+        setTimeout(() => {
+          window.location.href = `/ideas/${json.id}`
+        }, 1000)
+
+      } catch (err) {
+        this.error = "Failed to submit idea"
+        console.error(err)
+      }
+    }
+
+  }
+}
+</script>

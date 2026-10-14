@@ -9,11 +9,12 @@ import bgImageShortcode from "./src/_11ty/bgImage.js";
 import heroBlockShortcode from "./src/_11ty/heroBlock.js";
 
 
-
 export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/assets/js/');
   eleventyConfig.addPassthroughCopy('src/assets/json/');
-
+  eleventyConfig.addPassthroughCopy({
+      "src/content/blog": "blog",
+  });
   eleventyConfig.addPlugin(eleventyNavigationPlugin);
   eleventyConfig.addNunjucksAsyncShortcode("image", imageShortcode);
   eleventyConfig.addLiquidShortcode("image", imageShortcode);
@@ -41,6 +42,7 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addPassthroughCopy(
     {"node_modules/@flaticon/flaticon-uicons/css": "assets/uicons/css"});
+
 
 
   eleventyConfig.on('eleventy.before', async () => {
@@ -79,6 +81,14 @@ export default function (eleventyConfig) {
       .sort((a, b) => new Date(a.data.title) - new Date(b.data.title));
   });
 
+  eleventyConfig.addCollection("ideas", function(collectionApi) {
+      return collectionApi
+      .getAll()
+      .filter(item =>
+        item.page.filePathStem.startsWith("/content/ideas/")
+      )
+      .sort((a, b) => new Date(a.data.title) - new Date(b.data.title));
+  });
 
   eleventyConfig.addFilter('featuredFilter', function(collection) {
     const filtered = collection.filter(item => item.data.featured == true)

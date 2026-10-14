@@ -1,0 +1,188 @@
+---
+layout: layouts/default.njk
+
+title: Profile
+permalink: /member/profile/
+---
+
+<div x-data="{ editing: false }" class="space-y-10">
+
+  <!-- ============================= -->
+  <!-- Not Logged In -->
+  <!-- ============================= -->
+  <template x-if="$store.auth.loaded && !$store.auth.authenticated">
+    <div class="prose max-w-2xl">
+      <h1>Join Regenerate Skagit</h1>
+      <p>
+        Regenerate Skagit members are people working together to care for
+        the land, water, and communities of the Skagit Valley.
+      </p>
+      <p>
+        Membership gives you the ability to share projects, publish
+        regenerative work, and collaborate with others restoring this
+        bioregion.
+      </p>
+      <ul>
+        <li>Share regenerative projects</li>
+        <li>Connect with other local regenerators</li>
+        <li>Contribute knowledge and resources</li>
+        <li>Help shape a place of refuge in the valley</li>
+      </ul>
+      <a href="/login" class="btn btn-primary">
+        Login or Become a Member
+      </a>
+    </div>
+  </template>
+
+  <!-- ============================= -->
+  <!-- Logged In -->
+  <!-- ============================= -->
+  <template x-if="$store.auth.authenticated">
+
+    <div class="space-y-6">
+
+      <!-- ============================= -->
+      <!-- Profile Header Card -->
+      <!-- ============================= -->
+      <div class="flex items-center justify-between bg-white shadow rounded-lg p-4 space-x-4">
+
+        <div class="flex items-center space-x-4">
+          <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+            <span class="text-xl font-bold" x-text="$store.auth.user.display_name.charAt(0)"></span>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold" x-text="$store.auth.user.display_name"></h1>
+            <p class="text-gray-600" x-text="$store.auth.user.neighborhood"></p>
+            <p class="text-gray-700 text-sm mt-1" x-text="$store.auth.user.bio"></p>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <button
+            class="btn btn-primary"
+            @click="$store.profileEditor.start($store.auth.user); editing = true">
+            Edit Profile
+          </button>
+          <button class="btn btn-secondary" @click="$store.auth.logout()">Logout</button>
+        </div>
+
+      </div>
+
+      <!-- ============================= -->
+      <!-- Roles -->
+      <!-- ============================= -->
+      <div class="bg-gray-50 p-4 rounded-lg shadow">
+        <h2 class="font-semibold mb-2">Roles</h2>
+        <div class="flex flex-wrap gap-2">
+          <template x-for="role in $store.auth.roles" :key="role">
+            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-sm" x-text="role"></span>
+          </template>
+        </div>
+      </div>
+
+      <!-- ============================= -->
+      <!-- Flows -->
+      <!-- ============================= -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Outflows -->
+        <div>
+          <h2 class="text-lg font-semibold text-red-600 mb-3">Outflows</h2>
+          <template x-for="flow in $store.member.outflows" :key="flow.id">
+            <div class="bg-white shadow-sm border rounded p-4 mb-3">
+              <div class="flex justify-between text-sm text-gray-500">
+                <span x-text="new Date(flow.timestamp).toLocaleString()"></span>
+                <span x-text="flow.resource_type"></span>
+              </div>
+              <div class="mt-2 text-lg">
+                → <span class="font-semibold" x-text="$store.member.entities[flow.to_entity]?.name"></span>
+              </div>
+              <div>
+                <span x-text="flow.quantity_value"></span>
+                <span x-text="flow.quantity_unit"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Inflows -->
+        <div>
+          <h2 class="text-lg font-semibold text-green-600 mb-3">Inflows</h2>
+          <template x-for="flow in $store.member.inflows" :key="flow.id">
+            <div class="bg-white shadow-sm border rounded p-4 mb-3">
+              <div class="flex justify-between text-sm text-gray-500">
+                <span x-text="new Date(flow.timestamp).toLocaleString()"></span>
+                <span x-text="flow.resource_type"></span>
+              </div>
+              <div class="mt-2 text-lg">
+                ← <span class="font-semibold" x-text="$store.member.entities[flow.from_entity]?.name"></span>
+              </div>
+              <div>
+                <span x-text="flow.quantity_value"></span>
+                <span x-text="flow.quantity_unit"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+
+      </div>
+
+      <!-- ============================= -->
+      <!-- Profile Editor -->
+      <!-- ============================= -->
+      <template x-if="editing">
+        <div class="bg-base-100 border p-6 rounded-lg">
+          <h2 class="text-xl font-semibold mb-4">Edit Profile</h2>
+          <form @submit.prevent="$store.profileEditor.save()" class="space-y-4">
+            <input x-model="$store.profileEditor.form.display_name" type="text" class="input w-full" placeholder="Display Name">
+            <input x-model="$store.profileEditor.form.bio" type="text" class="input w-full" placeholder="Bio">
+            <input x-model="$store.profileEditor.form.neighborhood" type="text" class="input w-full" placeholder="Neighborhood">
+            <input x-model="$store.profileEditor.form.phone" type="text" class="input w-full" placeholder="Phone">
+            <select x-model="$store.profileEditor.form.notification" class="select w-full">
+              <option value="all">All notifications</option>
+              <option value="important">Important only</option>
+              <option value="none">None</option>
+            </select>
+            <label class="flex items-center gap-2">
+              <input type="checkbox" x-model="$store.profileEditor.form.show_in_directory">
+              Show in member directory
+            </label>
+            <div class="flex gap-3 mt-4">
+              <button class="btn btn-primary" type="submit" :disabled="$store.profileEditor.saving" x-text="$store.profileEditor.saving ? 'Saving...' : 'Save'"></button>
+              <button class="btn" type="button" @click="editing=false">Cancel</button>
+            </div>
+            <div class="alert alert-success mt-3" x-show="$store.profileEditor.message">
+              <span x-text="$store.profileEditor.message"></span>
+            </div>
+          </form>
+        </div>
+      </template>
+
+      <!-- ============================= -->
+      <!-- Member Content Accordions -->
+      <!-- ============================= -->
+      <div class="space-y-4">
+        <template x-for="[type, items] in Object.entries($store.member.groupedContent)" :key="type">
+          <div x-data="{ open: false }" class="bg-white shadow rounded-lg">
+            <button @click="open = !open" class="w-full text-left px-4 py-3 flex justify-between items-center font-semibold">
+              <span x-text="type"></span>
+              <svg :class="{ 'transform rotate-180': open }" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div x-show="open" x-transition class="px-4 py-2 border-t">
+              <ul class="list-disc list-inside space-y-1">
+                <template x-for="item in items" :key="item.id">
+                  <li><a :href="item.url" class="link" x-text="item.title"></a></li>
+                </template>
+              </ul>
+            </div>
+          </div>
+        </template>
+      </div>
+
+    </div>
+
+  </template>
+
+</div>

@@ -97,6 +97,169 @@ permalink: "/admin/edit/"
                                 <input type="date" x-model="doc[field.key]"/>
                             </template>
 
+                            <!-- Images -->
+<!-- Images -->
+<template x-if="field.type === 'images'">
+    <div class="space-y-3" x-data="{ editingImageIndex: null }">
+        <div class="flex items-center justify-between">
+            <p class="text-sm text-base-content/60">
+                <span x-text="doc[field.key]?.length || 0"></span> image(s)
+            </p>
+            <button
+                type="button"
+                class="btn btn-sm btn-primary"
+                @click="editingImageIndex = null; $refs.imageModal.showModal()"
+            >
+                Manage images
+            </button>
+        </div>
+
+        <template x-if="!doc[field.key]?.length">
+            <p class="rounded-lg border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+                No images uploaded yet.
+            </p>
+        </template>
+
+        <div class="divide-y divide-base-300 overflow-hidden rounded-lg border border-base-300">
+            <template x-for="(image, index) in (doc[field.key] || [])" :key="image.url">
+                <div class="flex items-center gap-3 p-2">
+                    <img
+                        :src="image.url"
+                        :alt="image.alt || image.name"
+                        class="h-10 w-10 shrink-0 rounded object-cover"
+                    >
+
+                    <button
+                        type="button"
+                        class="min-w-0 flex-1 truncate text-left text-sm hover:text-primary"
+                        :title="image.name || image.alt || 'Untitled image'"
+                        @click="editingImageIndex = index; $refs.imageModal.showModal()"
+                        x-text="image.name || image.alt || `Image ${index + 1}`"
+                    ></button>
+
+                    <button
+                        type="button"
+                        class="btn btn-xs"
+                        title="Copy Markdown"
+                        @click="copyMarkdownImage(image)"
+                    >
+                        Copy MD
+                    </button>
+                </div>
+            </template>
+        </div>
+
+        <dialog x-ref="imageModal"
+    class="modal modal-middle fixed inset-0 z-50 m-auto h-fit 
+        max-h-[calc(100vh-2rem)] w-full max-w-2xl p-0">
+            <div class="modal-box max-w-2xl">
+                <div class="mb-4 flex items-center justify-between">
+                    <h3 class="text-lg font-bold">
+                        <span x-show="editingImageIndex === null">Manage images</span>
+                        <span x-show="editingImageIndex !== null">Edit image</span>
+                    </h3>
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-circle btn-ghost"
+                        @click="$refs.imageModal.close()"
+                    >✕</button>
+                </div>
+
+                <div
+                    class="rounded-lg border-2 border-dashed border-base-300 p-4 text-center"
+                    :class="isDraggingFiles ? 'border-primary bg-primary/5' : ''"
+                    @dragover.prevent="isDraggingFiles = true"
+                    @dragleave.prevent="isDraggingFiles = false"
+                    @drop.prevent="uploadImages($event.dataTransfer.files, field.key)"
+                >
+                    <p class="text-sm">Drop images here, or choose files</p>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        class="file-input file-input-bordered file-input-sm mt-3 w-full"
+                        @change="uploadImages($event.target.files, field.key); $event.target.value = ''"
+                    >
+                    <p x-show="uploadingImages" class="mt-2 text-sm text-primary">
+                        Uploading images…
+                    </p>
+                </div>
+
+                <template x-if="editingImageIndex !== null && doc[field.key]?.[editingImageIndex]">
+                    <div class="mt-5 space-y-4">
+                        <img
+                            :src="doc[field.key][editingImageIndex].url"
+                            :alt="doc[field.key][editingImageIndex].alt"
+                            class="h-36 w-full rounded-lg object-cover"
+                        >
+
+                        <label class="form-control">
+                            <span class="label-text mb-1">Image title</span>
+                            <input
+                                class="input input-bordered w-full"
+                                type="text"
+                                placeholder="Name"
+                                x-model="doc[field.key][editingImageIndex].name"
+                            >
+                        </label>
+
+                        <label class="form-control">
+                            <span class="label-text mb-1">Alt text</span>
+                            <input
+                                class="input input-bordered w-full"
+                                type="text"
+                                placeholder="Describe the image"
+                                x-model="doc[field.key][editingImageIndex].alt"
+                            >
+                        </label>
+
+                        <label class="form-control">
+                            <span class="label-text mb-1">Image URL</span>
+                            <input
+                                class="input input-bordered w-full font-mono text-xs"
+                                type="url"
+                                placeholder="Image URL"
+                                x-model="doc[field.key][editingImageIndex].url"
+                            >
+                        </label>
+
+                        <div class="flex justify-between gap-2">
+                            <button
+                                type="button"
+                                class="btn btn-sm"
+                                @click="copyMarkdownImage(doc[field.key][editingImageIndex])"
+                            >
+                                Copy Markdown
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-error"
+                                @click="
+                                    doc[field.key].splice(editingImageIndex, 1);
+                                    editingImageIndex = null;
+                                    $refs.imageModal.close();
+                                "
+                            >
+                                Delete image
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="editingImageIndex === null">
+                    <p class="mt-4 text-sm text-base-content/60">
+                        Upload an image above, then select it from the list to edit its details.
+                    </p>
+                </template>
+            </div>
+
+            <form method="dialog" class="modal-backdrop">
+                <button>Close</button>
+            </form>
+        </dialog>
+    </div>
+</template>
                             <!-- Tags -->
                             <template x-if="field.type === 'tags'">
                                 <input
@@ -169,6 +332,8 @@ permalink: "/admin/edit/"
             x-model="doc.body_md"
             rows="20"
             class="textarea textarea-bordered w-full font-mono"
+            @dragover.prevent
+            @drop.prevent="handleMarkdownDrop($event)"
           ></textarea>
 
                     <div
@@ -188,233 +353,299 @@ permalink: "/admin/edit/"
     </div>
 
 </form>
-
 <script>
-    function documentForm() {
-        return {
-            id: null,
-            doc_type: null,
-            schema: {
-                label: '',
-                fields: []
-            },
-            doc: {
-                dietary: []
-            },
-            preview: false,
-            error: null,
-            ui_message: '',
+function documentForm() {
+    return {
+        id: null,
+        doc_type: null,
+        schema: { label: '', fields: [] },
+        doc: { dietary: [] },
+        preview: false,
+        error: null,
+        ui_message: '',
+        prevValues: {}, // stores previous values for auto fields
+        uploadingImages: false,
+        isDraggingFiles: false,
+        draggedImage: null,
 
-            async init() {
+        async init() {
+            const params = new URLSearchParams(window.location.search);
+            this.id = params.get('id');
+            this.doc_type = params.get('doc_type');
 
-                const params = new URLSearchParams(window.location.search);
-                this.id = params.get('id');
-                this.doc_type = params.get('doc_type');
+            if (!this.doc_type) {
+                this.error = 'Missing document type';
+                return;
+            }
 
-                if (!this.doc_type) {
-                    this.error = 'Missing document type';
+            await this.loadSchema();
+            await this.loadDraft();
+            this.setupFieldActions(); // <-- new
+        },
+
+        async loadSchema() {
+            const schemas = await Alpine.store("api").call("draft_doc_schema", {}, {});
+            this.schema = schemas.types[this.doc_type] || { label: '', fields: [] };
+
+            if (!this.schema) {
+                this.error = `Unknown document type: ${this.doc_type}`;
+                return;
+            }
+
+            // Initialize fields in doc
+            this.schema.fields.forEach(f => {
+                if (f.type === 'checkbox' && !Array.isArray(this.doc[f.key])) {
+                    this.doc[f.key] = [];
+                } else if (!(f.key in this.doc)) {
+                    this.doc[f.key] = '';
+                }
+                if (f.readonly) this.doc[f.key] = this.doc[f.key] || '';
+            });
+        },
+
+        async loadDraft() {
+            const getNested = (obj, path, key) => {
+                if (!path) return obj[key];
+                const parts = path.split('.');
+                let current = obj;
+                for (const part of parts) {
+                    if (!current || typeof current !== 'object' || !(part in current)) return undefined;
+                    current = current[part];
+                }
+                return current[key];
+            };
+
+            if (!this.id) {
+                this.doc = { doc_type: this.doc_type };
+                return;
+            }
+
+            const data = await Alpine.store("api").call("draft_get", { id: this.id }, {});
+
+            this.doc = { ...data, ...(data.meta || { dietary: [] }) };
+            this.schema.fields.forEach(f => {
+                if (f.storage === 'meta') {
+                    this.doc[f.key] = getNested(data.meta, f.path, f.key);
+                } else {
+                    this.doc[f.key] = data[f.key];
+                }
+            });
+        },
+
+            async copyMarkdownImage(image) {
+                if (!image?.url) {
+                    this.error = 'This image needs a URL before its Markdown can be copied.';
                     return;
                 }
 
-                await this.loadSchema();
-                await this.loadDraft();
-            },
+                const markdown = `![${image.alt || image.name || 'Image'}](${image.url})`;
 
-            async loadSchema() {
-                //const res = await fetch('/api/admin/drafts/doc_schema');
-                //const schemas = await res.json();
-                const schemas = await Alpine
-                    .store("api")
-                    .call("draft_doc_schema", {}, {});
-                this.schema = schemas.types[this.doc_type] || {
-                    label: '',
-                    fields: []
-                };
-
-                if (!this.schema) {
-                    this.error = `Unknown document type: ${this.doc_type}`;
-                    return;
+                try {
+                    await navigator.clipboard.writeText(markdown);
+                    this.ui_message = 'Image Markdown copied';
+                } catch (error) {
+                    this.error = 'Unable to copy Markdown. Please copy the URL manually.';
                 }
-
-                // ✅ Initialize all checkbox fields as arrays
-                this
-                    .schema
-                    .fields
-                    .forEach(f => {
-                        if (f.type === 'checkbox') {
-                            if (!Array.isArray(this.doc[f.key])) {
-                                this.doc[f.key] = [];
-                            }
-                        } else if (!(f.key in this.doc)) {
-                            this.doc[f.key] = '';
-                        }
+            },
+        handleCheckboxChange(key, value, checked) {
+            if (!Array.isArray(this.doc[key])) this.doc[key] = [];
+            if (checked && !this.doc[key].includes(value)) {
+                this.doc[key].push(value);
+            } else if (!checked) {
+                this.doc[key] = this.doc[key].filter(v => v !== value);
+            }
+        },
+            normalizeImageFields() {
+                this.schema.fields
+                    .filter(field => field.type === 'images')
+                    .forEach(field => {
+                        const images = Array.isArray(this.doc[field.key]) ? this.doc[field.key] : [];
+                        this.doc[field.key] = images
+                            .filter(image => image)
+                            .map(image => typeof image === 'string'
+                                ? { name: this.imageNameFromUrl(image), alt: '', url: image }
+                                : {
+                                    name: image.name || this.imageNameFromUrl(image.url),
+                                    alt: image.alt || '',
+                                    url: image.url || ''
+                                });
                     });
             },
-            handleCheckboxChange(key, value, checked) {
-                if (!Array.isArray(this.doc[key])) {
-                    this.doc[key] = [];
-                }
-                if (checked) {
-                    if (!this.doc[key].includes(value)) {
-                        //console.log("Value: " , value);
-                        this
-                            .doc[key]
-                            .push(value);
-                    }
-                } else {
-                    this.doc[key] = this
-                        .doc[key]
-                        .filter(v => v !== value);
-                }
+
+            imageNameFromUrl(url) {
+                return decodeURIComponent((url || '').split('/').pop().split('?')[0]) || 'Image';
             },
 
-            async loadDraft() {
-                // AlpineJS helper to safely read nested meta fields
-                const getNested = (obj, path, key) => {
-                    if (!path) return obj[key];
-                    const parts = path.split('.');
-                    let current = obj;
-                    for (const part of parts) {
-                        if (!current || typeof current !== 'object' || !(part in current)) return undefined;
-                        current = current[part];
-                    }
-                    return current[key];
-                };
+            async uploadImages(files, fieldKey) {
+                const imageFiles = Array.from(files || []).filter(file => file.type.startsWith('image/'));
+                this.isDraggingFiles = false;
 
-                if (!this.id) {
-                    this.doc = {
-                        doc_type: this.doc_type
-                    };
+                if (!imageFiles.length) {
+                    this.error = 'Please choose image files.';
                     return;
                 }
 
-                //const res = await fetch(`/api/admin/drafts/${this.id}`);
-                //const data = await res.json();
-                const data = await Alpine
-                    .store("api")
-                    .call("draft_get", {
-                        "id": this.id
-                    }, {});
+                this.error = null;
+                this.uploadingImages = true;
+                this.doc[fieldKey] = Array.isArray(this.doc[fieldKey]) ? this.doc[fieldKey] : [];
 
-                this.doc = {
-                    ...data,
-                    ...(data.meta || {
-                        dietary: []
-                    })
-                }; // reset
-                for (const field of this.schema.fields) {
-                    if (field.storage === 'meta') {
-                        this.doc[field.key] = getNested(data.meta, field.path, field.key);
-                    } else {
-                        this.doc[field.key] = data[field.key];
+                try {
+                    for (const file of imageFiles) {
+                        const formData = new FormData();
+                        formData.append('image', file);
+
+                        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                        if (!res.ok) throw new Error(`Unable to upload ${file.name}`);
+
+                        const data = await res.json();
+                        if (!data.url) throw new Error(`Upload did not return a URL for ${file.name}`);
+
+                        this.doc[fieldKey].push({ name: file.name, alt: '', url: data.url });
                     }
+                } catch (error) {
+                    this.error = error.message || 'Image upload failed';
+                } finally {
+                    this.uploadingImages = false;
                 }
-                {# this.doc = {
-                    ...data,
-                    ...(data.meta || {
-                        dietary: []
-                    })
-                }; #}
             },
-            buildPayload() {
-                const meta = {};
-                const columns = {};
 
-                // Helper: set value in nested object by path + key
-                const setNested = (obj, path, key, value) => {
-                    if (!path) {
-                        obj[key] = value;
-                        return;
-                    }
-                    const parts = path.split('.');
-                    let current = obj;
-                    for (const part of parts) {
-                        if (!(part in current) || typeof current[part] !== 'object') {
-                            current[part] = {};
-                        }
-                        current = current[part];
-                    }
-                    current[key] = value;
-                };
+            startImageDrag(index, fieldKey) {
+                console.log(`Dragging image at index ${index} from field ${fieldKey}`);
+                this.draggedImage = { index, fieldKey };
+            },
 
-                for (const field of this.schema.fields) {
-                    const value = this.doc[field.key];
-                    if (value === undefined) 
-                        continue;
-                    
-                    if (field.storage === 'meta') {
-                        setNested(meta, field.path, field.key, value);
-                    } else {
-                        columns[field.key] = value;
-                    }
+            async handleMarkdownDrop(event) {
+                console.log("Handling markdown drop");
+                if (this.draggedImage) {
+                    const image = this.doc[this.draggedImage.fieldKey][this.draggedImage.index];
+                    this.insertMarkdownImage(image);
+                    this.draggedImage = null;
+                    return;
                 }
 
-                return {
-                    ...columns,
-                    meta,
-                    doc_type: this.doc_type
-                };
-            },
-            buildPayloadOld() {
-                const meta = {};
-                const columns = {};
+                const imageField = this.schema.fields.find(field => field.type === 'images');
+                const files = Array.from(event.dataTransfer.files || []).filter(file => file.type.startsWith('image/'));
+                if (!imageField || !files.length) return;
 
-                for (const field of this.schema.fields) {
-                    const value = this.doc[field.key];
-                    if (value === undefined) 
-                        continue;
-                    
-                    if (field.storage === 'meta') {
-                        meta[field.key] = value;
-                    } else {
-                        columns[field.key] = value;
+                const firstNewImageIndex = (this.doc[imageField.key] || []).length;
+                await this.uploadImages(files, imageField.key);
+                (this.doc[imageField.key] || []).slice(firstNewImageIndex).forEach(image => this.insertMarkdownImage(image));
+            },
+
+            insertMarkdownImage(image) {
+                if (!image?.url) return;
+
+                const editor = this.$refs.markdownEditor;
+                const start = editor?.selectionStart ?? this.doc.body_md.length;
+                const end = editor?.selectionEnd ?? start;
+                const markdown = `![${image.alt || image.name || 'Image'}](${image.url})`;
+                this.doc.body_md = `${this.doc.body_md.slice(0, start)}${markdown}${this.doc.body_md.slice(end)}`;
+
+                this.$nextTick(() => {
+                    editor?.focus();
+                    editor?.setSelectionRange(start + markdown.length, start + markdown.length);
+                });
+            },
+        // ------------------------
+        // New helper functions
+        // ------------------------
+        slugify(text) {
+            if (!text) return '';
+            return text.toString().toLowerCase().trim()
+                .replace(/[\s\W-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        },
+
+        parseAddress(text) {
+            console.log("Parsing address:", text);
+            if (!text) return null;
+            const regex = /^(.*?),\s*(.*?),\s*([A-Z]{2})\s*(\d{5})?$/i;
+            const match = text.match(regex);
+            if (!match) return null;
+            return { street: match[1], city: match[2], state: match[3], zip: match[4] || "" };
+        },
+
+        setupFieldActions() {
+            this.schema.fields.forEach(f => {
+                if (!f.actions) return;
+
+                f.actions.forEach(action => {
+                    if (action.action === 'slugify' && action.source) {
+                        this.$watch(`doc.${action.source}`, value => {
+                            // Only auto-update if empty or matches previous auto-value
+                            const prev = this.prevValues[f.key];
+                            if (!this.doc[f.key] || this.doc[f.key] === prev) {
+                                this.doc[f.key] = this.slugify(value);
+                                this.prevValues[f.key] = this.doc[f.key];
+                            }
+                        });
                     }
+
+                    if (action.action === 'parse_address') {
+                        this.$watch(`doc.${f.key}`, value => {
+                            const parsed = this.parseAddress(value);
+                            if (!parsed || !action.targets) return;
+                            Object.entries(action.targets).forEach(([sourceKey, targetField]) => {
+                                this.doc[targetField] = parsed[sourceKey] || '';
+                            });
+                        });
+                    }
+
+                    // Add other actions here: copy, template, validate, etc.
+                });
+            });
+        },
+
+        // ------------------------
+        // Existing methods
+        // ------------------------
+        buildPayload() {
+            const meta = {};
+            const columns = {};
+            const setNested = (obj, path, key, value) => {
+                if (!path) { obj[key] = value; return; }
+                const parts = path.split('.');
+                let current = obj;
+                for (const part of parts) {
+                    if (!(part in current) || typeof current[part] !== 'object') current[part] = {};
+                    current = current[part];
                 }
-                return {
-                    ...columns,
-                    meta,
-                    doc_type: this.doc_type
-                };
-            },
+                current[key] = value;
+            };
 
-            get renderedMarkdown() {
-                console.log("Render Markdown");
-                return this.doc.body_md
-                    ? marked.parse(this.doc.body_md)
-                    : '';
-            },
+            this.schema.fields.forEach(field => {
+                const value = this.doc[field.key];
+                if (value === undefined) return;
+                if (field.storage === 'meta') setNested(meta, field.path, field.key, value);
+                else columns[field.key] = value;
+            });
 
-            async save() {
+            return { ...columns, meta, doc_type: this.doc_type };
+        },
 
-                const payload = this.buildPayload();
-                var data = {};
-                if  (this.id) {
+        get renderedMarkdown() {
+            return this.doc.body_md ? marked.parse(this.doc.body_md) : '';
+        },
 
-                    data = await Alpine
-                        .store("api")
-                        .call("draft_update", {
-                         "id": this.id
-                        }, payload);
-
-                } else {
-                    data = await Alpine
-                        .store("api")
-                        .call("draft_create",{},payload);
-                }
-                
-                this.id = data.id;
-                this.ui_message = 'Draft saved';
-            },
-            async submit() {
-                await this.save();
-                await Alpine
-                    .store("api")
-                    .call("draft_submit", {
-                        "id": this.id
-                    }, {});
-
-                window.location.href = '/admin/';
+        async save() {
+            const payload = this.buildPayload();
+            let data = {};
+            if (this.id) {
+                data = await Alpine.store("api").call("draft_update", { id: this.id }, payload);
+            } else {
+                data = await Alpine.store("api").call("draft_create", {}, payload);
             }
-        };
+            this.id = data.id;
+            this.ui_message = 'Draft saved';
+            window.location.href = '/admin/';
+
+        },
+
+        async submit() {
+            await this.save();
+            await Alpine.store("api").call("draft_submit", { id: this.id }, {});
+            window.location.href = '/admin/';
+        }
     }
+}
 </script>

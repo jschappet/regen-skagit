@@ -78,8 +78,14 @@
           <a href="/member/profile/">Profile</a>
         </li>
         <li x-show="$store.auth.hasRole('admin')">
-          <a href="/admin/">Edit Content</a>
+          <a href="/admin/">Dashboard</a>
         </li>
+        <li x-show="$store.auth.hasRole('admin')">
+          <a href="/admin/content/">Edit Content</a>
+        </li>
+<li x-data="contactMessageBadge()" x-show="allowed" x-cloak>
+  <a class="block px-4 py-2" href="/admin/messages/" x-text="count === null ? 'Message (…)': `Message (${count})`">Message</a>
+</li>
         <li x-show="$store.auth.hasRole('admin')">
           <a href="/admin/ledger/">Ledger</a>
         </li>

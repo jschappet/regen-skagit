@@ -155,7 +155,7 @@ permalink: "/admin/content/"
 
                     <a 
                       @click.stop
-                      :href="`/admin/content/edit/?doc_type=${draft.doc_type}&id=${draft.id}`"
+                      :href="editorUrl(draft.doc_type, draft.id)"
                       class="btn btn-xs btn-outline">
                       Edit
                     </a>
@@ -221,7 +221,7 @@ permalink: "/admin/content/"
 
                 <td class="text-right space-x-2">
                   <button class="btn btn-sm btn-outline" @click.stop="openPreview(draft.body_md)">Preview</button>
-                  <a :href="`/admin/content/edit/?doc_type=${draft.doc_type}&id=${draft.id}`" class="btn btn-sm btn-outline">Edit</a>
+                  <a :href="editorUrl(draft.doc_type, draft.id)" class="btn btn-sm btn-outline">Edit</a>
                 </td>
 
               </tr>
@@ -251,7 +251,7 @@ permalink: "/admin/content/"
       <template x-for="doc in docTypes" :key="doc">
         <a
           class="btn btn-outline w-full justify-start"
-          :href="`/admin/content/edit/?doc_type=${doc}`"
+          :href="editorUrl(doc)"
           x-text="doc"
         ></a>
       </template>
@@ -272,7 +272,7 @@ permalink: "/admin/content/"
       drafts: [],
       newDocument: false,
       docTypes: [
-        'organization', 'event', 'post', 'idea'
+        'organization', 'event', 'post', 'idea', 'experiment', 'results'
       ],
       statuses: [
         'draft', 'submitted', 'changes_requested', 'approved', 'deployed'
@@ -440,11 +440,14 @@ permalink: "/admin/content/"
         this.loadDrafts();
       },
 
+      editorUrl(type, id) {
+        const base = ['experiment', 'results'].includes(type) ? `/admin/content/${type}/` : '/admin/content/edit/';
+        const params = new URLSearchParams({doc_type: type});
+        if (id) params.set('id', id);
+        return `${base}?${params.toString()}`;
+      },
       openDraft(draft) {
-        const base = '/admin/content/edit/';
-        const params = new URLSearchParams({id: draft.id, doc_type: draft.doc_type});
-
-        window.location.href = `${base}?${params.toString()}`;
+        window.location.href = this.editorUrl(draft.doc_type, draft.id);
       }
     }
   }

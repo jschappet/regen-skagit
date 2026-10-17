@@ -1,173 +1,57 @@
-import fs from "fs/promises";
-import path from "path";
-import slugify from "slugify";
-import { CookieJar } from "tough-cookie";
-
-/**
- * CONFIG
- */
-const BASE_URL = "https://regenerateskagit.org";
-const RECIPES_DIR = path.resolve("src/content/post");
-
-const EMAIL = "schappet";
-const PASSWORD = "1432Audrey";
-
-if (!EMAIL || !PASSWORD) {
-  console.error("DEPLOY_EMAIL and DEPLOY_PASSWORD must be set");
-  process.exit(1);
-}
-
-const DRY_RUN = process.argv.includes("--dry-run");
-
-/**
- * COOKIE-AWARE FETCH
- */
+// Retained filename for existing callers; exports all supported content types.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { CookieJar } from 'tough-cookie';
+import matter from 'gray-matter';
+import { exportPlan, validateMarkdown } from './draft-export.mjs';
+const BASE_URL = process.env.DEPLOY_BASE_URL || 'http://regen.localhost:8582';
+const EMAIL = process.env.DEPLOY_EMAIL;
+const PASSWORD = process.env.DEPLOY_PASSWORD;
+const DRY_RUN = process.argv.includes('--dry-run');
 const jar = new CookieJar();
-
-async function fetchWithCookies(url, options = {}) {
+async function request(route, options = {}) {
+  const url = new URL(route, BASE_URL).href;
   const cookie = await jar.getCookieString(url);
-
-  const res = await fetch(url, {
-    ...options,
-    headers: {
-      ...(options.headers || {}),
-      ...(cookie ? { cookie } : {})
-    }
-  });
-
-  const setCookie = res.headers.get("set-cookie");
-  if (setCookie) {
-    await jar.setCookie(setCookie, url);
+  const response = await fetch(url, {...options, headers: {...options.headers, ...(cookie ? {cookie} : {})}});
+  for (const cookie of response.headers.getSetCookie()) await jar.setCookie(cookie, url);
+  if (!response.ok) throw new Error(`Request failed: ${response.status} ${route}`);
+  return response;
+}
+async function run() {
+  if (!EMAIL || !PASSWORD) throw new Error('Set DEPLOY_EMAIL and DEPLOY_PASSWORD. Optionally set DEPLOY_BASE_URL.');
+  await request('/api/auth/login', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams({username: EMAIL, password: PASSWORD})});
+  const {drafts} = await (await request('/api/admin/drafts/list?status=approved')).json();
+  console.log(`Found ${drafts.length} approved drafts for export.`);
+  const existing = [];
+  for (const folder of ['experiments', 'results', 'post', 'ideas', 'events', 'organizations']) {
+    const directory = path.join('src/content', folder);
+    let files;
+    try { files = await fs.readdir(directory); } catch (error) { if (error.code === 'ENOENT') continue; throw error; }
+    for (const file of files.filter(f => f.endsWith('.md'))) existing.push({folder, file, data: matter(await fs.readFile(path.join(directory, file), 'utf8')).data});
   }
-
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(
-      `${res.status} ${res.statusText} for ${url}\n${body}`
-    );
+  // Check every relationship and export before writing or marking any draft deployed.
+  const plan = exportPlan(drafts, existing);
+  for (const entry of plan) {
+    entry.markdown = await (await request(`/api/admin/drafts/${entry.draft.id}/md`)).text();
+    validateMarkdown(entry.markdown, entry.draft);
   }
-
-  return res;
-}
-
-/**
- * LOGIN
- */
-async function login() {
-  console.log("Logging in…");
-/* 
-  await fetchWithCookies(`${BASE_URL}/api/login`, {
-    method: "POST",
-    headers: { "Content-Type":"application/json" },
-    body: JSON.stringify({
-      email: EMAIL,
-      password: PASSWORD
-    })
-  });
- */
-  let loginData =  {
-        username: EMAIL,
-        password: PASSWORD
-      };
-
-    await fetchWithCookies(`${BASE_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams(loginData)
-        });
-  console.log("Logged in");
-}
-
-/**
- * FETCH SUBMITTED DRAFTS
- */
-async function fetchDrafts() {
-  console.log("Fetching submitted recipe drafts…");
-
-  const res = await fetchWithCookies(
-    `${BASE_URL}/api/admin/drafts/list?status=approved`
-  );
-
-  const drafts = await res.json();
-  console.log(drafts.drafts);
-  console.log(`Found ${drafts.drafts.length} drafts`);
-  return drafts.drafts;
-}
-
-/**
- * FETCH MARKDOWN
- */
-async function fetchMarkdown(draftId) {
-  const res = await fetchWithCookies(
-    `${BASE_URL}/api/admin/drafts/${draftId}/md`
-  );
-  return res.text();
-}
-
-/**
- * DEPLOY DRAFT
- */
-async function markDeployed(draftId) {
-  if (DRY_RUN) return;
-
-  await fetchWithCookies(
-    `${BASE_URL}/api/admin/drafts/${draftId}/deploy`,
-    { method: "POST" }
-  );
-}
-
-/**
- * WRITE FILE ATOMICALLY
- */
-async function writeRecipeFile(slug, markdown) {
-  const filePath = path.join(RECIPES_DIR, `${slug}.md`);
-  const tmpPath = `${filePath}.tmp`;
-
-  if (!markdown.trim().startsWith("---")) {
-    throw new Error(`Markdown missing frontmatter for ${slug}`);
+  for (const {draft, destination, markdown} of plan) {
+    console.log(`${DRY_RUN ? 'Would write' : 'Writing'} ${destination}`);
+    if (DRY_RUN) continue;
+    await fs.mkdir(path.dirname(destination), {recursive: true});
+    await fs.writeFile(`${destination}.tmp`, markdown);
+    await fs.rename(`${destination}.tmp`, destination);
   }
-
   if (DRY_RUN) {
-    console.log(`DRY RUN: would write ${filePath}`);
+    console.log(`Validated ${plan.length} drafts. Dry run: no files written or site build run.`);
     return;
   }
-
-  await fs.writeFile(tmpPath, markdown);
-  await fs.rename(tmpPath, filePath);
+  console.log('Building the site…');
+  const build = spawnSync('npm', ['run', 'build'], {stdio: 'inherit'});
+  if (build.error) throw build.error;
+  if (build.status !== 0) throw new Error(`Site build failed (${build.signal || build.status}). Exported files are retained; drafts have not been marked deployed.`);
+  for (const {draft} of plan) await request(`/api/admin/drafts/${draft.id}/deploy`, {method: 'POST'});
+  console.log(`Exported ${plan.length} drafts and built the site successfully. Review the output before publishing.`);
 }
-
-/**
- * MAIN
- */
-async function run() {
-  console.log("Starting recipe draft sync");
-
-  await login();
-  await fs.mkdir(RECIPES_DIR, { recursive: true });
-
-  const drafts = await fetchDrafts();
-
-  for (const draft of drafts) {
-    const slug =
-      draft.slug ||
-      slugify(draft.title, { lower: true, strict: true });
-
-    console.log(`Processing "${draft.title}"`);
-
-    const markdown = await fetchMarkdown(draft.id);
-    await writeRecipeFile(slug, markdown);
-    await markDeployed(draft.id);
-
-    console.log(`✓ Deployed ${slug}.md`);
-  }
-
-  console.log("\n🎉 Recipe draft sync complete");
-}
-
-run().catch(err => {
-  console.error("\n Sync failed:");
-  console.error(err);
-  process.exit(1);
-});
+run().catch(error => { console.error(error.message); process.exitCode = 1; });

@@ -1,4 +1,9 @@
 import fs from 'fs';
+import { createHash } from 'node:crypto';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import research from './src/_11ty/research.cjs';
+const runFile = promisify(execFile);
 import path from 'path';
 import postcss from 'postcss';
 import tailwindcss from '@tailwindcss/postcss';
@@ -10,6 +15,24 @@ import heroBlockShortcode from "./src/_11ty/heroBlock.js";
 
 
 export default function (eleventyConfig) {
+  eleventyConfig.addWatchTarget('./src/styles');
+  eleventyConfig.addGlobalData('researchEditorVersion', () => createHash('sha256')
+    .update(fs.readFileSync(new URL('./src/assets/js/research-editor.js', import.meta.url)))
+    .digest('hex').slice(0, 12));
+  eleventyConfig.addCollection('experiments', api => research.researchCatalog(api.getAll()).experiments);
+  eleventyConfig.addCollection('results', api => research.researchCatalog(api.getAll()).results);
+  eleventyConfig.addFilter('resultsFor', (items, id) => id ? (items || []).filter(item => item.data.experiment_id === id) : []);
+  eleventyConfig.addFilter('experimentFor', (items, id) => id ? (items || []).find(item => item.data.experiment_id === id) : null);
+  eleventyConfig.addFilter('researchDate', value => {
+    if (!value) return '';
+    const date = new Date(value);
+    return Number.isNaN(date.valueOf()) ? '' : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  });
+  // Match ReVillage: refresh the index after every build, including watch mode.
+  eleventyConfig.on('eleventy.after', async ({ directories }) => {
+    await runFile(process.execPath, [path.resolve('node_modules/pagefind/lib/runner/bin.cjs'),
+      '--site', directories.output, '--exclude-selectors', '[data-pagefind-ignore], nav, footer']);
+  });
   eleventyConfig.addPassthroughCopy('src/assets/js/');
   eleventyConfig.addPassthroughCopy('src/assets/json/');
   eleventyConfig.addPassthroughCopy({

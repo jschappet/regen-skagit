@@ -1,8 +1,7 @@
 ---
 title: "Edit Content"
 layout: "layouts/admin.njk"
-//permalink: "/{{admin.slug}}/edit/"
-permalink: "/admin/edit/"
+permalink: "/admin/content/edit/"
 ---
 
 <form
@@ -637,14 +636,14 @@ function documentForm() {
             }
             this.id = data.id;
             this.ui_message = 'Draft saved';
-            window.location.href = '/admin/';
+            window.location.href = '/admin/content/';
 
         },
 
         async submit() {
             await this.save();
             await Alpine.store("api").call("draft_submit", { id: this.id }, {});
-            window.location.href = '/admin/';
+            window.location.href = '/admin/content/';
         }
     }
 }

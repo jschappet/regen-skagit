@@ -54,20 +54,15 @@ function buildQuery(params = {}) {
 Core API Caller
 ========================= */
 
-async function apiCall(fnName, params = {}, body = null) {
+async function apiCall(fnName, params = {}, body = null, requestOptions = {}) {
   const routes = await loadRoutes();
   const route = routes[fnName];
 
   if (!route) {
     throw new Error(`Unknown API function: ${fnName}`);
   }
-  let url = "";
-  if (Object.keys(params).length) {
-    url = fillUrl(route.url, params);
-  } else {
-    url = route.url;
-  }
 
+  let url = fillUrl(route.url, params);
 
   // prevent path params from also becoming query params
   if (route.method === "GET") {
@@ -79,7 +74,7 @@ async function apiCall(fnName, params = {}, body = null) {
     );
 
     const query = buildQuery(queryParams);
-    if (query) url += `?${query} `;
+    if (query) url += `?${query}`;
 
 
   }
@@ -96,21 +91,34 @@ async function apiCall(fnName, params = {}, body = null) {
   const options = {
     method: route.method,
     headers,
+    credentials: "same-origin",
+    signal: requestOptions.signal,
+    cache: "no-store",
   };
 
   if (body && route.method !== "GET") {
-    options.body = JSON.stringify(body);
+    if (body instanceof URLSearchParams) {
+      headers["Content-Type"] = "application/x-www-form-urlencoded";
+      options.body = body.toString();
+    } else if (typeof FormData !== "undefined" && body instanceof FormData) {
+      delete headers["Content-Type"];
+      options.body = body;
+    } else {
+      options.body = JSON.stringify(body);
+    }
   }
 
   console.log("API CALL →", fnName);
   console.log("URL →", url);
-  console.log("OPTIONS →", options);
+
 
   const res = await fetch(url, options);
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`API ${fnName} failed: ${res.status} ${text}`);
+    const error = new Error(`API ${fnName} failed: ${res.status} ${text}`);
+    error.status = res.status;
+    throw error;
   }
 
   const ct = res.headers.get("content-type") || "";
@@ -124,8 +132,8 @@ Alpine Integration
 document.addEventListener("alpine:init", () => {
 
   Alpine.store("api", {
-    async call(fnName, params = {}, body = null) {
-      return apiCall(fnName, params, body);
+    async call(fnName, params = {}, body = null, options = {}) {
+      return apiCall(fnName, params, body, options);
     }
   });
 

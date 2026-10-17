@@ -1,0 +1,22 @@
+name = "regen-skagit"
+domain = "regenerateskagit.org"
+
+deploy_dir = "/home/www/regenerateskagit.org"
+build_dir = "/home/jimmy/git/sites/regen-skagit"
+
+git_repo = "git@github.com:jschappet/regen-skagit.git"
+git_branch = "main"
+
+build_cmd = "npm run build"
+output_dir = "dist"
+
+backend = ""
+
+[hooks]
+pre_build = ""
+post_build = ""
+pre_deploy = ""
+post_deploy = ""
+
+[paths]
+errors = "/var/www/errors"

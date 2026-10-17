@@ -3,13 +3,13 @@ layout: layouts/default.njk
 ---
 <main class="flex-grow max-w-5xl mx-auto px-6 py-16">
 
-  <!-- Idea Title -->
-  <h1 class="text-4xl font-bold mb-4">{{ title }}</h1>
+  <!-- Post Title -->
+  <h1 class="text-4xl font-bold mb-4">Title: {{ title }}</h1>
   {% if subtitle %}
   <h2 class="text-xl italic text-muted mb-6">{{ subtitle }}</h2>
   {% endif %}
 
-  <!-- Event Images -->
+  <!-- Post Images -->
   {% if images %}
     <div class="grid gap-6 mb-8 md:grid-cols-2">
       {% for img in images %}
@@ -22,7 +22,7 @@ layout: layouts/default.njk
 
  
 
-  <!-- Event Content -->
+  <!-- Post Content -->
   <article class="content max-w-none">
     {{ content | safe }}
   </article>

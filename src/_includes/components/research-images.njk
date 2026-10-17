@@ -1,0 +1,10 @@
+{% if images %}
+<div class="grid gap-6 sm:grid-cols-2 my-8">
+  {% for image in images %}
+    <figure>
+      <img src="{{ (image.url or image) | escape }}" alt="{{ (image.alt or image.name or title) | escape }}" loading="lazy" class="w-full rounded-xl">
+      {% if image.name %}<figcaption class="text-sm mt-2">{{ image.name | escape }}</figcaption>{% endif %}
+    </figure>
+  {% endfor %}
+</div>
+{% endif %}

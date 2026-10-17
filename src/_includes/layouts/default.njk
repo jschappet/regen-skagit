@@ -41,7 +41,9 @@ title: Regenerate Skagit
 
     {% include("components/navbar.njk") %}
 
+    <div class="flex-1" {% if not page.url or page.url.startsWith("/member/") or page.url.startsWith("/admin/") or page.url == "/editor/" or page.url == "/search/" or page.url == "/login/" %}data-pagefind-ignore="all"{% else %}data-pagefind-body{% endif %}>
     {{ content | safe }}
+    </div>
     
 
     {% include("components/footer.njk") %}

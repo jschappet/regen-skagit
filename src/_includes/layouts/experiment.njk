@@ -1,0 +1,29 @@
+---
+layout: layouts/default.njk
+---
+<main class="mx-auto w-full max-w-5xl px-6 py-16" data-pagefind-body>
+  <a href="/experiments/" class="link">← All experiments</a>
+  <p class="mt-8 text-sm uppercase tracking-widest text-primary">Experiment · {{ experiment_status | default('planned') | escape }}</p>
+  <h1 class="text-4xl font-bold mt-3 mb-4">{{ title | escape }}</h1>
+  <p class="text-xl mb-6">{{ description | escape }}</p>
+  <p class="text-sm mb-8">{% if author %}By {{ author | escape }}{% endif %}{% if location %}{% if author %} · {% endif %}{{ location | escape }}{% endif %}{% if start_date %}{% if author or location %} · {% endif %}Start: {{ start_date | researchDate }}{% endif %}{% if end_date %}{% if author or location or start_date %} · {% endif %}End: {{ end_date | researchDate }}{% endif %}</p>
+  {% if question %}<section class="rounded-xl bg-surface p-6 mb-8"><h2 class="text-xl font-semibold mb-2">What we're testing</h2><p class="whitespace-pre-line">{{ question | escape }}</p></section>{% endif %}
+  <div class="grid {% if method and success_criteria %}md:grid-cols-2{% endif %} gap-8 mb-8">
+    {% if method %}<section><h2 class="text-xl font-semibold mb-2">Our approach</h2><p class="whitespace-pre-line">{{ method | escape }}</p></section>{% endif %}
+    {% if success_criteria %}<section><h2 class="text-xl font-semibold mb-2">What we're measuring</h2><p class="whitespace-pre-line">{{ success_criteria | escape }}</p></section>{% endif %}
+  </div>
+  <article class="content max-w-none mb-12">{{ content | safe }}</article>
+  {% include "components/research-images.njk" %}
+  {% set linkedResults = collections.results | resultsFor(experiment_id) %}
+  <section class="border-t pt-8 mt-8">
+    <h2 class="text-2xl font-bold mb-2">Results <span class="text-base font-normal">({{ linkedResults | length }})</span></h2>
+    <p class="mb-6">Observations from this experiment, newest first. Each result records what happened and what we learned.</p>
+    {% for result in linkedResults %}
+      <article class="border rounded-xl p-6 mb-4">
+        <p class="text-sm">{{ (result.data.observed_date or result.data.date) | researchDate }}{% if result.data.outcome %} · {{ result.data.outcome | capitalize | escape }}{% endif %}</p>
+        <h3 class="text-xl font-semibold my-2"><a class="link" href="{{ result.url }}">{{ result.data.title | escape }}</a></h3>
+        <p>{{ (result.data.summary or result.data.description) | escape }}</p>
+      </article>
+    {% else %}<p class="rounded-xl bg-surface p-6">No results published yet. Check back as this experiment progresses.</p>{% endfor %}
+  </section>
+</main>

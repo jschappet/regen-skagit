@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "eleventy --serve",
-    "watch": " eleventy --watch --serve",
-    "build": " eleventy",
+    "test": "node --test tests/*.test.cjs",
+    "dev": "eleventy --serve --port=8581",
+    "watch": "eleventy --watch",
+    "build": "eleventy",
     "favicon": "npm run favicon:png && npm run favicon:ico",
     "favicon:png": "magick logo_source/logo.png -gravity center -extent 1024x1024 -resize 180x180 src/assets/images/favicon/apple-touch-icon.png && magick logo_source/logo.png -gravity center -extent 1024x1024 -resize 48x48 src/assets/images/favicon/favicon-48x48.png && magick logo_source/logo.png -gravity center -extent 1024x1024 -resize 32x32 src/assets/images/favicon/favicon-32x32.png && magick logo_source/logo.png -gravity center -extent 1024x1024 -resize 16x16 -unsharp 0x1 src/assets/images/favicon/favicon-16x16.png",
-    "favicon:ico": "magick src/assets/images/favicon/favicon-16x16.png src/assets/images/favicon/favicon-32x32.png src/assets/images/favicon/favicon-48x48.png src/assets/images/favicon/favicon.ico"
+    "favicon:ico": "magick src/assets/images/favicon/favicon-16x16.png src/assets/images/favicon/favicon-32x32.png src/assets/images/favicon/favicon-48x48.png src/assets/images/favicon/favicon.ico",
+    "check:admin": "node utils/check-shared-admin.cjs",
+    "prebuild": "npm run check:admin"
   },
   "keywords": [],
   "author": "",
@@ -24,9 +26,13 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "daisyui": "^5.5.14",
+    "gray-matter": "^4.0.3",
     "node-fetch": "^3.3.2",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "tough-cookie": "^6.0.0"
+  },
+  "devDependencies": {
+    "pagefind": "^1.5.2"
   }
 }

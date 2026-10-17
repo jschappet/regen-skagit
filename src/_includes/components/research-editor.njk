@@ -1,0 +1,67 @@
+<script src="/assets/js/research-editor.js?v={{ researchEditorVersion }}"></script>
+<section x-data="researchEditor('{{ researchKind }}')" class="mx-auto max-w-5xl py-10" data-pagefind-ignore="all">
+  <a href="/admin/content/" class="link">← Content drafts</a>
+  <h1 class="text-3xl font-bold mt-6 mb-3">{{ title }}</h1>
+  <p class="mb-8">{% if researchKind == 'experiment' %}Describe the question, the approach, and how you'll recognize progress.{% else %}Connect an observation to an experiment and share what you learned.{% endif %} Save your work at any time, then submit it for review.</p>
+  <p x-show="loading" role="status">Loading editor…</p>
+  <p x-show="error" x-text="error" class="alert alert-error mb-4" role="alert"></p>
+  <p x-show="needsAccess" class="mb-4"><a class="link" href="/login/" target="_blank" rel="noopener">Sign in in a new tab</a>. Keep this page open to preserve your edits.</p>
+  <p x-show="message" x-text="message" class="alert alert-success mb-4" role="status"></p>
+    <form x-show="ready" x-on:submit.prevent="save(true)">
+      <fieldset :disabled="busy" class="space-y-6">
+        <label class="block">Title <input class="input input-bordered w-full mt-2" x-model="doc.title" required></label>
+        <label class="block">Short description <textarea class="textarea textarea-bordered w-full mt-2" x-model="doc.description" rows="2"></textarea></label>
+        <div class="grid sm:grid-cols-2 gap-6">
+          <label class="block">Author <input class="input input-bordered w-full mt-2" x-model="doc.author"></label>
+          {% if researchKind == 'experiment' %}
+          <label class="block">Progress <select class="select select-bordered w-full mt-2" x-model="doc.meta.experiment_status"><option value="planned">Planned</option><option value="active">Active</option><option value="completed">Completed</option><option value="paused">Paused</option></select></label>
+          {% else %}
+          <label class="block">Observation date <input type="date" class="input input-bordered w-full mt-2" x-model="doc.meta.observed_date"></label>
+          {% endif %}
+        </div>
+        {% if researchKind == 'experiment' %}
+          <label class="block">Question or hypothesis <textarea class="textarea textarea-bordered w-full mt-2" rows="3" x-model="doc.meta.question" placeholder="What are we trying to learn?"></textarea></label>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <label class="block">Method <textarea class="textarea textarea-bordered w-full mt-2" rows="4" x-model="doc.meta.method" placeholder="What will we do, and how often?"></textarea></label>
+            <label class="block">What will we measure? <textarea class="textarea textarea-bordered w-full mt-2" rows="4" x-model="doc.meta.success_criteria" placeholder="Record the baseline, measurements, and signs of success."></textarea></label>
+          </div>
+          <label class="block">Location <input class="input input-bordered w-full mt-2" x-model="doc.meta.location"></label>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <label>Start date <input type="date" class="input input-bordered w-full mt-2" x-model="doc.meta.start_date"></label>
+            <label>End date <input type="date" class="input input-bordered w-full mt-2" x-model="doc.meta.end_date"></label>
+          </div>
+        {% else %}
+          <label class="block">Experiment
+            <select class="select select-bordered w-full mt-2" x-model="doc.meta.experiment_id"><option value="">Choose an experiment…</option><template x-for="experiment in experiments" :key="experiment.experiment_id"><option :value="experiment.experiment_id" x-text="experiment.label"></option></template></select>
+          </label>
+          <p class="text-sm" x-show="!experiments.length">No experiments are available yet. <a href="/admin/content/experiment/" class="link">Create an experiment draft</a> first.</p>
+          <p class="text-sm">An experiment may have many results. Publish the experiment before its results, or export them together.</p>
+          <label class="block">Findings summary <textarea class="textarea textarea-bordered w-full mt-2" rows="3" x-model="doc.meta.summary" placeholder="A few sentences that can stand on their own on the experiment page."></textarea></label>
+          <label class="block">Outcome <select class="select select-bordered w-full mt-2" x-model="doc.meta.outcome"><option value="inconclusive">Inconclusive</option><option value="positive">Positive</option><option value="mixed">Mixed</option><option value="negative">Negative</option></select></label>
+          <p class="text-sm">Negative and inconclusive results are useful learning too.</p>
+          <label class="block">Limitations <textarea class="textarea textarea-bordered w-full mt-2" rows="3" x-model="doc.meta.limitations" placeholder="What could affect how we interpret these findings?"></textarea></label>
+        {% endif %}
+        <label class="block">{% if researchKind == 'experiment' %}Experiment notes{% else %}Observations and evidence{% endif %} <span class="text-sm">(Markdown)</span>
+          <textarea class="textarea textarea-bordered w-full mt-2 font-mono" rows="14" x-model="doc.body_md" placeholder="Add context, observations, measurements, and links to supporting evidence."></textarea>
+        </label>
+        <div class="rounded-xl border p-5 space-y-4">
+          <label class="block">Photos <input type="file" accept="image/*" multiple class="file-input w-full mt-2" x-on:change="uploadImages($event.target.files); $event.target.value = ''"></label>
+          <template x-for="(image, index) in (doc.meta.images || [])" :key="index">
+            <div class="flex flex-wrap gap-3 items-center">
+              <a class="link text-sm" :href="typeof image === 'string' ? image : image.url" target="_blank" rel="noopener" x-text="typeof image === 'string' ? image : image.name || 'View image'"></a>
+              <template x-if="typeof image === 'object'"><label class="flex-1">Image description <input class="input input-bordered w-full" x-model="image.alt" placeholder="Describe the image for readers who cannot see it"></label></template>
+              <button type="button" class="btn btn-sm" x-on:click="doc.meta.images.splice(index, 1)">Remove</button>
+            </div>
+          </template>
+        </div>
+        <details class="text-sm"><summary class="cursor-pointer">Permanent reference</summary><p class="mt-2 break-all" x-text="kind === 'experiment' ? doc.meta.experiment_id : doc.meta.result_id"></p><p>This ID keeps links intact when the title changes.</p></details>
+        <div class="flex flex-wrap gap-3 border-t pt-6">
+          <button type="button" class="btn btn-outline" x-on:click="save(false)">Save draft</button>
+          <button type="submit" class="btn btn-primary">Submit for review</button>
+          <a href="/admin/content/" class="btn btn-ghost">Back to content</a>
+          {% if researchKind == 'experiment' %}<a x-show="id" :href="`/admin/content/results/?experiment_id=${encodeURIComponent(doc.meta.experiment_id)}`" class="btn btn-ghost">Record a result</a>{% endif %}
+        </div>
+        <p x-show="busy" role="status">Saving…</p>
+      </fieldset>
+    </form>
+</section>

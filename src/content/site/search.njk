@@ -1,0 +1,20 @@
+---
+layout: layouts/default.njk
+title: Search Regenerate Skagit
+permalink: /search/
+eleventyNavigation:
+  key: Search
+  order: 90
+---
+<main class="mx-auto w-full max-w-4xl px-6 py-16" data-pagefind-ignore="all">
+  <h1 class="text-4xl font-bold mb-4">Search Regenerate Skagit</h1>
+  <p class="mb-8">Find experiments, results, events, and ideas from our community.</p>
+  <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+  <script src="/pagefind/pagefind-ui.js"></script>
+  <div id="site-search"></div>
+  <noscript>Enable JavaScript to search, or <a class="link" href="/experiments/">browse experiments</a>.</noscript>
+  <script>window.addEventListener('DOMContentLoaded', () => {
+    if (typeof PagefindUI === 'function') new PagefindUI({ element: '#site-search', showSubResults: true, showImages: false });
+    else document.getElementById('site-search').textContent = 'Search is temporarily unavailable. Please try again later.';
+  });</script>
+</main>

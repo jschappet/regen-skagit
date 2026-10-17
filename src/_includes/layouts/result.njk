@@ -1,0 +1,15 @@
+---
+layout: layouts/default.njk
+---
+{% set experiment = collections.experiments | experimentFor(experiment_id) %}
+<main class="mx-auto w-full max-w-4xl px-6 py-16" data-pagefind-body>
+  {% if experiment %}<a class="link" href="{{ experiment.url }}">← {{ experiment.data.title | escape }}</a>{% else %}<a class="link" href="/experiments/">← Explore experiments</a>{% endif %}
+  <p class="mt-8 text-sm uppercase tracking-widest text-primary">Result{% if outcome %} · {{ outcome | escape }}{% endif %}</p>
+  <h1 class="text-4xl font-bold mt-3 mb-4">{{ title | escape }}</h1>
+  <p class="text-sm mb-8">{% if observed_date or date %}Observed {{ (observed_date or date) | researchDate }}{% endif %}{% if author %} · By {{ author | escape }}{% endif %}</p>
+  <section class="bg-surface rounded-xl p-6 mb-8"><h2 class="text-xl font-semibold mb-2">What we learned</h2><p class="whitespace-pre-line">{{ (summary or description) | escape }}</p></section>
+  <article class="content max-w-none">{{ content | safe }}</article>
+  {% include "components/research-images.njk" %}
+  {% if limitations %}<section class="border-t pt-6 mt-8"><h2 class="text-xl font-semibold mb-2">Limitations</h2><p class="whitespace-pre-line">{{ limitations | escape }}</p></section>{% endif %}
+  {% if not experiment %}<p class="mt-8 text-sm">This earlier result has not yet been linked to an experiment.</p>{% endif %}
+</main>

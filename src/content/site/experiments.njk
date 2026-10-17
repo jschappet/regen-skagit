@@ -1,0 +1,30 @@
+---
+layout: layouts/default.njk
+title: Experiments
+permalink: /experiments/
+eleventyNavigation:
+  key: Experiments
+  order: 45
+---
+<main class="mx-auto w-full max-w-6xl px-6 py-16" data-pagefind-body>
+  <p class="uppercase tracking-widest text-sm text-primary mb-3">Learning together</p>
+  <h1 class="text-4xl md:text-5xl font-bold mb-6">Experiments in regeneration</h1>
+  <p class="text-xl max-w-3xl mb-12">Small tests, shared observations, and lessons for the Skagit watershed. Follow what we're trying and see what we're learning along the way.</p>
+  <div class="grid md:grid-cols-2 gap-6">
+    {% for experiment in collections.experiments %}
+      {% set results = collections.results | resultsFor(experiment.data.experiment_id) %}
+      <article class="border rounded-2xl p-6 flex flex-col gap-4">
+        <p class="text-sm uppercase tracking-wide">{{ experiment.data.experiment_status | default('planned') | escape }} · {{ results | length }} result{% if results.length != 1 %}s{% endif %}</p>
+        <h2 class="text-2xl font-semibold"><a class="link" href="{{ experiment.url }}">{{ experiment.data.title | escape }}</a></h2>
+        <p>{{ (experiment.data.description or experiment.data.question) | escape }}</p>
+        {% if results.length %}
+          <div class="bg-surface rounded-lg p-4 mt-auto">
+            <p class="text-sm font-semibold mb-2">Latest observation · {{ (results[0].data.observed_date or results[0].data.date) | researchDate }}</p>
+            <p>{{ (results[0].data.summary or results[0].data.description) | escape }}</p>
+            <a href="{{ results[0].url }}" class="link text-sm inline-block mt-2">Read result →</a>
+          </div>
+        {% else %}<p class="text-sm mt-auto">Results will appear here as observations are published.</p>{% endif %}
+      </article>
+    {% else %}<p class="rounded-xl bg-surface p-8 md:col-span-2">Our first experiments are taking shape. Published experiments and their results will appear here.</p>{% endfor %}
+  </div>
+</main>

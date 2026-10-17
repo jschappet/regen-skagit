@@ -6,7 +6,6 @@ tags: post
 title: Regenerate Skagit - Building Community from the Ground Up
 ---
 
-
 *Exploring a local network of people, relationships, and small experiments that help us learn how to work together.*
 
 At Regenerate Skagit, we're exploring how to build a local system that makes it easier for people to find each other, pursue shared interests, experiment with different ways of living, and learn how to work together.

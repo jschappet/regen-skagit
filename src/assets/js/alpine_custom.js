@@ -81,6 +81,7 @@ async function apiCall(fnName, params = {}, body = null, requestOptions = {}) {
 
   const headers = {
     "Content-Type": "application/json",
+    ...requestOptions.headers,
   };
 
   if (route.auth) {

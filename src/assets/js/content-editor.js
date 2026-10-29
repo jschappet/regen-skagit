@@ -1,7 +1,15 @@
+const contentEditors = new WeakMap();
+
 
 function documentForm() {
     return {
-        id: null, signedIn: false,
+        get formElement() { return this.$refs?.editorForm || this.$el; },
+        id: null, signedIn: false, step: 1, isAdmin: false, editorUnavailable: false,
+        editorPages: [
+            {number: 1, label: 'Metadata', icon: 'M4 4h16v16H4z M8 8h8 M8 12h8 M8 16h5'},
+            {number: 2, label: 'Content', icon: 'm4 16-1 5 5-1L21 7l-4-4L4 16Zm10-10 4 4'},
+            {number: 3, label: 'Images', icon: 'M3 3h18v18H3z M3 17l6-6 4 4 3-3 5 5 M8 7h.01'},
+        ],
         loading: true, busy: false, savedSnapshot: '', beforeUnload: null,
         personal: window.location.pathname.startsWith('/my/'),
         get returnUrl() { return this.personal ? '/my/content/' : '/admin/content/'; },
@@ -11,11 +19,83 @@ function documentForm() {
                 || auth.hasRole('admin') || auth.hasRole('reviewer');
         },
         get dirty() { return !!this.savedSnapshot && JSON.stringify(this.doc) !== this.savedSnapshot; },
-        destroy() { if (this.beforeUnload) window.removeEventListener('beforeunload', this.beforeUnload); },
+        destroy() {
+            if (this.beforeUnload) window.removeEventListener('beforeunload', this.beforeUnload);
+            const state = contentEditors.get(this.formElement);
+            state?.observer.disconnect(); state?.editor.destroy();
+            contentEditors.delete(this.formElement);
+        },
+        async goToStep(step) {
+            this.step = step;
+            await this.$nextTick();
+            if (step === 2) this.mountEditor();
+        },
+        mountEditor() {
+            if (!this.schema.has_markdown || !this.canEdit || contentEditors.has(this.formElement)) return;
+            if (!window.toastui?.Editor) { this.editorUnavailable = true; return; }
+            const element = this.$refs.visualEditor.firstElementChild;
+            const isDark = () => document.documentElement.classList.contains('dark')
+                || document.documentElement.dataset.theme === 'dark';
+            try {
+            const editor = new window.toastui.Editor({
+                el: element, height: '480px', initialEditType: 'wysiwyg',
+                initialValue: this.doc.body_md || '', previewStyle: 'tab',
+                usageStatistics: false, autofocus: false, theme: isDark() ? 'dark' : 'light',
+                toolbarItems: [['heading', 'bold', 'italic', 'strike'], ['hr', 'quote'],
+                    ['ul', 'ol', 'task'], ['table', 'image', 'link'], ['code', 'codeblock']],
+                hooks: {addImageBlobHook: (blob, callback) => {
+                    this.uploadInlineImage(blob, callback);
+                    return false;
+                }},
+                events: {change: () => { this.doc.body_md = editor.getMarkdown(); }},
+            });
+            const observer = new MutationObserver(() => element.classList.toggle('toastui-editor-dark', isDark()));
+            observer.observe(document.documentElement, {attributes: true, attributeFilter: ['class', 'data-theme']});
+            contentEditors.set(this.formElement, {editor, observer});
+            this.editorUnavailable = false;
+            } catch (error) {
+                element.replaceChildren();
+                this.editorUnavailable = true;
+            }
+        },
+        async uploadInlineImage(blob, callback) {
+            if (this.uploadingImages || !this.canEdit) return;
+            this.uploadingImages = true; this.error = null;
+            try {
+                const form = new FormData(); form.append('image', blob);
+                const image = await Alpine.store('api').call('upload', {}, form);
+                if (!image.url) throw new Error('The upload did not return an image URL.');
+                const field = this.schema.fields.find(f => f.type === 'images');
+                if (field) {
+                    this.doc[field.key] ||= [];
+                    this.doc[field.key].push({url: image.url, name: blob.name || 'Image', alt: ''});
+                }
+                callback(image.url, blob.name || 'Image');
+            } catch (error) { this.error = error.message || 'Image upload failed'; }
+            finally { this.uploadingImages = false; }
+        },
+        async validateRequiredFields() {
+            for (const field of this.schema.fields.filter(f => f.required)) {
+                const value = this.doc[field.key];
+                if (value == null || value === '' || (typeof value === 'string' && !value.trim()) || (Array.isArray(value) && !value.length)) {
+                    await this.goToStep(field.key === 'body_md' ? 2 : field.type === 'images' ? 3 : 1);
+                    this.error = `${field.label || field.key} is required before submitting.`;
+                    document.getElementById('content-' + field.key)?.focus();
+                    return false;
+                }
+            }
+            const invalid = this.formElement.querySelector?.(':invalid');
+            if (invalid) {
+                const key = invalid.id.replace('content-', '');
+                const field = this.schema.fields.find(f => f.key === key);
+                await this.goToStep(field?.type === 'images' ? 3 : 1);
+                invalid.reportValidity(); return false;
+            }
+            return true;
+        },
         doc_type: null,
         schema: { label: '', fields: [] },
         doc: { dietary: [] },
-        preview: false,
         error: null,
         ui_message: '',
         prevValues: {}, // stores previous values for auto fields
@@ -37,6 +117,10 @@ function documentForm() {
                 if (!this.doc_type) throw new Error('Choose a content type from My Content first.');
                 await this.loadSchema();
                 await this.loadDraft();
+                const profile = await Alpine.store('api').call('profile_json');
+                this.isAdmin = (profile.roles || []).includes('admin');
+                if (!this.id || (!this.doc.author && this.doc.submitted_by === profile.user?.id)) this.doc.author = profile.user?.display_name || '';
+                this.normalizeImageFields();
                 this.setupFieldActions();
                 this.savedSnapshot = JSON.stringify(this.doc);
                 this.beforeUnload = event => {
@@ -197,19 +281,18 @@ function documentForm() {
                 (this.doc[imageField.key] || []).slice(firstNewImageIndex).forEach(image => this.insertMarkdownImage(image));
             },
 
-            insertMarkdownImage(image) {
-                if (!image?.url) return;
-
-                const editor = this.$refs.markdownEditor;
-                const start = editor?.selectionStart ?? this.doc.body_md.length;
-                const end = editor?.selectionEnd ?? start;
-                const markdown = `![${image.alt || image.name || 'Image'}](${image.url})`;
-                this.doc.body_md = `${this.doc.body_md.slice(0, start)}${markdown}${this.doc.body_md.slice(end)}`;
-
-                this.$nextTick(() => {
-                    editor?.focus();
-                    editor?.setSelectionRange(start + markdown.length, start + markdown.length);
-                });
+            async insertMarkdownImage(image) {
+                if (!image?.url || !this.canEdit) return;
+                await this.goToStep(2);
+                const editor = contentEditors.get(this.formElement)?.editor;
+                if (editor) {
+                    editor.exec('addImage', {imageUrl: image.url, altText: image.alt || image.name || 'Image'});
+                    this.doc.body_md = editor.getMarkdown();
+                    editor.focus();
+                } else {
+                    const alt = (image.alt || image.name || 'Image').replace(/[\[\]\\]/g, '\\$&');
+                    this.doc.body_md += `\n\n![${alt}](<${image.url.replace(/>/g, '%3E')}>)`;
+                }
             },
         // ------------------------
         // New helper functions
@@ -294,13 +377,15 @@ function documentForm() {
 
         async save(submit = false) {
             if (this.busy || !this.canEdit || this.uploadingImages) return false;
-            this.busy = true; this.error = null; this.ui_message = '';
+            this.error = null; this.ui_message = '';
+            if (submit && !await this.validateRequiredFields()) return false;
+            this.busy = true;
             try {
                 const payload = this.buildPayload();
-                if (submit && !this.$el.reportValidity()) return false;
                 const data = await Alpine.store('api').call(this.id ? 'content_update' : 'content_create', this.id ? {id: this.id} : {}, payload);
                 this.id = data.id;
                 this.doc.status = data.status;
+                if (data.author !== undefined) this.doc.author = data.author;
                 this.savedSnapshot = JSON.stringify(this.doc);
                 const url = new URL(window.location.href);
                 url.searchParams.set('id', this.id);

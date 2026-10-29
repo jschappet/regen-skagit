@@ -1,0 +1,59 @@
+<style>
+/* Explicit paired colors keep shared screens readable with either site's theme. */
+.heron-content {
+  --editor-bg: #ffffff; --editor-soft: #f1f5f9; --editor-fg: #172b36;
+  --editor-muted: #475569; --editor-line: #94a3b8; --editor-accent: #166344;
+  --color-base-100: var(--editor-bg); --color-base-200: var(--editor-soft);
+  --color-base-300: var(--editor-line); --color-base-content: var(--editor-fg);
+  --color-primary: var(--editor-accent); --color-primary-content: #ffffff;
+  color: var(--editor-fg); background: var(--editor-bg); color-scheme: light;
+}
+html.dark .heron-content, [data-theme="dark"] .heron-content {
+  --editor-bg: #17232d; --editor-soft: #243542; --editor-fg: #f1f5f9;
+  --editor-muted: #cbd5e1; --editor-line: #718596; --editor-accent: #86efac;
+  --color-primary-content: #10251b; color-scheme: dark;
+}
+.heron-content :is(h1,h2,h3,h4,label,legend) { color: var(--editor-fg); }
+.heron-content :is(input,textarea,select) { color: var(--editor-fg); background-color: var(--editor-bg); border-color: var(--editor-line); }
+.heron-content :is(input,textarea)::placeholder { color: var(--editor-muted); opacity: 1; }
+.heron-content :is(.text-base-content\/60,.text-base-content\/70,.editor-muted) { color: var(--editor-muted); }
+.heron-content .prose { color: var(--editor-fg); --tw-prose-body: var(--editor-fg); --tw-prose-headings: var(--editor-fg); --tw-prose-bold: var(--editor-fg); --tw-prose-links: var(--editor-accent); --tw-prose-code: var(--editor-fg); --tw-prose-quotes: var(--editor-fg); }
+.heron-content :focus-visible { outline: 3px solid var(--editor-accent); outline-offset: 3px; }
+.content-editor { border: 1px solid var(--editor-line); margin-block: 1.5rem; }
+.editor-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+.editor-heading h1 { font-size:clamp(1.6rem,4vw,2.2rem); line-height:1.2; margin: .4rem 0 .75rem; overflow-wrap:anywhere; }
+.editor-eyebrow { color:var(--editor-accent); font-size:.8rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin:0; }
+.editor-steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; }
+.editor-steps button { display:flex; align-items:center; gap:.75rem; padding:1rem; border:1px solid var(--editor-line); border-radius:.75rem; text-align:left; background:var(--editor-soft); color:var(--editor-fg); cursor:pointer; }
+.editor-steps button[aria-current="step"] { border:2px solid var(--editor-accent); padding:calc(1rem - 1px); box-shadow:0 2px 0 var(--editor-accent); }
+.editor-steps small, .editor-steps strong { display:block; }
+.editor-steps small { color:var(--editor-muted); font-size:.75rem; }
+.editor-steps svg, .editor-actions svg { width:1.3rem; height:1.3rem; flex-shrink:0; }
+.editor-fields { display:grid; gap:1.25rem; }
+.editor-fields .label { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem; margin-bottom:.4rem; }
+.editor-fields input[readonly] { background:var(--editor-soft); }
+.editor-actions { position:sticky; bottom:0; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; padding:1rem 0; border-top:1px solid var(--editor-line); background:var(--editor-bg); z-index:5; }
+.content-editor .toastui-editor-defaultUI { border-color:var(--editor-line); border-radius:.5rem; overflow:hidden; }
+.content-editor .toastui-editor-contents { font-size:16px; }
+.content-editor .toastui-editor-contents :is(h1,h2,h3,h4,p,li,td,th) { color:inherit; }
+.content-editor .toastui-editor-contents ul { list-style:disc; padding-left:1.5rem; }
+.content-editor .toastui-editor-contents ol { list-style:decimal; padding-left:1.5rem; }
+.content-editor .toastui-editor-contents ol > li { padding-left:0; }
+.content-editor .toastui-editor-contents ol > li::before { content:none; }
+.content-editor .toastui-editor-dark :is(.toastui-editor-contents,.ProseMirror) { color:#f1f5f9; }
+.content-editor .toastui-editor-dark .toastui-editor-contents :is(a,code) { color:#a5d6ff; }
+.content-editor [x-ref="visualEditor"] { min-width:0; }
+@media(max-width:540px) {
+ .editor-steps button { padding:.65rem .35rem; justify-content:center; gap:.3rem; }
+ .editor-steps button[aria-current="step"] { padding:calc(.65rem - 1px) calc(.35rem - 1px); }
+ .editor-steps svg { width:1rem; height:1rem; }
+ .editor-actions { position:static; }
+ .editor-actions > div { width:100%; }
+ .editor-actions .btn { flex:1; }
+ .content-editor .toastui-editor-defaultUI-toolbar { flex-wrap:wrap; height:auto; padding:4px; }
+ .content-editor .toastui-editor-toolbar-group { margin:0; }
+}
+.heron-content .btn:not(.btn-primary):not(.btn-error) { background:var(--editor-soft); color:var(--editor-fg); border:1px solid var(--editor-line); }
+.heron-content nav[aria-label="Content tools"] > button { background:transparent; color:var(--editor-fg); padding:0; margin:0 0 0 auto; border:0; box-shadow:none; }
+.heron-content button:disabled { opacity:.6; cursor:wait; }
+</style>

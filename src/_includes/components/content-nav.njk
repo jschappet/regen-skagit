@@ -1,6 +1,6 @@
+{% include "components/content-theme.njk" %}
 <style>
-.heron-content { --color-primary: #166534; --color-primary-content: #fff; }
-.heron-content .btn-primary { background: #166534; border-color: #166534; color: #fff; }
+.heron-content .btn-primary { background: var(--editor-accent); border-color: var(--editor-accent); color: var(--color-primary-content); }
 .heron-content input, .heron-content select, .heron-content textarea { max-width: 100%; }
 @media (max-width: 640px) { .heron-content .btn { min-height: 44px; } }
 </style>
@@ -8,4 +8,14 @@
   <a class="link" href="/my/content/">My Content</a>
   <a class="link" href="/admin/content/" x-show="$store.auth.hasRole('admin') || $store.auth.hasRole('reviewer')">Manage Content</a>
   <a class="link" href="/admin/roles/" x-show="$store.auth.hasRole('admin')">Manage Roles</a>
+  <button type="button" class="link" x-data="{
+    dark: false,
+    init() {
+      let saved; try { saved = localStorage.getItem('theme'); } catch {}
+      this.dark = saved ? saved === 'dark' : document.documentElement.classList.contains('dark') || document.documentElement.dataset.theme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.apply();
+    },
+    apply() { document.documentElement.classList.toggle('dark', this.dark); document.documentElement.dataset.theme = this.dark ? 'dark' : 'light'; },
+    toggle() { this.dark = !this.dark; this.apply(); try { localStorage.setItem('theme', this.dark ? 'dark' : 'light'); } catch {} }
+  }" x-on:click="toggle()" :aria-pressed="dark" aria-label="Dark mode"><span aria-hidden="true">◐</span> <span x-text="dark ? 'Light mode' : 'Dark mode'"></span></button>
 </nav>

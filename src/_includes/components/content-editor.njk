@@ -1,44 +1,40 @@
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/3.2.2/toastui-editor.min.css">
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/3.2.2/theme/toastui-editor-dark.min.css">
+<script src="https://uicdn.toast.com/editor/3.2.2/toastui-editor-all.min.js"></script>
 <script src="/assets/js/content-access.js"></script>
 <script src="/assets/js/content-editor.js"></script>
-<form
-  x-data="documentForm()"
-  x-show="signedIn || error" x-cloak
-  @submit.prevent="submit"
-  class="heron-content max-w-6xl mx-auto bg-base-100 p-4 sm:p-8 rounded-lg shadow space-y-6"
->
-
-    {% include "components/content-nav.njk" %}
-    <a class="link" :href="returnUrl">← Back to content</a>
-    <p x-show="loading" role="status">Loading editor…</p>
-    <p x-show="!loading && !canEdit">This content is <span x-text="doc.status"></span>. Submitted content is awaiting review; approved content is published with the next site build.</p>
-    <fieldset :disabled="loading || busy || !canEdit" class="space-y-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-semibold">
-            <span x-text="doc?.title || schema?.label || 'Document'"></span>
-            (<span x-text="id || 'new'"></span>)
-        </h1>
-
-        <span class="badge badge-outline" x-text="doc_type"></span>
-    </div>
-
-    <!-- Errors -->
-    <div x-show="error" class="alert alert-error">
-        <span x-text="error"></span>
-    </div>
-
-    <!-- Main Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        <!-- LEFT: Details -->
-        <div class="space-y-4 lg:sticky lg:top-6 self-start">
-
+<form x-ref="editorForm" x-data="documentForm()" x-show="signedIn || error" x-cloak novalidate
+  x-on:submit.prevent="submit" class="heron-content content-editor max-w-4xl mx-auto p-4 sm:p-8 rounded-lg space-y-6">
+  {% include "components/content-nav.njk" %}
+  <a class="link" :href="returnUrl">← Back to content</a>
+  <header class="editor-heading">
+    <div><p class="editor-eyebrow" x-text="schema.label || 'Create something new'"></p>
+    <h1 x-text="doc.title || 'Untitled draft'"></h1>
+    <p class="editor-muted">A little detail, your story, and the images that bring it to life.</p></div>
+    <span class="badge badge-outline" x-text="(doc.status || 'draft').replaceAll('_', ' ')"></span>
+  </header>
+  <p x-show="loading" role="status">Loading editor…</p>
+  <div x-show="error" class="alert alert-error" role="alert" x-text="error"></div>
+  <div x-show="ui_message" class="alert alert-info" role="status" x-text="ui_message"></div>
+  <p x-show="!loading && !canEdit">This content is <span x-text="doc.status"></span>. It is available to read while awaiting review or publication.</p>
+  <nav class="editor-steps" aria-label="Editor pages">
+    <template x-for="page in editorPages" :key="page.number">
+      <button type="button" :aria-current="step === page.number ? 'step' : null" x-on:click="goToStep(page.number)" :disabled="loading">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path :d="page.icon"></path></svg>
+        <span><small x-text="'Page ' + page.number"></small><strong x-text="page.label"></strong></span>
+      </button>
+    </template>
+  </nav>
+  <fieldset :disabled="loading || busy || !canEdit" class="space-y-6">
+    <section x-show="step === 1" aria-label="Metadata"><h2>First, the details</h2><p class="editor-muted">Give your content a title and a few details so others can find it.</p></section>
+    <section x-show="step === 3" aria-label="Images"><h2>Add your images</h2><p class="editor-muted">Upload images, add descriptions, then insert them into your content.</p><p x-show="!schema.fields.some(f => f.type === 'images')">This content type has no image collection. You can add an image by URL in the content editor.</p></section>
+    <div class="editor-fields">
             <template x-if="schema && Array.isArray(schema.fields)">
                 <template x-for="field in schema.fields" :key="field.key">
-                    <template x-if="field.key !== 'body_md'">
-                        <div>
+                    <template x-if="field.key !== 'body_md' && field.type !== 'hidden'">
+                        <div x-show="step === (field.type === 'images' ? 3 : 1)">
                             <label class="label" :for="'content-' + field.key">
-                                <span x-text="field.label"></span>
+                                <span x-text="field.label"></span><span x-show="field.key === 'author' && !isAdmin" class="editor-muted"> · Set from your profile</span>
                                 <span x-show="field.required" class="text-red-500">*</span>
                             </label>
 
@@ -47,7 +43,7 @@
                                 <input
                   type="text"
                   class="input input-bordered w-full"
-                  x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true"
+                  x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true || (field.key === 'author' && !isAdmin)"
                   :required="field.required === true"
 />
                             </template>
@@ -66,7 +62,7 @@
                                 <textarea
                   class="textarea textarea-bordered w-full"
                   rows="3"
-                  x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true"
+                  x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true || (field.key === 'author' && !isAdmin)"
                   :required="field.required === true"
                 ></textarea>
                             </template>
@@ -89,12 +85,12 @@
 
                             <!-- Hidden -->
                             <template x-if="field.type === 'hidden'">
-                                <input type="hidden" x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true"/>
+                                <input type="hidden" x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true || (field.key === 'author' && !isAdmin)"/>
                             </template>
 
                             <!-- Date -->
                             <template x-if="field.type === 'date'">
-                                <input type="date" x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true"/>
+                                <input type="date" class="input input-bordered w-full" x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true || (field.key === 'author' && !isAdmin)"/>
                             </template>
 
                             <!-- Images -->
@@ -108,7 +104,7 @@
             <button
                 type="button"
                 class="btn btn-sm btn-primary"
-                @click="editingImageIndex = null; $refs.imageModal.showModal()"
+                x-on:click="editingImageIndex = null; $refs.imageModal.showModal()"
             >
                 Manage images
             </button>
@@ -133,17 +129,17 @@
                         type="button"
                         class="min-w-0 flex-1 truncate text-left text-sm hover:text-primary"
                         :title="image.name || image.alt || 'Untitled image'"
-                        @click="editingImageIndex = index; $refs.imageModal.showModal()"
+                        x-on:click="editingImageIndex = index; $refs.imageModal.showModal()"
                         x-text="image.name || image.alt || `Image ${index + 1}`"
                     ></button>
 
                     <button
                         type="button"
                         class="btn btn-xs"
-                        title="Copy Markdown"
-                        @click="copyMarkdownImage(image)"
+                        title="Insert into content"
+                        x-on:click="insertMarkdownImage(image)"
                     >
-                        Copy MD
+                        Insert into content
                     </button>
                 </div>
             </template>
@@ -161,8 +157,8 @@
                     <button
                         type="button"
                         class="btn btn-sm btn-circle btn-ghost"
-                        @click="$refs.imageModal.close()"
-                    >✕</button>
+                        x-on:click="$refs.imageModal.close()"
+                     aria-label="Close images">✕</button>
                 </div>
 
                 <div
@@ -227,7 +223,7 @@
                             <button
                                 type="button"
                                 class="btn btn-sm"
-                                @click="copyMarkdownImage(doc[field.key][editingImageIndex])"
+                                x-on:click="copyMarkdownImage(doc[field.key][editingImageIndex])"
                             >
                                 Copy Markdown
                             </button>
@@ -235,7 +231,7 @@
                             <button
                                 type="button"
                                 class="btn btn-sm btn-error"
-                                @click="
+                                x-on:click="
                                     doc[field.key].splice(editingImageIndex, 1);
                                     editingImageIndex = null;
                                     $refs.imageModal.close();
@@ -254,9 +250,7 @@
                 </template>
             </div>
 
-            <form method="dialog" class="modal-backdrop">
-                <button>Close</button>
-            </form>
+            <button type="button" class="modal-backdrop" aria-label="Close images" x-on:click="$refs.imageModal.close()"></button>
         </dialog>
     </div>
 </template>
@@ -266,7 +260,7 @@
                   type="text"
                   class="input input-bordered w-full"
                   placeholder="comma separated"
-                  x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true"
+                  x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true || (field.key === 'author' && !isAdmin)"
 />
                             </template>
 
@@ -275,7 +269,7 @@
                                 <select
                   class="select select-bordered w-full"
                   :required="field.required === true"
-                  x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true"
+                  x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true || (field.key === 'author' && !isAdmin)"
                 >
                                     <option value="">Select…</option>
                                     <template x-for="opt in field.options" :key="opt.label">
@@ -289,7 +283,7 @@
                                 <select
         class="select select-bordered w-full"
         :required="field.required === true"
-        x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true"
+        x-model="doc[field.key]" :id="'content-' + field.key" :readonly="field.readonly === true || (field.key === 'author' && !isAdmin)"
         multiple
     >
                                     <template x-for="opt in field.options" :key="opt.value">
@@ -302,53 +296,28 @@
                 </template>
             </template>
 
-        </div>
 
-        <!-- RIGHT: Markdown -->
-        <div class="lg:col-span-2 space-y-4">
-
-            <template x-if="schema?.has_markdown">
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="font-semibold">Content</h2>
-                        <button
-              type="button"
-              class="btn btn-sm btn-outline"
-              @click="preview = !preview"
-            >
-                            <span x-text="preview ? 'Edit' : 'Preview'"></span>
-                        </button>
-                    </div>
-
-                    <textarea
-            x-show="!preview"
-            x-model="doc.body_md" aria-label="Content" :required="schema.fields.some(f => f.key === 'body_md' && f.required === true)"
-            rows="20"
-            class="textarea textarea-bordered w-full font-mono"
-            @dragover.prevent
-            @drop.prevent="handleMarkdownDrop($event)"
-          ></textarea>
-
-                    <div
-            x-show="preview"
-            class="prose max-w-none border border-base-300 rounded p-4"
-            x-html="renderedMarkdown"
-          ></div>
-                </div>
-            </template>
-
-        </div>
     </div>
-
-    <div class="flex flex-wrap gap-3 sticky bottom-0 bg-base-100 py-4">
-      <button type="button" class="btn btn-outline" :disabled="uploadingImages" @click="save()">Save Draft</button>
-      <button type="submit" class="btn btn-primary" :disabled="uploadingImages" x-show="!doc.status || ['draft', 'changes_requested'].includes(doc.status)">Submit for Review</button>
+    <section x-show="step === 2" aria-label="Content" class="space-y-4">
+      <h2>Tell your story</h2>
+      <p class="editor-muted">Write and format naturally. Your content is saved as Markdown.</p>
+      <div x-show="schema.has_markdown && canEdit" x-ref="visualEditor" :inert="busy || uploadingImages"><div x-ignore></div></div>
+      <div x-show="schema.has_markdown && !canEdit" class="prose max-w-none" x-html="renderedMarkdown"></div>
+      <div x-show="schema.has_markdown && editorUnavailable && canEdit">
+        <p role="status">The visual editor could not load. You can still edit and save Markdown below.</p>
+        <textarea x-ref="markdownEditor" x-model="doc.body_md" aria-label="Markdown content" rows="18" class="textarea textarea-bordered w-full font-mono"></textarea>
+      </div>
+      <p x-show="!schema.has_markdown">This content type uses the details on page one and has no separate content body.</p>
+    </section>
+  </fieldset>
+  <footer class="editor-actions">
+    <div class="flex gap-2">
+      <button type="button" class="btn btn-outline" x-show="step > 1" x-on:click="goToStep(step - 1)">← Back</button>
+      <button type="button" class="btn btn-outline" x-show="step < 3" x-on:click="goToStep(step + 1)">Next →</button>
     </div>
-    </fieldset>
-    <div x-show="!loading && !canEdit" class="prose max-w-none" x-html="renderedMarkdown"></div>
-    <!-- Status -->
-    <div x-show="ui_message" class="alert alert-info">
-        <span x-text="ui_message"></span>
+    <div class="flex flex-wrap gap-2" x-show="canEdit">
+      <button type="button" class="btn btn-outline" :disabled="loading || busy || uploadingImages" x-on:click="save()"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h12l4 4v14H3V3h2Zm2 0v6h10V3M7 21v-8h10v8"/></svg>Save draft</button>
+      <button type="submit" class="btn btn-primary" :disabled="loading || busy || uploadingImages" x-show="!doc.status || ['draft', 'changes_requested'].includes(doc.status)"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 11 18-8-8 18-2-8-8-2Zm8 2L21 3"/></svg>Submit for review</button>
     </div>
-
+  </footer>
 </form>

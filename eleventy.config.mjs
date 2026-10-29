@@ -34,6 +34,7 @@ export default function (eleventyConfig) {
       '--site', directories.output, '--exclude-selectors', '[data-pagefind-ignore], nav, footer']);
   });
   eleventyConfig.addPassthroughCopy('src/assets/js/');
+  eleventyConfig.addPassthroughCopy('src/assets/atlas/');
   eleventyConfig.addPassthroughCopy('src/assets/json/');
   eleventyConfig.addPassthroughCopy({
       "src/content/blog": "blog",

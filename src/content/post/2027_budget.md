@@ -5,28 +5,200 @@ doc_type: post
 tags: post
 title: "Regenerate Skagit / Raft: Proposed Budget"
 ---
-# Regenerate Skagit / Raft: Proposed Budget
+# Regenerate Skagit / Raft: Phased Budget
 
-**Discussion draft for Cindy and Genevieve**  
+**Discussion draft for Genevieve and Cindy**  
+**Updated:** November 2, 2026  
 **Fiscal year:** November 1, 2026–October 31, 2027  
-**Prepared:** October 29, 2026  
-**All amounts in USD.**
+**All amounts are USD.**
 
-This draft separates the proposed use of **$15,000 already available** from three possible levels of **additional funding**. The additional funding scenarios are alternatives, not cumulative requests. Allocations and activities are proposals for discussion, not spending or grant commitments.
+This draft replaces the earlier annual operating proposal with a three-phase plan. It separates **$15,000 in existing funds** from three alternative additional-funding scenarios. New allowances, workshop counts, and initial award amounts are proposed planning estimates for discussion, not commitments.
 
-## Purpose and approach
+## Purpose
 
-Support people developing experiments that contribute to the health of the Skagit Watershed. Through Raft gatherings and local relationships, participants develop ideas, share them, discover connections, experiment, and learn together.
+The primary intention of this budget is to follow the emerging creative inspirations of the Skagit Watershed—to reward creators, support experimentation, and discover possibilities through shared learning.
 
-The Raft’s working cycle is **Develop → Share → Map → Experiment → Learn → Revise**. Maps emerge from relationships and experiments. This ongoing practice complements Regenerate Cascadia’s work without reproducing its mapping workshop.
+There is wonder in the creative process. We cannot know everything an experiment will make possible before we undertake it. A guiding question for every experiment is:
 
-Heron supports this work through an evolving atlas, Raft tools, a local knowledge base, stories of place, records of experiments and results, and a ledger of resource flows through the watershed.
+**“What is now possible that was not before?”**
 
-## 1. Proposed Spend for Existing Funds
+The budget supports a local decision council, shared tools for recording and mapping experiments, and workshops and outreach. It compensates the creative work behind these activities: methodology development, writing, educational resources, artwork, interviews, coordination, facilitation, and storytelling.
 
-These funds already exist. They are not a grant request and are not included in the additional funding scenarios below.
+## What we mean by an experiment
 
-| Proposed allocation | Amount |
+An experiment is a small, self-directed action someone chooses to take in response to an interest or question. It is something they can try themselves over a short period of time, learning through doing and discovering what happens. The action and what comes from it are documented as part of the ongoing story of place.
+
+The distinction between **interest, experiment, and action** matters. Someone starts with a broader interest, chooses something to try, and learns through taking action.
+
+Experiments do not require a group doing the same activity. People may exchange knowledge, work independently on parallel experiments, or create opportunities for others to participate. All can become stories of place.
+
+The Raft’s working cycle is **Develop → Share → Map → Experiment → Learn → Revise**. Maps emerge from relationships and experiments. The practice complements Cascadia’s work while following its own approach.
+
+## Three phases
+
+### Phase One: Develop and Learn — 3 months
+
+**November 2026–January 2027**
+
+Develop the website, experiment methodology, and educational materials, including web content, a booklet, instructions, artwork, and logos. Conduct community interviews to discover experiments already happening and ideas people want to explore.
+
+**Goal:** Collect experiments from the regenerate community and use participants’ experiences and feedback to validate and improve the website and educational materials.
+
+This phase supports development, content creation, design, interviewing, coordination, and facilitation.
+
+### Phase Two: Form the Decision Council — 3 months
+
+**February–April 2027**
+
+Bring together **five to seven people from the Skagit Watershed** to form a council intended to operate non-hierarchically, initially using **sociocracy** as its governance approach.
+
+**Goal:** Form the group, establish shared practices, meet, and select **three to five experiments** to support.
+
+The council will develop its guidelines around regenerative values. Proposed starting principles include:
+
+- Being rooted in place and responsive to the Skagit Watershed.
+- Honoring the human and non-human world.
+- Practicing reciprocity, care, and responsible stewardship.
+- Making decisions transparently and welcoming different perspectives.
+- Supporting learning, adaptation, and emerging creativity.
+
+The council reviews experiments, allocates support, monitors, and may offer advice. **Current Stewards manage active funding.**
+
+### Phase Three: Expand Participation — 6 months
+
+**May–October 2027**
+
+Expand outreach throughout the watershed through more workshops, interviews, and experiments. Build on what the first two phases reveal, adapting the website, educational resources, and support practices as participation grows.
+
+**Goal:** Invite broader participation and help new relationships, experiments, and possibilities emerge.
+
+## Additional funding: three alternatives
+
+Each scenario covers the same fiscal year. **10% goes to Cascadia first**, with the remaining 90% available to Skagit. These scenarios are alternatives, not cumulative requests. Existing funds are excluded.
+
+| Allocation | $100,000 Launch | $250,000 Full-Year Operation | $1,000,000 Expanded Fund |
+|---|---:|---:|---:|
+| Proposed operating level | Minimum | Realistic | Nice to Have |
+| **Total additional funding** | **$100,000** | **$250,000** | **$1,000,000** |
+| Cascadia — 10% | $10,000 | $25,000 | $100,000 |
+| **Available to Skagit** | **$90,000** | **$225,000** | **$900,000** |
+| Phase One operations | $9,710 | $14,810 | $22,210 |
+| Phase Two operations | $13,110 | $17,610 | $21,210 |
+| Phase Three operations | $33,820 | $50,220 | $67,620 |
+| **Total Skagit operations** | **$56,640** | **$82,640** | **$111,040** |
+| Phase Two initial experiment awards | $15,000 | $20,000 | $25,000 |
+| Phase Three remaining experiment awards | $18,360 | $122,360 | $763,960 |
+| **Total microgrant pool** | **$33,360** | **$142,360** | **$788,960** |
+| **Total allocated, including Cascadia** | **$100,000** | **$250,000** | **$1,000,000** |
+| **Unallocated balance** | **$0** | **$0** | **$0** |
+
+### Phase One budget
+
+| Item | Minimum | Realistic | Nice to Have |
+|---|---:|---:|---:|
+| Heron: 3 months at $1,270 | $3,810 | $3,810 | $3,810 |
+| Experiment methodology and instructions* | $1,500 | $2,500 | $4,000 |
+| Educational content and booklet design* | $1,500 | $3,000 | $5,000 |
+| Artwork and logos* | $750 | $1,500 | $2,500 |
+| Community interviews and documentation* | $1,000 | $2,000 | $3,500 |
+| Pilot printing and participant feedback* | $250 | $500 | $1,000 |
+| Coordination and facilitation* | $900 | $1,500 | $2,400 |
+| **Phase One total** | **$9,710** | **$14,810** | **$22,210** |
+
+*Proposed allowances. Interview counts, assignments, hours, and specific outputs remain to be developed. Educational content includes writing, editing, web content, and booklet layout; it is separate from Heron tool development.*
+
+### Phase Two budget
+
+Council meetings begin in Phase Two. The draft uses five members at launch and seven at higher funding levels, paid **$300 per person per monthly meeting**. Organizing receives **$1,000 per month**.
+
+| Item | Minimum | Realistic | Nice to Have |
+|---|---:|---:|---:|
+| Council members | 5 | 7 | 7 |
+| Council member compensation: 3 meetings | $4,500 | $6,300 | $6,300 |
+| Council organizing: 3 months | $3,000 | $3,000 | $3,000 |
+| Meeting space, food, and participant support* | $900 | $1,500 | $2,100 |
+| Heron: 3 months | $3,810 | $3,810 | $3,810 |
+| Stewardship of active funds and experiments* | $900 | $3,000 | $6,000 |
+| **Phase Two operations** | **$13,110** | **$17,610** | **$21,210** |
+| Proposed initial experiment count | 3 | 4 | 5 |
+| Proposed average award | $5,000 | $5,000 | $5,000 |
+| **Initial award allocation** | **$15,000** | **$20,000** | **$25,000** |
+
+The $5,000 average is a planning assumption, not a fixed grant amount or an award commitment. These awards are part of the total microgrant pool.
+
+### Phase Three budget
+
+Council meetings and organizing continue for six months. The proposed **2 / 3 / 4 workshops** replace the earlier single-workshop assumption in response to the expanded outreach phase.
+
+| Item | Minimum | Realistic | Nice to Have |
+|---|---:|---:|---:|
+| Council member compensation: 6 meetings | $9,000 | $12,600 | $12,600 |
+| Council organizing: 6 months | $6,000 | $6,000 | $6,000 |
+| Meeting space, food, and participant support* | $1,800 | $3,000 | $4,200 |
+| Heron: 6 months | $7,620 | $7,620 | $7,620 |
+| Stewardship of active funds and experiments* | $1,800 | $6,000 | $12,000 |
+| Proposed workshop count* | 2 | 3 | 4 |
+| Workshop costs, including preparation* | $3,400 | $6,600 | $12,000 |
+| Raft and community outreach* | $2,400 | $4,800 | $7,200 |
+| Further interviews and storytelling* | $1,800 | $3,600 | $6,000 |
+| **Phase Three operations** | **$33,820** | **$50,220** | **$67,620** |
+| **Remaining experiment award allocation** | **$18,360** | **$122,360** | **$763,960** |
+
+*Proposed estimates. Raft and outreach allowances are separate from workshop event costs. Interviews and storytelling support documentation and sharing of community learning.*
+
+### Basis for recurring and event costs
+
+| Cost driver | Minimum | Realistic | Nice to Have |
+|---|---:|---:|---:|
+| Council meeting space, per meeting* | $100 | $150 | $200 |
+| Council meeting food, per meeting* | $100 | $150 | $200 |
+| Other participant support, per meeting* | $100 | $200 | $300 |
+| Stewardship, per month in Phases Two and Three* | $300 | $1,000 | $2,000 |
+| Workshop preparation, per event | $1,000 | $1,000 | $1,000 |
+| Workshop venue, per event* | $300 | $500 | $750 |
+| Workshop refreshments, per event* | $200 | $300 | $500 |
+| Workshop participant access, per event* | $200 | $400 | $750 |
+| **Total per workshop** | **$1,700** | **$2,200** | **$3,000** |
+
+*Estimates for review, not vendor quotes. Council participant support is for people other than paid council members. The plan includes nine council meetings in total.*
+
+### Heron’s provisional minimum
+
+Heron supports the website, atlas, Raft, local knowledge repository, experiment records, and ledger of resource flows.
+
+| Item | Monthly | Full fiscal year |
+|---|---:|---:|
+| Website hosting | $50 | $600 |
+| AI subscription for development | $100 | $1,200 |
+| Internet access | $120 | $1,440 |
+| Developer effort | $1,000 | $12,000 |
+| **Total** | **$1,270** | **$15,240** |
+
+This minimum is included across the three phases in every scenario. Expanded development or additional contributors remain **TBD**.
+
+## Microgrant structure and stewardship
+
+Individual grants range from **$1,000 to $10,000**. **Every grant** must follow this spending plan:
+
+| Category | Required share | $1,000 example | $10,000 example |
+|---|---:|---:|---:|
+| Infrastructure — land, tools, physical assets | 50% | $500 | $5,000 |
+| Stipends | 25% | $250 | $2,500 |
+| Supplies | 15% | $150 | $1,500 |
+| Services | 10% | $100 | $1,000 |
+| **Total** | **100%** | **$1,000** | **$10,000** |
+
+Cascadia’s 10% is deducted at program level, not again from each grant.
+
+The proposed council ceiling is **$2.5 million in grants awarded per fiscal year**, rather than the total amount of active funding. Current Stewards manage active funding, including awards carried forward from earlier years. All three scenarios are below the proposed ceiling, but practical capacity also depends on the number and complexity of experiments.
+
+Eligibility, review criteria, land-related costs, reporting, and detailed governance practices remain to be developed.
+
+## Proposed Spend for Existing Funds
+
+These funds already exist. They are separate from the additional funding scenarios above.
+
+| Allocation | Amount |
 |---|---:|
 | Social infrastructure and Raft gatherings | $2,500 |
 | Landscape stewardship and regenerative experiments | $3,500 |
@@ -35,168 +207,63 @@ These funds already exist. They are not a grant request and are not included in 
 | Participatory governance and flow funding pilots | $2,000 |
 | Context-based indicators, monitoring and storytelling | $1,500 |
 | Emergent landscape opportunities | $1,000 |
-| **Total existing funds allocated** | **$15,000** |
-| **Unallocated balance** | **$0** |
+| **Total** | **$15,000** |
 
-**Open point:** The original template includes a DOB administration fee. Whether that fee applies to these existing funds, or has already been covered, remains unresolved. No additional fee has been deducted from these seven allocations. If required, the allocation plan will need revision.
+The original template’s DOB administration fee remains unresolved for these existing funds. No new fee has been deducted here. If applicable and not already covered, the allocations will need revision.
 
-## 2. Additional Funding Plan
+## Experiments: community ideas and examples together
 
-For each scenario, **10% goes to Cascadia first**, and the remaining 90% goes to Skagit. The proposed Skagit operating budget is funded before the remaining amount is allocated to microgrants.
+All twelve entries are included below. The first eight are ideas heard in the community; the last four are examples illustrating the Raft method. None is an approved award. Named people are associated with ideas, not confirmed delivery roles. Funding for the community ideas is **TBD**; no funding request was supplied for the four examples.
 
-All three scenarios cover the same full fiscal year. “Launch phase” describes the scale of activity, not a shorter period.
+| Experiment / idea | Person | Interest | Experiment or draft question | Action / first step | Status |
+|---|---|---|---|---|---|
+| Book / card deck for grief and reflection | Elizabeth | To define with Elizabeth | What might a book or card deck offer people as they explore grief and reflection? | To define with Elizabeth | Community idea; draft question |
+| Local apples: growing, processing and recipe book | Jan | To define with Jan | How might local apple-growing knowledge, processing practices and recipes be gathered and shared in a book? | To define with Jan | Community idea; draft question |
+| Local investment research | Schappet | To define | How do I invest locally instead of in the stock market with my 401(k) and retirement funds? | To define | Community idea |
+| Building a compost toilet | Schappet | To define | How do you build a compost toilet? | To define | Community idea |
+| Water filtration | Schappet | To define | How do you filter water? | To define | Community idea |
+| Rain catchment | Schappet | To define | What could a small rain-catchment experiment help us learn? | To define | Community idea; draft question |
+| MeshCore — offline distributed communications | Schappet | To define | How might MeshCore support an offline distributed communications experiment in the watershed? | To define | Community idea; draft question |
+| Food Shed — membership-based purchasing and distribution | Schappet | To define | How might a local membership-based food purchasing and distribution effort work? | To define | Community idea; draft question |
+| Local food and farm-direct purchasing | Not specified | Local food, food systems, and supporting local farms | Find out whether I can spend half of my vegetable budget buying directly from farms I can drive to. | Identify nearby farms, visit them, compare availability and prices, and try shifting half of my vegetable spending to farm-direct purchases. | Example: personal practice |
+| Conflict resolution | Not specified | Conflict resolution and how people navigate disagreements | Learn how different people and groups approach conflict resolution. | Meet with three people involved in conflict resolution from different perspectives and learn about their approaches and practices. | Example: research and learning |
+| Pollinator gardens | Not specified | Pollinators, gardening, and backyard habitat | Establish a pollinator garden in my backyard while connecting with others interested in doing the same. | Meet with other interested people, exchange ideas and knowledge, and begin setting up a pollinator garden. | Example: hands-on creation |
+| Community gathering downtown | Not specified | Community, downtown spaces, and bringing people together | Explore the possibility of hosting an event downtown for people interested in community. | Research potential downtown locations, identify what permissions or resources might be needed, and develop the signs and content needed to host an event. | Example: community exploration |
 
-| Allocation | $100,000 Launch Phase | $250,000 Full-Year Operation | $1,000,000 Expanded Experiment Fund |
-|---|---:|---:|---:|
-| Proposed operating level | Minimum | Realistic | Nice to Have |
-| **Total additional funding** | **$100,000** | **$250,000** | **$1,000,000** |
-| Cascadia — 10% | $10,000 | $25,000 | $100,000 |
-| **Available to Skagit** | **$90,000** | **$225,000** | **$900,000** |
-| Council operations | $33,600 | $43,200 | $45,600 |
-| Heron development and tools | $15,240 | $15,240 | $15,240 |
-| Annual Collective Dreaming workshop | $1,700 | $2,200 | $3,000 |
-| Raft, stewardship and storytelling | $7,200 | $19,800 | $37,200 |
-| **Total Skagit operations** | **$57,740** | **$80,440** | **$101,040** |
-| **Available for microgrant awards** | **$32,260** | **$144,560** | **$798,960** |
-| **Total allocated, including Cascadia** | **$100,000** | **$250,000** | **$1,000,000** |
-| **Unallocated balance** | **$0** | **$0** | **$0** |
+As each experiment develops, record the place and participants, resources needed, action taken, observations, and what becomes possible.
 
-The pairing of Minimum, Realistic, and Nice to Have operations with these funding levels is proposed for review. Meeting, event, and ongoing-work allowances are modest planning estimates, not quotes or agreed compensation arrangements.
+## Assumptions and decisions for review
 
-### Priority 1: Local council
+- **Timing:** Three months for Phase One, three for Phase Two, and six for Phase Three. Spending should follow readiness, not simply the calendar.
+- **Creator compensation:** New allowances are estimates. Roles, hours, deliverables, and rates need discussion with the people doing the work.
+- **Distinct responsibilities:** Council organizers coordinate decisions; Stewards manage active funding; Heron effort develops tools; creators develop educational resources and artwork; interviews and storytelling document community learning. Avoid charging the same work twice.
+- **Existing versus additional funds:** Coordinate the two plans so the same expense is not counted in both.
+- **Reserve:** No separate contingency is included. Added costs, a reserve, or expanded Heron scope would reduce the grant pool unless more funding becomes available.
+- **Grant readiness:** Initial awards use a proposed $5,000 average. Actual awards remain council decisions within the agreed range and spending proportions.
 
-Establish a monthly council to review and approve experiments based on their impact on the Skagit Watershed, monitor learning and results, and offer advice where helpful.
+## Questions for Genevieve and Cindy
 
-- Start with **five members**, growing to **seven** at the higher funding levels.
-- Budget **$300 per member per meeting**, with twelve meetings per year.
-- Budget **$1,000 per month for council organizing**, including planning, scheduling, and coordination.
-- Provide modest allowances for meeting space, food, and participation by people other than paid council members.
-- Use a proposed ceiling of **$2.5 million in grants awarded per council per fiscal year**.
-- **Current Stewards manage active funding**, including funding carried forward from previous years. The council ceiling is based on annual awards, not the total active portfolio.
-
-| Council budget | Minimum | Realistic | Nice to Have |
-|---|---:|---:|---:|
-| Members | 5 | 7 | 7 |
-| Meetings per year | 12 | 12 | 12 |
-| Council compensation: members × 12 × $300 | $18,000 | $25,200 | $25,200 |
-| Organizing: 12 × $1,000 | $12,000 | $12,000 | $12,000 |
-| Meeting space: $100 / $150 / $200 per meeting* | $1,200 | $1,800 | $2,400 |
-| Food: $100 / $150 / $200 per meeting* | $1,200 | $1,800 | $2,400 |
-| Other participant support: $100 / $200 / $300 per meeting* | $1,200 | $2,400 | $3,600 |
-| **Annual council operations** | **$33,600** | **$43,200** | **$45,600** |
-
-*Proposed estimates. Participant support is a separate pool for non-council participants and does not duplicate council member compensation.*
-
-### Priority 1.1: Fund watershed experiments
-
-The council will award **microgrants of $1,000–$10,000** to support experiments in the Skagit Watershed. Selection will consider impact on the local watershed. Specific eligibility and review criteria remain to be developed.
-
-**Every individual grant must follow this spending plan:**
-
-| Spending category | Required share | Example: $1,000 grant | Example: $10,000 grant |
-|---|---:|---:|---:|
-| Infrastructure — land, tools, physical assets | 50% | $500 | $5,000 |
-| Stipends | 25% | $250 | $2,500 |
-| Supplies | 15% | $150 | $1,500 |
-| Services | 10% | $100 | $1,000 |
-| **Total** | **100%** | **$1,000** | **$10,000** |
-
-The split applies to each grant, not merely the overall portfolio. Cascadia’s share is deducted at the program level; this plan does not deduct another 10% from individual grants.
-
-| Grant-pool illustration | Launch | Full-Year Operation | Expanded Fund |
-|---|---:|---:|---:|
-| Available award pool | $32,260 | $144,560 | $798,960 |
-| Whole $10,000 awards the pool could support | 3 | 14 | 79 |
-| Whole $1,000 awards the pool could support | 32 | 144 | 798 |
-
-These counts illustrate scale, not award targets. Actual awards can vary within the permitted range. Any remainder stays in the grant pool.
-
-One council is below the proposed annual dollar ceiling in all three scenarios. Practical review and stewardship capacity will also depend on the number and complexity of experiments; the dollar ceiling alone does not establish sufficient capacity.
-
-### Priority 2: Heron development
-
-Retain a **provisional minimum of $15,240 per year** in every scenario. Heron supports the atlas, Raft, local knowledge base, experiment records, and ledger of resource flows.
-
-| Item | Monthly | Annual |
-|---|---:|---:|
-| Website hosting | $50 | $600 |
-| AI subscription for development | $100 | $1,200 |
-| Internet access | $120 | $1,440 |
-| Developer effort | $1,000 | $12,000 |
-| **Total** | **$1,270** | **$15,240** |
-
-Expanded development scope, additional contributors, and any increase in compensation remain **TBD**. Adding them would require reallocating funds from the proposed grant pool or securing further funding.
-
-### Priority 3: Experiment Workshop — Collective Dreaming
-
-Hold **one workshop per year**, inviting participants to find, explore, and share their own experiments.
-
-| Workshop budget | Minimum | Realistic | Nice to Have |
-|---|---:|---:|---:|
-| Planning and preparation | $1,000 | $1,000 | $1,000 |
-| Event space* | $300 | $500 | $750 |
-| Refreshments* | $200 | $300 | $500 |
-| Participant access and support* | $200 | $400 | $750 |
-| **Annual workshop total** | **$1,700** | **$2,200** | **$3,000** |
-
-*Proposed estimates. Participant support could cover transportation, access needs, or stipends. Attendance, venue, and event scope remain to be determined.*
-
-### Ongoing efforts: Raft, stewardship and storytelling
-
-| Annual allowance | Minimum | Realistic | Nice to Have |
-|---|---:|---:|---:|
-| Raft gatherings* | $2,400 | $4,800 | $7,200 |
-| Stewardship of active funding and support for experiments* | $3,600 | $12,000 | $24,000 |
-| Storytelling and documentation* | $1,200 | $3,000 | $6,000 |
-| **Total ongoing efforts** | **$7,200** | **$19,800** | **$37,200** |
-
-*All figures in this table are proposed estimates:*
-
-- **Raft:** $200 / $400 / $600 per month for ongoing gatherings and relationships.
-- **Stewardship:** $300 / $1,000 / $2,000 per month for current Stewards managing active funding and supporting experiments.
-- **Storytelling:** $100 / $250 / $500 per month for recording and sharing stories, observations, and learning.
-
-These are allocations from additional funds. They do not count the existing $15,000 again. Specific activities and costs should be coordinated across the two plans so the same expense is not funded twice.
-
-## 3. Roles and working assumptions
-
-| Role | Proposed responsibility |
-|---|---|
-| Local council | Review and approve grants, monitor experiments and learning, and provide advice. |
-| Council organizers | Plan, schedule, and coordinate council meetings and review processes. |
-| Current Stewards | Manage active funding and ongoing administration; support experiments. |
-| Heron development | Build and maintain tools for mapping, knowledge, experiment records, and resource flows. |
-| Storytelling support | Document and share learning with the community. |
-
-People may hold more than one role, but work and compensation should be assigned clearly so the same effort is not charged twice.
-
-The scenarios allocate all available funding. **No separate contingency reserve is included.** Any additional operating cost or reserve would reduce the proposed microgrant pool unless more funding becomes available.
-
-## 4. Questions for Cindy and Genevieve
-
-Please comment directly beneath these questions or alongside any budget line. All proposed allowances are open for revision.
-
-1. **Operating levels:** Do Minimum, Realistic, and Nice to Have provide the right balance between supporting the work and funding experiments?
-2. **Council capacity:** Are five members at launch and seven at higher levels appropriate? What practical workload can a monthly council handle?
-3. **Stewardship:** Are the proposed allowances sufficient for current Stewards to manage active funding, especially with the expanded grant pool?
-4. **Grant structure:** Is the required 50% / 25% / 15% / 10% split workable for the experiments we expect? How should land, tools, stipends, supplies, and services be defined?
-5. **Eligibility and selection:** Who should be able to apply? What would count as meaningful watershed impact, and how should the council document its decisions?
-6. **Heron:** Is the provisional minimum adequate for launch? Which capabilities should come first?
-7. **Gatherings and storytelling:** Are the proposed Raft, workshop, and storytelling allowances appropriate?
-8. **Reserve and administration:** Should we set aside a contingency? Does the original DOB fee apply to the existing funds, and what services does Cascadia’s 10% cover under the additional funding plan?
-
-### Cindy’s comments
-
-_Add comments here._
+1. Does this phased approach reflect how we want the work to emerge?
+2. Do the proposed allowances fairly reward creators, especially methodology, educational content, artwork, interviews, and facilitation?
+3. Is three months enough to form the council and select the first experiments?
+4. Are the proposed workshop counts and outreach allowances appropriate?
+5. Are the stewardship allowances sufficient for the active funding and number of experiments we may support?
+6. Is the required spending split workable for the range of experiments listed here?
+7. Should we allocate a contingency or adjust the balance between operations and grants?
+8. What should we clarify about Cascadia’s services and the treatment of the existing funds?
 
 ### Genevieve’s comments
 
 _Add comments here._
 
-### Agreed changes / next decisions
+### Cindy’s comments
 
-_Record revisions and decisions here._
+_Add comments here._
 
-## Reference and terminology
+### Agreed revisions and next steps
 
-This draft reflects the working budget and planning decisions through October 29, 2026. The language of social infrastructure, living bioregional atlases, context-based indicators, participatory governance, and regenerative project portfolios draws on Regenerate Cascadia’s **Landscape Hub Cultivator: Bioregional Mapping Field Guide for Landscape Stewards**, April 2026, especially Chapters 1, 3, 6, and 15–19. The Raft cycle, Heron approach, and funding allocations are local proposals, not requirements prescribed by the guide.
+_Record decisions and changes here._
+
+## Sources and terminology
+
+This draft reflects the phased FY2027 workbook and the planning decisions and experiment examples supplied in this conversation. Cascadia’s budget templates informed the program summary, activities, and budget structure. Terminology draws on Regenerate Cascadia’s *Landscape Hub Cultivator: Bioregional Mapping Field Guide for Landscape Stewards*, April 2026, particularly Chapters 1, 3, 6, and 15–19. The Raft method, Heron approach, phased allocations, and experiment examples are local proposals, not requirements prescribed by the guide.

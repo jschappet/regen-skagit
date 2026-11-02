@@ -4,7 +4,8 @@ let ROUTES = null;
 Capability Loader
 ========================= */
 
-async function loadRoutes() {
+async function loadRoutes(refresh = false) {
+  if (refresh) ROUTES = null;
   if (ROUTES) return ROUTES;
 
   const res = await fetch("/api/config/capabilities");
@@ -56,7 +57,7 @@ Core API Caller
 
 async function apiCall(fnName, params = {}, body = null, requestOptions = {}) {
   const routes = await loadRoutes();
-  const route = routes[fnName];
+  const route = routes[fnName] || (await loadRoutes(true))[fnName];
 
   if (!route) {
     throw new Error(`Unknown API function: ${fnName}`);
@@ -122,6 +123,8 @@ async function apiCall(fnName, params = {}, body = null, requestOptions = {}) {
     throw error;
   }
 
+  if (fnName === "login" || fnName === "logout") ROUTES = null;
+
   const ct = res.headers.get("content-type") || "";
   return ct.includes("application/json") ? res.json() : res.text();
 }
@@ -133,6 +136,7 @@ Alpine Integration
 document.addEventListener("alpine:init", () => {
 
   Alpine.store("api", {
+    async refreshCapabilities() { return loadRoutes(true); },
     async call(fnName, params = {}, body = null, options = {}) {
       return apiCall(fnName, params, body, options);
     }

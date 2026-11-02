@@ -12,7 +12,7 @@
   "src/assets/js/content-editor.js": "85935443573de2161be1e3cadce1f33bffd4215a29c13e9940793d5996902e22",
   "src/assets/js/content-management.js": "b39f8348cf3b38bf6dc4dd4dd4dc4478a631f7a5db8698658ae06a466514abe3",
   "utils/check-shared-admin.cjs": "434f76b4b2c5ccbb847e6ecd18fcc29684aafde30f69412545499736d0fd0331",
-  "src/assets/js/alpine_custom.js": "86f2a56a1c4c92a393cff98dd9c2e4ba853ee0389871dd501e9127aa1fcacd26",
+  "src/assets/js/alpine_custom.js": "da1b872cf427222a83cb4bae1d1fe5804ab4658846caece36acdb6e645abe075",
   "src/content/admin/index.njk": "576051f5c622b47f5549bbf6b9d55d6d55a2faf467314a0664665159b12d11c5",
   "src/content/admin/ledger/entities.njk": "b997b703d9ab905c49c0b848e071ca368fcefe2191c85e84f51cbf6a65cf3f14",
   "src/content/admin/ledger/flows/index.njk": "748d34a3dd892246850cacbbe62b30ecc41894b5479011ca4ee89c9c593cd44f",

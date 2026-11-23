@@ -6,6 +6,9 @@
 </style>
 <nav class="flex flex-wrap gap-4 mb-6" aria-label="Content tools" x-data>
   <a class="link" href="/my/content/">My Content</a>
+  <a class="link" href="/my/content/#experiment-timeline">My experiment journeys</a>
+  <a class="link" href="/my/experiment/">Start an experiment</a>
+  <a class="link" href="/experiments/map/">Experiment map</a>
   <a class="link" href="/admin/content/" x-show="$store.auth.hasRole('admin') || $store.auth.hasRole('reviewer')">Manage Content</a>
   <a class="link" href="/admin/roles/" x-show="$store.auth.hasRole('admin')">Manage Roles</a>
   <button type="button" class="link" x-data="{

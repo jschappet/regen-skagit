@@ -35,12 +35,13 @@ test('result picker merges published and draft experiments and retains legacy me
   global.location = {search: '?id=9', href: 'https://example.org/admin/content/results/?id=9'};
   global.fetch = async () => ({ok: true, json: async () => [{experiment_id: 'soil', title: 'Published soil'}]});
   global.Alpine = {store: () => ({call: async name => name === 'draft_get'
-    ? {id: 9, doc_type: 'results', title: 'Legacy', description: 'Earlier findings', meta: {experiment_id: 'soil', date: '2026-01-01', extra: 'keep'}}
+    ? {id: 19, doc_type: 'results', title: 'Legacy', description: 'Earlier findings', meta: {experiment_id: 'soil', date: '2026-01-01', extra: 'keep'}}
     : {drafts: [{title: 'Same experiment', meta: {experiment_id: 'soil'}}, {title: 'Water trial', meta: {experiment_id: 'water'}}]}})};
   const editor = researchEditor('results');
   await editor.init();
   assert.equal(editor.ready, true);
   assert.deepEqual(editor.experiments.map(e => e.experiment_id), ['soil', 'water']);
+  assert.equal(editor.id, 19);
   assert.equal(editor.doc.meta.observed_date, '2026-01-01');
   assert.equal(editor.doc.meta.summary, 'Earlier findings');
   assert.equal(editor.doc.meta.extra, 'keep');
@@ -56,4 +57,37 @@ test('missing draft access gives actionable feedback and prevents saving incompl
   assert.equal(editor.needsAccess, true);
   assert.match(editor.error, /Sign in/);
   assert.equal(editor.loading, false);
+});
+
+test('code names persist through saves and reloads without changing permanent references', async () => {
+  global.location = {search: '', href: 'https://example.org/admin/content/experiment/'};
+  global.history = {replaceState: () => {}};
+  let saved;
+  global.Alpine = {store: () => ({call: async (name, params, payload) => {
+    if (name === 'draft_get') return saved;
+    saved = {...payload, id: 42};
+    return saved;
+  }})};
+  const editor = researchEditor('experiment');
+  await editor.init();
+  const reference = editor.doc.meta.experiment_id;
+  const first = editor.doc.meta.code_name;
+  assert.match(first, /^(?:(?:Project|Operation|Mission|Expedition) [A-Z][a-z]+ [A-Z][a-z]+|The [A-Z][a-z]+ [A-Z][a-z]+ (?:Heist|Initiative))$/);
+  editor.rerollCodeName();
+  assert.notEqual(editor.doc.meta.code_name, first);
+  assert.equal(editor.doc.meta.experiment_id, reference);
+  editor.doc.title = 'Soil trial';
+  await editor.save();
+  const name = saved.meta.code_name;
+  editor.rerollCodeName();
+  assert.equal(editor.doc.meta.code_name, name);
+  global.location.search = '?id=42';
+  const reopened = researchEditor('experiment');
+  await reopened.init();
+  assert.equal(reopened.doc.meta.code_name, name);
+  assert.equal(reopened.doc.meta.experiment_id, reference);
+  delete saved.meta.code_name;
+  await reopened.init();
+  assert.equal(reopened.doc.meta.code_name, undefined);
+  assert.equal(reopened.doc.meta.experiment_id, reference);
 });

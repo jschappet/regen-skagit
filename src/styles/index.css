@@ -250,3 +250,19 @@ button {
     padding: 1.5rem 2rem;
   }
 }
+
+/* Explicit sRGB colors keep this call to action consistent across browsers. */
+.experiment-submit-button,
+.experiment-submit-button:visited {
+  background-color: #166534;
+  color: #ffffff;
+}
+
+.experiment-submit-button:hover {
+  background-color: #14532d;
+}
+
+.experiment-submit-button:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 4px;
+}

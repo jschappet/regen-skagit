@@ -9,6 +9,7 @@ function documentForm() {
             {number: 1, label: 'Metadata', icon: 'M4 4h16v16H4z M8 8h8 M8 12h8 M8 16h5'},
             {number: 2, label: 'Content', icon: 'm4 16-1 5 5-1L21 7l-4-4L4 16Zm10-10 4 4'},
             {number: 3, label: 'Images', icon: 'M3 3h18v18H3z M3 17l6-6 4 4 3-3 5 5 M8 7h.01'},
+            {number: 4, label: 'Tags', icon: 'M3 4h8l10 10-7 7L3 10z M7 8h.01'},
         ],
         loading: true, busy: false, savedSnapshot: '', beforeUnload: null,
         personal: window.location.pathname.startsWith('/my/'),
@@ -110,6 +111,11 @@ function documentForm() {
                 const params = new URLSearchParams(window.location.search);
                 this.id = params.get('id');
                 this.doc_type = params.get('doc_type');
+                if (this.doc_type === 'experiment' && !this.id) { window.location.replace('/my/experiment/'); return; }
+                if (this.id && this.doc_type === 'experiment') {
+                    const experiment = await Alpine.store('api').call('content_get', {id: this.id});
+                    if (experiment.meta?.journey_version) { window.location.replace('/my/experiment/?id=' + encodeURIComponent(this.id)); return; }
+                }
                 if (!this.doc_type && this.id) {
                     const draft = await Alpine.store('api').call('content_get', {id: this.id});
                     this.doc_type = draft.doc_type;
@@ -170,8 +176,9 @@ function documentForm() {
             }
 
             const data = await Alpine.store("api").call("content_get", { id: this.id }, {});
+            this.id = data.id; // An older bookmark may resolve to a newer saved revision.
 
-            this.doc = { ...data, ...(data.meta || { dietary: [] }) };
+            this.doc = { ...data, ...(data.meta || { dietary: [] }), tagInput: (data.explicit_tags || []).join(", ") };
             this.schema.fields.forEach(f => {
                 if (f.storage === 'meta') {
                     this.doc[f.key] = getNested(data.meta, f.path, f.key);
@@ -368,7 +375,7 @@ function documentForm() {
                 else columns[field.key] = value;
             });
 
-            return { title: this.doc.title || '', body_md: this.doc.body_md || '', ...columns, meta, doc_type: this.doc_type };
+            return { title: this.doc.title || '', body_md: this.doc.body_md || '', ...columns, tags: JSON.stringify((this.doc.tagInput || '').split(',')), meta, doc_type: this.doc_type };
         },
 
         get renderedMarkdown() {
@@ -385,6 +392,7 @@ function documentForm() {
                 const data = await Alpine.store('api').call(this.id ? 'content_update' : 'content_create', this.id ? {id: this.id} : {}, payload);
                 this.id = data.id;
                 this.doc.status = data.status;
+                this.doc.tag_names = data.tag_names || [];
                 if (data.author !== undefined) this.doc.author = data.author;
                 this.savedSnapshot = JSON.stringify(this.doc);
                 const url = new URL(window.location.href);

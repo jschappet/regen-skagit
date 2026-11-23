@@ -1,0 +1,50 @@
+---
+title: Posts
+description: The latest stories, reflections, and updates from Regenerate Skagit.
+layout: layouts/default.njk
+permalink: /posts/
+---
+
+<main class="max-w-6xl mx-auto px-6 py-16">
+  <header class="mb-10">
+    <h1 class="text-4xl font-bold mb-4">Posts</h1>
+    <p class="text-muted">The latest stories, reflections, and updates from Regenerate Skagit.</p>
+  </header>
+
+  {% if collections.recentPosts | length %}
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    {% for post in collections.recentPosts %}
+    <article class="bg-surface rounded-2xl shadow-sm overflow-hidden flex flex-col">
+      {% set cover = post.data.images[0] if post.data.images and post.data.images.length else post.data.image %}
+      {% if cover %}
+      <a href="{{ post.url }}" class="block" tabindex="-1" aria-hidden="true">
+        {% set coverUrl = cover.url or cover %}
+        {% if coverUrl.startsWith('src/') %}
+          {% image coverUrl, cover.alt or post.data.title, { class: "w-full h-48 object-cover", sizes: "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" } %}
+        {% else %}
+          <img src="{{ coverUrl | escape }}" alt="{{ (cover.alt or post.data.title) | escape }}" class="w-full h-48 object-cover" loading="lazy" decoding="async">
+        {% endif %}
+      </a>
+      {% endif %}
+      <div class="p-6 flex flex-col flex-1">
+        <h2 class="text-2xl font-semibold mb-3">
+          <a href="{{ post.url }}" class="hover:text-accent">{{ post.data.title | escape }}</a>
+        </h2>
+        {% if post.data.description %}
+        <p class="mb-6">{{ post.data.description | escape }}</p>
+        {% endif %}
+        {% if post.data.tags | length %}
+        <div class="flex flex-wrap gap-2 mt-auto" aria-label="Tags">
+          {% for tag in post.data.tags %}
+          <span class="text-sm rounded-full bg-bg px-3 py-1">{{ tag | escape }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted">No posts yet. Check back soon for stories and updates.</p>
+  {% endif %}
+</main>

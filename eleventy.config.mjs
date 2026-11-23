@@ -16,6 +16,11 @@ import heroBlockShortcode from "./src/_11ty/heroBlock.js";
 
 export default function (eleventyConfig) {
   eleventyConfig.addWatchTarget('./src/styles');
+  eleventyConfig.addCollection('recentPosts', collectionApi => collectionApi
+    .getFilteredByGlob('./src/content/post/**/*.md')
+    .filter(post => !post.data.draft)
+    .sort((a, b) => b.date - a.date || a.inputPath.localeCompare(b.inputPath))
+    .slice(0, 10));
   eleventyConfig.addGlobalData('researchEditorVersion', () => createHash('sha256')
     .update(fs.readFileSync(new URL('./src/assets/js/research-editor.js', import.meta.url)))
     .digest('hex').slice(0, 12));
@@ -36,6 +41,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/assets/js/');
   eleventyConfig.addPassthroughCopy('src/assets/atlas/');
   eleventyConfig.addPassthroughCopy('src/assets/json/');
+  eleventyConfig.addPassthroughCopy('src/assets/images/skagit-meshcore-contact.png');
   eleventyConfig.addPassthroughCopy({
       "src/content/blog": "blog",
   });

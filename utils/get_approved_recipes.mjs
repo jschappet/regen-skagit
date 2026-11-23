@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { CookieJar } from 'tough-cookie';
 import matter from 'gray-matter';
 import { exportPlan, validateMarkdown } from './draft-export.mjs';
-const BASE_URL = process.env.DEPLOY_BASE_URL || 'http://regen.localhost:8582';
+const BASE_URL = process.env.DEPLOY_BASE_URL || 'https://regenerateskagit.org/';
 const EMAIL = process.env.DEPLOY_EMAIL;
 const PASSWORD = process.env.DEPLOY_PASSWORD;
 const DRY_RUN = process.argv.includes('--dry-run');

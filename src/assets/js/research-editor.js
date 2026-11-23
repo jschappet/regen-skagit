@@ -1,3 +1,21 @@
+// Code names are friendly labels; permanent IDs keep result links unambiguous.
+function experimentCodeName(previous = '') {
+  const adjectives = ['Cosmic', 'Sneaky', 'Disco', 'Velvet', 'Turbo', 'Secret', 'Mighty', 'Wobbly', 'Lunar', 'Electric', 'Curious', 'Dancing', 'Midnight', 'Jolly', 'Fuzzy', 'Unflappable'];
+  const nouns = ['Turnip', 'Salmon', 'Heron', 'Mushroom', 'Bumblebee', 'Otter', 'Cabbage', 'Compost', 'Fern', 'Acorn', 'Squash', 'Beaver', 'Nettle', 'Raccoon', 'Puddle', 'Worm'];
+  const styles = [
+    name => `Project ${name}`,
+    name => `Operation ${name}`,
+    name => `Mission ${name}`,
+    name => `Expedition ${name}`,
+    name => `The ${name} Heist`,
+    name => `The ${name} Initiative`,
+  ];
+  const names = styles.flatMap(style => adjectives.flatMap(adjective =>
+    nouns.map(noun => style(`${adjective} ${noun}`))
+  )).filter(name => name !== previous);
+  return names[Math.floor(Math.random() * names.length)];
+}
+
 /* Dedicated editors still use the existing draft approval workflow. */
 function researchEditor(kind) {
   return {
@@ -9,11 +27,14 @@ function researchEditor(kind) {
         this.id = params.get('id');
         this.doc = { title: '', description: '', author: '', body_md: '', meta: {
           [kind === 'experiment' ? 'experiment_id' : 'result_id']: `${kind === 'experiment' ? 'exp' : 'res'}-${crypto.randomUUID()}`,
+          ...(kind === 'experiment' ? {code_name: experimentCodeName()} : {}),
           experiment_status: 'planned', outcome: 'inconclusive', images: [],
         }};
         if (this.id) {
           const data = await Alpine.store('api').call('draft_get', {id: this.id});
+          this.id = data.id; // Older bookmarks resolve to the current saved revision.
           if (data.doc_type !== kind) throw new Error('This draft belongs to a different content type. Open it from the content list.');
+          if (kind === 'experiment' && data.meta?.journey_version) { location.replace('/my/experiment/?id=' + encodeURIComponent(this.id)); return; }
           this.original = data;
           this.doc = {...data, meta: {...(data.meta || {})}};
           const key = kind === 'experiment' ? 'experiment_id' : 'result_id';
@@ -28,10 +49,10 @@ function researchEditor(kind) {
           if (!response.ok) throw new Error('Unable to load published experiments. Please reload before saving.');
           const published = await response.json();
           const drafts = await Alpine.store('api').call('draft_list', {docType: 'experiment'});
-          const options = new Map(published.map(e => [e.experiment_id, {...e, label: e.title}]));
+          const options = new Map(published.map(e => [e.experiment_id, {...e, label: e.code_name ? `${e.code_name} — ${e.title}` : e.title}]));
           for (const draft of drafts.drafts || []) {
             const id = draft.meta?.experiment_id;
-            if (id && !options.has(id)) options.set(id, {experiment_id: id, label: `${draft.title} (draft — publish first)`});
+            if (id && !options.has(id)) options.set(id, {experiment_id: id, label: `${draft.meta?.code_name ? draft.meta.code_name + ' — ' : ''}${draft.title} (draft — publish first)`});
           }
           this.experiments = [...options.values()];
           const parent = params.get('experiment_id');
@@ -44,6 +65,9 @@ function researchEditor(kind) {
         this.ready = true;
       } catch (error) { this.showError(error, 'Unable to load this draft.'); }
       finally { this.loading = false; }
+    },
+    rerollCodeName() {
+      if (this.kind === 'experiment' && !this.id && !this.busy) this.doc.meta.code_name = experimentCodeName(this.doc.meta.code_name);
     },
     showError(error, fallback) {
       this.needsAccess = error.status === 401 || error.status === 403 || /Unknown API function: draft_/.test(error.message || '');
@@ -111,4 +135,4 @@ function researchEditor(kind) {
     },
   };
 }
-if (typeof module !== 'undefined') module.exports = { researchEditor };
+if (typeof module !== 'undefined') module.exports = { researchEditor, experimentCodeName };

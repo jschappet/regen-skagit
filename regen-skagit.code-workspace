@@ -11,6 +11,12 @@
 		},
 		{
 			"path": "../workshop.schappet.com"
+		},
+		{
+			"path": "../my.regenerateskagit.org"
+		},
+		{
+			"path": "../deploy"
 		}
 	],
 	"settings": {}

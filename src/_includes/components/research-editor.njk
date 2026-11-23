@@ -9,6 +9,14 @@
   <p x-show="message" x-text="message" class="alert alert-success mb-4" role="status"></p>
     <form x-show="ready" x-on:submit.prevent="save(true)">
       <fieldset :disabled="busy" class="space-y-6">
+        {% if researchKind == 'experiment' %}
+        <div class="rounded-xl bg-surface p-5" x-show="doc.meta.code_name">
+          <p class="text-sm">Experiment code name</p>
+          <p class="text-xl font-semibold" x-text="doc.meta.code_name" aria-live="polite"></p>
+          <button type="button" class="btn btn-sm btn-ghost mt-2" x-show="!id" x-on:click="rerollCodeName()">Try another</button>
+          <p class="text-sm mt-2">Every good experiment deserves a secret identity. This one sticks after you save.</p>
+        </div>
+        {% endif %}
         <label class="block">Title <input class="input input-bordered w-full mt-2" x-model="doc.title" required></label>
         <label class="block">Short description <textarea class="textarea textarea-bordered w-full mt-2" x-model="doc.description" rows="2"></textarea></label>
         <div class="grid sm:grid-cols-2 gap-6">

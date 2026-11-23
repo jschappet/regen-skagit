@@ -27,6 +27,13 @@
   </nav>
   <fieldset :disabled="loading || busy || !canEdit" class="space-y-6">
     <section x-show="step === 1" aria-label="Metadata"><h2>First, the details</h2><p class="editor-muted">Give your content a title and a few details so others can find it.</p></section>
+    <section x-show="step === 4" aria-label="Tags" class="space-y-2">
+      <label class="block">Tags
+        <input class="input input-bordered w-full" type="text" x-model="doc.tagInput" :disabled="!canEdit" placeholder="food, community">
+      </label>
+      <p class="editor-muted">Separate tags with commas. Hashtags such as #food in Markdown are picked up when you save.</p>
+      <p x-show="doc.tag_names?.length">Saved tags <span x-text="(doc.tag_names || []).join(', ')"></span></p>
+    </section>
     <section x-show="step === 3" aria-label="Images"><h2>Add your images</h2><p class="editor-muted">Upload images, add descriptions, then insert them into your content.</p><p x-show="!schema.fields.some(f => f.type === 'images')">This content type has no image collection. You can add an image by URL in the content editor.</p></section>
     <div class="editor-fields">
             <template x-if="schema && Array.isArray(schema.fields)">
@@ -313,7 +320,7 @@
   <footer class="editor-actions">
     <div class="flex gap-2">
       <button type="button" class="btn btn-outline" x-show="step > 1" x-on:click="goToStep(step - 1)">← Back</button>
-      <button type="button" class="btn btn-outline" x-show="step < 3" x-on:click="goToStep(step + 1)">Next →</button>
+      <button type="button" class="btn btn-outline" x-show="step < 4" x-on:click="goToStep(step + 1)">Next →</button>
     </div>
     <div class="flex flex-wrap gap-2" x-show="canEdit">
       <button type="button" class="btn btn-outline" :disabled="loading || busy || uploadingImages" x-on:click="save()"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h12l4 4v14H3V3h2Zm2 0v6h10V3M7 21v-8h10v8"/></svg>Save draft</button>

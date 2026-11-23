@@ -1,5 +1,10 @@
 <script src="/assets/js/content-access.js"></script>
 <script>window.contentEditorRoutes = {{ contentManagement.editors | dump | safe }};</script>
+{% if personalContent %}
+<link rel="stylesheet" href="/assets/js/vis-timeline.min.css">
+<script src="/assets/js/vis-timeline.min.js"></script>
+<script src="/assets/js/experiment-timeline.js"></script>
+{% endif %}
 <script src="/assets/js/content-management.js"></script>
 <section x-data="contentWorkspace({% if personalContent %}true{% else %}false{% endif %})" x-show="signedIn || error" x-cloak class="heron-content max-w-7xl mx-auto py-6 space-y-6" data-pagefind-ignore="all">
   {% include "components/content-nav.njk" %}
@@ -7,16 +12,76 @@
   <p>{% if personalContent %}Create something new, resume a draft, or check your submissions.{% else %}Review submissions and manage this site's content.{% endif %} Approved content appears publicly after the site is built and deployed.</p>
   <p x-show="loading" role="status">Loading content…</p>
   <p x-show="error" x-text="error" class="alert alert-error" role="alert"></p>
+  {% if personalContent %}
+  <section id="experiment-timeline" aria-labelledby="experiment-timeline-heading" class="journey-timeline">
+    <h2 id="experiment-timeline-heading" class="text-2xl font-semibold">My experiment journeys</h2>
+    <p>Follow your curiosity, at your own pace. These dates remember moments along the way. You can pause, return, or change direction whenever you like.</p>
+    <p x-show="!loading && !experiments.length">Your timeline will grow as you explore an interest.</p>
+    <p class="text-sm">Hover over a phase, focus it with your keyboard, or tap it to read your notes. Open ends leave room to keep exploring.</p>
+    <div class="journey-toolbar" x-show="chartReady && experiments.length" role="group" aria-label="Timeline navigation">
+      <button type="button" class="btn btn-sm" @click="chartControl('earlier')" aria-label="Show earlier dates">← Earlier</button>
+      <button type="button" class="btn btn-sm" @click="chartControl('later')" aria-label="Show later dates">Later →</button>
+      <button type="button" class="btn btn-sm" @click="chartControl('zoomIn')">Zoom in</button>
+      <button type="button" class="btn btn-sm" @click="chartControl('zoomOut')">Zoom out</button>
+      <button type="button" class="btn btn-sm" @click="chartControl('fit')">Show all</button>
+    </div>
+    <div class="journey-legend" aria-label="Phase colors">
+      <span class="legend-interest">Interest</span><span class="legend-exploring">Exploration</span><span class="legend-action">Action</span><span class="legend-story">Story</span><span>→ Open phase</span>
+    </div>
+    <p class="text-sm" x-show="chartReady && experiments.length">Drag to move through time. Use the buttons to zoom, or hold Ctrl while scrolling.</p>
+    <p x-show="chartError" x-text="chartError" role="status"></p>
+    <div x-ref="journeyChart" class="journey-visual" x-show="experiments.length" role="region" aria-label="Experiments by phase and date" @keydown.escape="phasePreview = null"></div>
+    <section id="journey-phase-notes" class="journey-notes" x-show="phasePreview" aria-label="Private phase notes" @keydown.escape="phasePreview = null">
+      <div class="flex justify-between gap-4"><h3 class="text-xl font-semibold" x-text="phasePreview ? phasePreview.title + ' · ' + phasePreview.label : ''"></h3><button type="button" class="link" @click="phasePreview = null">Close notes</button></div>
+      <p class="text-sm" x-text="phasePreview?.dates || ''"></p>
+      <p class="text-sm">Your private notes</p>
+      <p x-show="phasePreview && !phasePreview.notes.length">No notes recorded for this phase yet.</p>
+      <template x-for="note in (phasePreview?.notes || [])" :key="note.label">
+        <div><h4 class="font-semibold" x-text="note.label"></h4><p class="journey-note-text" x-text="note.text"></p></div>
+      </template>
+    </section>
+    <a class="btn btn-primary" href="/my/experiment/">Follow a new interest</a>
+  </section>
+  <style>
+    .journey-timeline { padding:clamp(1rem,3vw,2rem); border:1px solid var(--editor-line); border-radius:1rem; scroll-margin-top:2rem; }
+    .journey-timeline > * + * { margin-top:1rem; }
+    .journey-toolbar, .journey-legend { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; }
+    .journey-legend { font-size:.85rem; gap:.75rem; }
+    .journey-legend > span:not(:last-child)::before { content:''; display:inline-block; width:.75rem; height:.75rem; margin-right:.35rem; border-radius:.2rem; background:var(--phase-color); }
+    .journey-timeline { --phase-interest:#8b5cf6; --phase-exploring:#0891b2; --phase-action:#16a34a; --phase-story:#c77614; }
+    .legend-interest, .phase-interest { --phase-color:var(--phase-interest); }
+    .legend-exploring, .phase-exploring { --phase-color:var(--phase-exploring); }
+    .legend-action, .phase-action { --phase-color:var(--phase-action); }
+    .legend-story, .phase-story { --phase-color:var(--phase-story); }
+    .journey-visual { border-radius:.75rem; overflow:hidden; }
+    .journey-visual .vis-timeline, .journey-visual .vis-panel, .journey-visual .vis-label, .journey-visual .vis-grid { border-color:var(--editor-line); }
+    .journey-visual .vis-timeline { background:var(--editor-bg); font:inherit; }
+    .journey-visual .vis-text, .journey-visual .vis-label { color:var(--editor-fg); }
+    .journey-visual .vis-panel.vis-left { background:var(--editor-soft); max-width:30%; }
+    .journey-visual .vis-label .vis-inner { padding:1rem; white-space:normal; overflow-wrap:anywhere; max-width:220px; }
+    .journey-visual .vis-label small { display:block; color:var(--editor-muted); margin-top:.35rem; }
+    .journey-visual .vis-item { color:var(--editor-fg); border:1px solid var(--phase-color); border-left:4px solid var(--phase-color); border-radius:.5rem; background:color-mix(in srgb, var(--phase-color) 18%, var(--editor-bg)); box-shadow:0 2px 5px #0001; }
+    .journey-visual .vis-item.vis-selected { box-shadow:0 0 0 2px var(--editor-accent); }
+    .journey-visual .vis-item.phase-open { border-right:2px dashed var(--phase-color); border-top-right-radius:0; border-bottom-right-radius:0; }
+    .journey-visual .vis-item .vis-item-content { padding:0; }
+    .heron-content .journey-visual .journey-phase-button { display:block; background:transparent; color:var(--editor-fg); border:0; padding:.65rem .75rem; min-height:44px; font:inherit; font-weight:600; cursor:pointer; white-space:nowrap; }
+    .journey-visual .journey-phase-button:focus-visible { outline:3px solid var(--editor-accent); outline-offset:-3px; }
+    .journey-notes { border:1px solid var(--editor-line); border-radius:.75rem; padding:1rem; }
+    .journey-notes > * + * { margin-top:.75rem; }
+    .journey-note-text { white-space:pre-wrap; overflow-wrap:anywhere; max-height:18rem; overflow:auto; }
+  </style>
+  {% endif %}
   <details class="rounded border p-4" open>
     <summary class="font-bold cursor-pointer">Create new content</summary>
     <div class="flex flex-wrap gap-3 mt-4"><template x-for="type in types" :key="type.value"><a :href="editorUrl(type.value)" class="btn btn-primary" x-text="type.label"></a></template></div>
   </details>
   <div class="flex flex-col sm:flex-row gap-3">
-    <label class="flex-1">Search <input type="search" class="input input-bordered w-full" x-model.debounce.200ms="filters.search" placeholder="Search titles and descriptions"></label>
+    <label class="flex-1">Search <input type="search" class="input input-bordered w-full" x-model.debounce.200ms="filters.search" placeholder="Search titles, descriptions, or #tags"></label>
     <button class="btn self-end lg:hidden" @click="filtersOpen = !filtersOpen" :aria-expanded="filtersOpen" aria-controls="content-filters">Filters</button>
   </div>
   <div class="flex flex-col lg:flex-row gap-6">
     <aside id="content-filters" class="w-full lg:w-60 lg:shrink-0 space-y-4" :class="filtersOpen ? '' : 'hidden lg:block'">
+      <label class="block">Browse tags<select class="select select-bordered w-full" x-model="filters.tag"><option value="">All tags</option><template x-for="tag in tags" :key="tag"><option :value="tag" x-text="tag"></option></template></select></label>
       <label class="block">Content type<select class="select select-bordered w-full" x-model="filters.docType"><option value="">All types</option><template x-for="type in types" :key="type.value"><option :value="type.value" x-text="type.label"></option></template></select></label>
       <label class="block">Status<select class="select select-bordered w-full" x-model="filters.status"><option value="">All statuses</option><option value="draft">Draft</option><option value="submitted">Submitted</option><option value="changes_requested">Changes requested</option><option value="approved">Approved</option><option value="deployed">Deployed</option></select></label>
       {% if not personalContent %}<label class="block">Author<input class="input input-bordered w-full" x-model="filters.author"></label>{% endif %}

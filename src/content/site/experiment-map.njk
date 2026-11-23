@@ -1,0 +1,27 @@
+---
+layout: layouts/default.njk
+title: Experiment map
+permalink: /experiments/map/
+---
+<main class="max-w-5xl mx-auto px-6 py-12" data-pagefind-body>
+<h1 class="text-4xl font-bold mb-4">Every experiment has a story</h1>
+<p class="mb-6">Explore what people in our community have tried, discovered, and wondered about. Every story here has been through publishing review.</p>
+<p class="mb-6"><a class="btn btn-primary" href="/my/experiment/">Start your two-week experiment</a> <a class="link" href="/my/content/">Return to your experiment</a></p>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<div id="experiment-map" style="height:440px;position:relative;z-index:0" aria-label="Published experiments map"></div>
+<p class="text-sm my-4">Public locations are chosen by each contributor and may be approximate. Stories are also listed below if the map is unavailable.</p>
+{% set count = 0 %}
+{% for item in collections.all %}
+{% if item.data.doc_type == 'experiment' and item.data.journey_version and item.url and not item.data.draft and (not item.data.status or item.data.status == 'approved' or item.data.status == 'deployed') %}
+{% set count = count + 1 %}
+<article class="border rounded-lg p-5 my-4">
+<h2 class="text-xl font-semibold"><a class="link" href="{{ item.url }}" data-experiment-lat="{{ item.data.latitude | escape }}" data-experiment-lng="{{ item.data.longitude | escape }}">{{ item.data.title | escape }}</a></h2>
+<p>{{ item.data.location | escape }} · {{ item.data.author | escape }}</p>
+<p>{{ item.data.description | escape }}</p>
+</article>
+{% endif %}
+{% endfor %}
+{% if count == 0 %}<p class="my-8">The map is waiting for its first stories. What are you curious to try?</p>{% endif %}
+<script src="/assets/js/experiment-map.js"></script>
+</main>

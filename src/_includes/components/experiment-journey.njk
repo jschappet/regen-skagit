@@ -1,0 +1,87 @@
+{% include "components/content-theme.njk" %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/assets/js/content-access.js"></script>
+<script src="/assets/js/experiment-journey.js"></script>
+<style>
+.experiment-journey { max-width: 54rem; margin: 2rem auto; padding: clamp(1rem,4vw,2.5rem); border: 1px solid var(--editor-line); border-radius: 1rem; }
+.experiment-journey label { display:block; margin:1.5rem 0; font-weight:600; }
+.experiment-journey input,.experiment-journey textarea { display:block; width:100%; margin-top:.5rem; padding:.8rem; border:1px solid var(--editor-line); border-radius:.5rem; font:inherit; font-weight:400; }
+.experiment-journey .help { font-weight:400; font-size:.95rem; color:var(--editor-muted); }
+.experiment-journey .actions { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:2rem; }
+.experiment-journey h1 { font-size:2rem; font-weight:700; margin-bottom:1rem; }
+.experiment-journey h2 { font-size:1.5rem; font-weight:600; margin:1rem 0; }
+.experiment-journey h3 { font-size:1.1rem; font-weight:600; margin-top:1.5rem; }
+.experiment-journey .note { padding:1rem; border-left:3px solid var(--editor-accent); margin:1rem 0; }
+.experiment-journey .story-text { white-space:pre-wrap; overflow-wrap:anywhere; }
+.experiment-journey [hidden], .experiment-journey [x-cloak] { display:none!important; }
+.experiment-journey .leaflet-container { color:#172b1d; }
+</style>
+<section x-data="experimentJourney()" class="heron-content experiment-journey" data-pagefind-ignore="all">
+  {% include "components/content-nav.njk" %}
+  <p :hidden="!(!ready && !error)" role="status">Loading your experiment…</p>
+  <p x-cloak :hidden="!(error)" x-text="error" class="alert alert-error" role="alert"></p>
+  <p x-cloak :hidden="!(message)" x-text="message" class="alert alert-success" role="status"></p>
+  <template x-if="ready"><div>
+    <p class="help">Your two-week experiment · <span x-text="'Step ' + step + ' of 8'"></span></p>
+    <h1 x-ref="heading" tabindex="-1" x-text="steps[step - 1]"></h1>
+    <p x-text="introductions[step]"></p>
+    <p class="note" :hidden="!(doc.review_notes)"><strong>Review feedback: </strong><span x-text="doc.review_notes"></span></p>
+    <p class="note" :hidden="!(!editable)">Status: <strong x-text="(doc.status || '').replaceAll('_', ' ')"></strong>. <span :hidden="!(doc.status === 'submitted')">Your story is waiting for publishing review.</span></p>
+    <template x-if="owner && step < 7">
+      <div>
+        <p class="note">Your workspace is private. Only the story you prepare at the end is submitted for review.</p>
+        <p class="help" :hidden="!(work.start_date)">Started <span x-text="work.start_date"></span>. Two weeks is a guide; you can adjust as you go.</p>
+        <p class="note" :hidden="!(step >= 3 && work.interest)"><strong>Your interest: </strong><span x-text="work.interest"></span></p>
+        <p class="note" :hidden="!(step >= 4 && work.chosen_piece)"><strong>Your original choice: </strong><span x-text="work.chosen_piece"></span></p>
+        <p class="note" :hidden="!(step === 6 && work.action)"><strong>Your next action: </strong><span x-text="work.action"></span></p>
+        <p class="help" :hidden="!(step === 1)">“I want to learn which plants in my yard are medicine.” “I’m curious what’s in our creek water.” “I want to grow a better tomato.”</p>
+        <details :hidden="!(step === 3)"><summary>Look back at your private brain dump</summary><p class="story-text" x-text="work.brain_dump || 'Your brain dump is still empty. You can return to it anytime.'"></p></details>
+        <p class="help" :hidden="!(step === 3)">An interest in local food resilience could become: “Find out whether I can spend half my vegetable budget buying directly from farms.”</p>
+        <fieldset :disabled="busy || !editable">
+          <template x-for="field in (fields[step] || [])" :key="field[0]">
+            <label><span x-text="field[1]"></span><p class="help" x-text="field[2]"></p>
+              <textarea :rows="field[3]" x-model="work[field[0]]" :aria-label="field[1]"></textarea>
+            </label>
+          </template>
+        </fieldset>
+      </div>
+    </template>
+    <div :hidden="!(step === 7)">
+      <h2>Every experiment has a story</h2>
+      <fieldset :disabled="busy || !editable">
+        <label>Give your story a title<input x-model="doc.title"></label>
+        <label>Tags<input x-model="doc.tagInput" placeholder="food, community"><span class="help">Separate tags with commas.</span></label>
+        <label>What did you set out to explore?<textarea rows="5" x-model="doc.meta.story_exploration"></textarea></label>
+        <label>What happened?<p class="help">What did you try, or what kept you from trying it? Include surprises, obstacles, and changes of direction.</p><textarea rows="8" x-model="doc.meta.story_happened"></textarea></label>
+        <label>What are you taking away?<p class="help">What did you learn? What would you do differently? What are you curious about now?</p><textarea rows="6" x-model="doc.meta.story_takeaway"></textarea></label>
+        <h2>Add your experiment to the map</h2>
+        <p>Choose a location you’re comfortable making public. It doesn’t need to be your home or the exact place you did your experiment.</p>
+        <label>Public place name<input x-model="doc.meta.location" placeholder="For example: Mount Vernon"></label>
+        <p class="help">Click the map to place your experiment, or enter coordinates below. Coordinates also work if the map cannot load.</p>
+        <label>Latitude<input type="number" min="-90" max="90" step="any" x-model="doc.meta.latitude" @input="updateMarker()"></label>
+        <label>Longitude<input type="number" min="-180" max="180" step="any" x-model="doc.meta.longitude" @input="updateMarker()"></label>
+      </fieldset>
+    </div>
+    <div :hidden="!(step === 8)">
+      <h2 x-text="doc.title || 'Untitled story'"></h2>
+      <p>By <span x-text="doc.author"></span></p>
+      <h3>What I set out to explore</h3><p class="story-text" x-text="doc.meta.story_exploration"></p>
+      <h3>What happened</h3><p class="story-text" x-text="doc.meta.story_happened"></p>
+      <h3>What I’m taking away</h3><p class="story-text" x-text="doc.meta.story_takeaway"></p>
+      <h3>Public location</h3><p x-text="doc.meta.location"></p>
+      <p class="help" :hidden="!(validCoordinates())"><span x-text="doc.meta.latitude"></span>, <span x-text="doc.meta.longitude"></span></p>
+    </div>
+    <div :hidden="!(step >= 7)" x-ref="map" style="height:320px; margin-top:1rem; border-radius:.5rem; z-index:0" aria-label="Public experiment location map"></div>
+    <div class="actions">
+      <button type="button" class="btn btn-outline" :hidden="!(step > 1 && owner)" :disabled="busy" @click="go(step - 1)">Back</button>
+      <button type="button" class="btn btn-outline" :hidden="!(editable)" :disabled="busy" @click="save()">Save and stay</button>
+      <button type="button" class="btn btn-primary" :hidden="!(step < 8 && editable)" :disabled="busy" @click="next()" x-text="step === 3 ? (work.start_date ? 'Continue to week one' : 'Start my two weeks') : step === 4 ? 'Ready for my check-in' : step === 6 ? 'Ready to tell my story' : step === 7 ? 'Preview my story' : 'Save and continue'"></button>
+      <button type="button" class="btn btn-outline" :hidden="!(step === 8 && editable)" :disabled="busy" @click="go(7)">Edit story</button>
+      <button type="button" class="btn btn-primary" :hidden="!(step === 8 && editable)" :disabled="busy" @click="submit()">Submit for review</button>
+      <a class="btn btn-ghost" href="/my/content/">My Content</a>
+    </div>
+    <p :hidden="!(busy)" role="status">Saving…</p>
+    <p class="help" :hidden="!(dirty && !busy)">You have unsaved changes.</p>
+  </div></template>
+</section>

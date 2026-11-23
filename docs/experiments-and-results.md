@@ -1,5 +1,15 @@
 # Experiments and results
 
+## Two-week contributor journey
+
+New experiments now start at `/my/experiment/` and resume from My Content. The guided journey covers interest, private brain dump, choosing a small experiment, week-one exploration, personal check-in, week-two action, story, and submission preview. Group features are deferred. Every outcome leads to a story submitted through publishing review.
+
+Private workspace data stays in the database's details column, is visible only to its owner through the application, and is excluded from Markdown export. Only the explicit public story fields and contributor-selected map location enter publication. Release the updated Heron backend before or alongside these pages; the new editor checks for backend privacy support before accepting work.
+
+Published journey stories appear at `/experiments/map/`. Existing experiments/results retain their IDs and layouts; older experiments open in the existing generic editor without conversion. The existing approved-draft exporter handles both old experiments and new journey stories. See Heron's `docs/experiment-journey.md` for storage, privacy, and verification details.
+
+## Earlier research workflow
+
 Work is tracked in [Regen #13](https://github.com/jschappet/regen-skagit/issues/13) and [Heron #25](https://github.com/jschappet/heron/issues/25), on `codex/experiments-results` in both repositories.
 
 ## Content model
@@ -87,3 +97,5 @@ Pagefind follows the ReVillage build pattern: it regenerates after builds and in
 - How should corrections to published results be identified and dated?
 - Which existing results belong to which experiments? This requires an editorial mapping rather than guessing.
 - Are any locations, participant details, or raw observations private? Publish only the intended public account.
+
+New experiments in the dedicated editor receive a playful code name (for example, “Project Cosmic Turnip”, “Operation Sneaky Salmon”, or “The Disco Otter Heist”). Name styles include Project, Operation, Mission, Expedition, The … Heist, and The … Initiative. Use **Try another** before the first save to pick another name. Code names are saved as `code_name` metadata and appear on experiment pages, the experiment listing, and the result picker. They are friendly labels and may repeat; permanent IDs still distinguish experiments and preserve links. Existing experiments keep their IDs and any saved code name; opening an older experiment does not silently rename it.

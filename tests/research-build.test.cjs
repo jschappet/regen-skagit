@@ -21,18 +21,22 @@ test('published pages link results and search excludes drafts and admin pages', 
       await fs.copyFile(`src/content/${folder}/${folder}.11tydata.js`, path.join(input, 'content', folder, `${folder}.11tydata.js`));
     }
     for (const folder of ['site', 'admin']) await fs.mkdir(path.join(input, 'content', folder), {recursive: true});
-    for (const name of ['experiments.njk', 'experiment-catalog.11ty.js', 'search.njk']) await fs.copyFile(`src/content/site/${name}`, path.join(input, 'content/site', name));
+    for (const name of ['experiments.njk', 'experiment-catalog.11ty.js', 'experiment-map.njk', 'search.njk']) await fs.copyFile(`src/content/site/${name}`, path.join(input, 'content/site', name));
     await fs.copyFile('src/content/admin/experiment.njk', path.join(input, 'content/admin/experiment.njk'));
-    await fs.writeFile(path.join(input, 'content/experiments/soil.md'), '---\ntitle: Soil observation trial\nexperiment_id: soil\nquestion: Does mulch help?\nexperiment_status: active\n---\nA repeatable soil experiment.');
+    await fs.writeFile(path.join(input, 'content/experiments/soil.md'), '---\ntitle: Soil observation trial\nexperiment_id: soil\ncode_name: Project Cosmic Turnip\nquestion: Does mulch help?\nexperiment_status: active\n---\nA repeatable soil experiment.');
     await fs.writeFile(path.join(input, 'content/experiments/private.md'), '---\ntitle: Private sentinel\nexperiment_id: private\nstatus: draft\n---\nDo not publish.');
+    await fs.writeFile(path.join(input, 'content/experiments/journey.md'), '---\ntitle: A changed plan\nexperiment_id: journey\njourney_version: 1\nexperiment_status: completed\nlatitude: 48.42\nlongitude: -122.33\nlocation: Mount Vernon\nstory_exploration: Local farms\nstory_happened: I changed direction\nstory_takeaway: Call first\n---\nPublic story.');
+    await fs.writeFile(path.join(input, 'content/experiments/pending.md'), '---\ntitle: Pending map sentinel\nexperiment_id: pending\njourney_version: 1\nstatus: submitted\nlatitude: 48\nlongitude: -122\n---\nWaiting for review.');
     for (const [id, date, summary] of [['one', '2026-01-01', 'First findings'], ['two', '2026-02-01', 'Latest findings']]) {
       await fs.writeFile(path.join(input, `content/results/${id}.md`), `---\ntitle: Observation ${id}\nresult_id: ${id}\nexperiment_id: soil\nobserved_date: ${date}\nsummary: ${summary}\n---\nEvidence from the field.`);
     }
     await run(process.execPath, [path.resolve('node_modules/@11ty/eleventy/cmd.cjs'), `--config=${path.resolve('eleventy.config.mjs')}`, '--input=src', '--output=dist'], {cwd: temp, maxBuffer: 4 * 1024 * 1024});
     const listing = await fs.readFile(path.join(output, 'experiments/index.html'), 'utf8');
     assert.match(listing, /Latest findings/);
+    assert.match(listing, /Project Cosmic Turnip/);
     assert.match(listing, /2 results/);
     const detail = await fs.readFile(path.join(output, 'experiments/soil/index.html'), 'utf8');
+    assert.match(detail, /Project Cosmic Turnip/);
     assert.match(detail, /href="\/results\/two\/"/);
     assert.ok(detail.indexOf('Observation two') < detail.indexOf('Observation one'));
     const result = await fs.readFile(path.join(output, 'results/one/index.html'), 'utf8');
@@ -40,7 +44,16 @@ test('published pages link results and search excludes drafts and admin pages', 
     assert.match(result, /Jan 1, 2026/);
     await assert.rejects(fs.access(path.join(output, 'experiments/private/index.html')));
     const catalog = JSON.parse(await fs.readFile(path.join(output, 'experiments/catalog.json'), 'utf8'));
-    assert.deepEqual(catalog.map(e => e.experiment_id), ['soil']);
+    assert.deepEqual(catalog.map(e => e.experiment_id).sort(), ['journey', 'soil']);
+    assert.equal(catalog.find(e => e.experiment_id === 'soil').code_name, 'Project Cosmic Turnip');
+    const map = await fs.readFile(path.join(output, 'experiments/map/index.html'), 'utf8');
+    assert.match(map, /A changed plan/);
+    assert.match(map, /data-experiment-lat="48.42"/);
+    assert.doesNotMatch(map, /Pending map sentinel|Private sentinel/);
+    const story = await fs.readFile(path.join(output, 'experiments/journey/index.html'), 'utf8');
+    assert.match(story, /I changed direction/);
+    assert.match(story, /Call first/);
+    assert.doesNotMatch(story, /What we.re testing|No results published/);
     const fragments = await fs.readdir(path.join(output, 'pagefind/fragment'));
     const indexed = await Promise.all(fragments.map(async file => {
       const data = gunzipSync(await fs.readFile(path.join(output, 'pagefind/fragment', file))).toString();

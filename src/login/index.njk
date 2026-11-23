@@ -191,6 +191,8 @@ permalink: /login/
         } else if (params.get('error') !== null) {
           this.mode = 'login';
           this.message = params.get('error');
+        } else if (params.get('mode') === 'register') {
+          this.mode = 'register';
         } else {
           
           this.mode = 'login';
@@ -237,7 +239,8 @@ permalink: /login/
           this.$store.auth.loaded = true;
           this.message = "Logged in successfully!";
 
-          window.location.href = "/my/content/";
+          const meshcore = new URLSearchParams(window.location.search).get("meshcore") === "1";
+          window.location.href = meshcore ? "/meshcore/" : "/my/experiment/";
           return;
 
         } else {

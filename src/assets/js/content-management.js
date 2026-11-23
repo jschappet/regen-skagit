@@ -1,9 +1,10 @@
 /* Shared by both sites. Update through Heron's sync-admin script. */
 function contentWorkspace(personal = false) {
+  let journeyTimeline = null;
   return {
     personal, signedIn: false, drafts: [], types: [], error: '', loading: true, busy: false,
-    filtersOpen: false, view: 'list', page: 1, pageSize: 20, selected: [],
-    filters: {search: '', docType: '', status: '', author: '', dateFrom: '', dateTo: '', sort: personal ? 'drafts' : 'recent'},
+    chartReady: false, chartError: '', phasePreview: null, filtersOpen: false, view: 'list', page: 1, pageSize: 20, selected: [],
+    filters: {search: '', tag: '', docType: '', status: '', author: '', dateFrom: '', dateTo: '', sort: personal ? 'drafts' : 'recent'},
     get stateKey() { return this.personal ? 'my-content-state' : 'admin-content-state'; },
     async init() {
       try {
@@ -28,14 +29,23 @@ function contentWorkspace(personal = false) {
         this.drafts = response.drafts || [];
         this.selected = [];
         this.page = Math.min(this.page, this.pages);
+        if (this.personal && this.$nextTick) {
+          await this.$nextTick();
+          this.renderJourneyTimeline();
+        }
       } catch (error) { this.error = error.message; }
     },
+    get tags() { return [...new Set(this.drafts.flatMap(d => d.tag_names || []))].sort(); },
     get filtered() {
       const f = this.filters, search = f.search.toLowerCase(), author = f.author.toLowerCase();
+      const matchesSearch = d => search.startsWith('#')
+        ? (d.tag_names || []).includes(search.slice(1))
+        : `${d.title} ${d.description || ''} ${(d.tag_names || []).join(' ')}`.toLowerCase().includes(search);
       const rows = this.drafts.filter(d => (!f.docType || d.doc_type === f.docType)
         && (!f.status || d.status === f.status)
         && (!author || (d.author || '').toLowerCase().includes(author))
-        && (!search || `${d.title} ${d.description || ''}`.toLowerCase().includes(search))
+        && (!f.tag || (d.tag_names || []).includes(f.tag))
+        && (!search || matchesSearch(d))
         && (!f.dateFrom || (d.submitted_at || '').slice(0, 10) >= f.dateFrom)
         && (!f.dateTo || (!!d.submitted_at && d.submitted_at.slice(0, 10) <= f.dateTo)));
       return rows.sort((a, b) => {
@@ -44,9 +54,72 @@ function contentWorkspace(personal = false) {
         return String(a[f.sort] || '').localeCompare(String(b[f.sort] || ''));
       });
     },
+    // Personal notebook dates describe recorded activity, never expected completion.
+    get experiments() {
+      if (!this.personal) return [];
+      return this.drafts.filter(d => d.doc_type === 'experiment').map(draft => {
+        let work = {};
+        try { work = JSON.parse(draft.details || '{}') || {}; } catch {}
+        const moments = [
+          ['interest', 'An interest took shape', work.interest_at],
+          ['exploring', 'Started exploring', work.exploring_at || work.start_date],
+          ['action', 'Opened space for action', work.action_at],
+          ['story', 'Began telling a story', work.story_at],
+        ].filter(([, , date]) => typeof date === 'string' && /^\d{4}-\d{2}-\d{2}(T.*)?$/.test(date) && Number.isFinite(Date.parse(date)))
+          .map(([key, label, date]) => ({key, label, date, display: new Date(date.length === 10 ? date + 'T12:00:00' : date).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})}))
+          .sort((a, b) => a.date.localeCompare(b.date));
+        return {id: draft.id, work, draft, title: draft.title || 'An experiment taking shape', moments,
+          latest: moments.at(-1)?.date || ''};
+      }).sort((a, b) => b.latest.localeCompare(a.latest) || b.id - a.id);
+    },
+    get journeyChart() {
+      const rows = this.experiments;
+      const now = new Date();
+      return {rows: rows.map(row => {
+        const w = row.work, meta = row.draft.meta || {};
+        const notes = {
+          interest: [['Interest', w.interest], ['Why it matters', w.why], ['Brain dump', w.brain_dump], ['Chosen experiment', w.chosen_piece], ['Hope', w.hope], ['Needs', w.needs], ['Setup notes', w.setup_notes]],
+          exploring: [['Interest', w.interest], ['Why it matters', w.why], ['Brain dump', w.brain_dump], ['Chosen experiment', w.chosen_piece], ['Hope', w.hope], ['Needs', w.needs], ['Setup notes', w.setup_notes], ['Exploration notes', w.week_one_notes], ['Discoveries', w.discovered], ['Check-in notes', w.checkin_notes]],
+          action: [['Next action', w.action], ['Action notes', w.week_two_notes]],
+          story: [['What I explored', meta.story_exploration], ['What happened', meta.story_happened], ['What I’m taking away', meta.story_takeaway]],
+        };
+        const submitted = ['submitted', 'approved', 'deployed'].includes(row.draft.status);
+        const blocks = row.moments.map((moment, index) => {
+          const next = row.moments[index + 1];
+          const end = next?.date || (submitted ? row.draft.submitted_at : null);
+          const open = !next && !submitted;
+          const start = new Date(moment.date.length === 10 ? moment.date + 'T12:00:00' : moment.date);
+          const finish = end && Number.isFinite(Date.parse(end)) ? new Date(end.length === 10 ? end + 'T12:00:00' : end) : open ? now : null;
+          const label = {interest:'Interest', exploring:'Exploration', action:'Action', story:'Story'}[moment.key];
+          return {key: moment.key, title: row.title, label, open, start, end: finish && finish >= start ? finish : null,
+            state: next || submitted ? 'Phase recorded' : 'Open phase',
+            dates: moment.display + (end ? ' – ' + new Date(end.length === 10 ? end + 'T12:00:00' : end).toLocaleDateString() : open ? ' · Open phase' : ' · End date not recorded'),
+            notes: notes[moment.key].filter(([, text]) => typeof text === 'string' && text.trim()).map(([label, text]) => ({label, text}))};
+        });
+        return {...row, blocks};
+      })};
+    },
+    renderJourneyTimeline() {
+      const host = this.$refs?.journeyChart;
+      if (!this.personal || !host) return;
+      try {
+        if (!window.createExperimentTimeline) throw new Error('Timeline unavailable. You can still open your experiments below.');
+        const rows = this.journeyChart.rows;
+        this.phasePreview = null;
+        if (journeyTimeline) journeyTimeline.update(rows);
+        else journeyTimeline = window.createExperimentTimeline(host, rows,
+          block => { this.phasePreview = block; }, id => this.editorUrl('experiment', id));
+        this.chartReady = true; this.chartError = '';
+      } catch (error) {
+        this.chartReady = false; this.chartError = error.message || 'Timeline unavailable. Open your experiments below.';
+      }
+    },
+    chartControl(action) { journeyTimeline?.[action]?.(); },
+    destroy() { journeyTimeline?.destroy(); journeyTimeline = null; },
     get pages() { return Math.max(1, Math.ceil(this.filtered.length / this.pageSize)); },
     get visible() { return this.filtered.slice((this.page - 1) * this.pageSize, this.page * this.pageSize); },
     editorUrl(type, id) {
+      if (type === 'experiment') return '/my/experiment/' + (id ? `?id=${encodeURIComponent(id)}` : '');
       const base = this.personal ? '/my/content/edit/' : (window.contentEditorRoutes?.[type] || '/admin/content/edit/');
       const params = new URLSearchParams({doc_type: type});
       if (id) params.set('id', id);

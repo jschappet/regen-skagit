@@ -1,0 +1,64 @@
+---
+layout: layouts/default.njk
+title: Welcome, MeshCore Skagit | Regenerate Skagit
+description: Meet Regenerate Skagit and see how two-way verification is planned to work on the MeshCore #skagit channel.
+permalink: /meshcore/
+---
+
+<main class="max-w-3xl mx-auto px-6 py-16 sm:py-24 space-y-12">
+  <header class="space-y-4">
+    <h1 class="text-3xl sm:text-4xl font-semibold">Welcome, MeshCore Skagit</h1>
+    <p>Thanks for saying hello in <strong>#skagit</strong>. MeshCore lets us send messages over local radio without an internet connection. We’re exploring how those connections can help neighbors get to know one another.</p>
+  </header>
+
+  <section class="space-y-3" aria-labelledby="about-regenerate-skagit">
+    <h2 id="about-regenerate-skagit" class="text-2xl font-semibold">What is Regenerate Skagit?</h2>
+    <p>Regenerate Skagit is a growing network of people, places, projects, and organizations connected to the Skagit watershed. We help people find one another, share what they’re doing, and find ways to take part.</p>
+    <a href="/about/" class="link link-hover">More about Regenerate Skagit</a>
+  </section>
+
+  <ol class="list-decimal pl-6 space-y-10 marker:font-semibold">
+    <li class="pl-2 space-y-3">
+      <h2 class="text-2xl font-semibold">Register</h2>
+      <p>You can create a Regenerate Skagit account now. Sign in to check which MeshCore verification options are available.</p>
+      <a href="/login/?mode=register" class="btn btn-primary">Create an account</a>
+    </li>
+
+    <li class="pl-2 space-y-4">
+      <h2 class="text-2xl font-semibold">Verify your two-way MeshCore connection</h2>
+      <p>Once DM verification is available, follow these steps in your MeshCore app and on this page.</p>
+      <ol class="list-decimal pl-5 space-y-2">
+        <li class="space-y-2">
+          <p><strong>Save the bot as a contact.</strong> In MeshCore, choose <strong>Add Contact</strong>, scan this QR code, and save <strong>Skagit Bot</strong>.</p>
+          <img src="/assets/images/skagit-meshcore-contact.png" alt="MeshCore contact QR code for Skagit Bot" width="224" height="224" class="block max-w-full h-auto">
+          <p>On the same device, <a class="link" href="meshcore://contact/add?name=Skagit%20Bot&amp;public_key=4fc18537d7527610c086e25936c3f7d0d0a015a55884496950275aea6498e9ba&amp;type=1">open the Skagit Bot contact in MeshCore</a>.</p>
+        </li>
+        <li><strong>Send the bot a direct message.</strong> Sign in here and choose <strong>Verify by DM</strong>. Open the saved bot contact and send it the full command shown below.</li>
+        <li><strong>Enter the reply code here.</strong> Open the bot’s reply in the same direct conversation, then enter the code below and choose <strong>Confirm reply</strong>.</li>
+      </ol>
+      <p>The bot records available signal and path data. If you choose to verify in #skagit, anyone with access to the channel can read the messages.</p>
+      <div id="meshcore-verification" class="space-y-3 border-l-4 border-primary pl-4">
+        <p id="meshcore-status" role="status">Checking verification availability…</p>
+        <a id="meshcore-login" class="link link-hover" href="/login/" hidden>Sign in</a>
+        <div id="meshcore-options" hidden>
+          <button type="button" class="btn btn-primary" data-transport="dm" hidden>Verify by DM</button>
+          <button type="button" class="btn btn-primary" data-transport="channel" hidden>Verify in #skagit</button>
+        </div>
+        <p id="meshcore-instructions" hidden></p>
+        <code id="meshcore-command" class="break-words" hidden></code>
+        <form id="meshcore-confirm" class="space-y-2" hidden>
+          <label for="meshcore-reply" class="block">Reply code</label>
+          <input id="meshcore-reply" class="input input-bordered" required maxlength="60" autocomplete="off">
+          <button class="btn btn-primary" type="submit">Confirm reply</button>
+        </form>
+      </div>
+      <script src="/assets/js/meshcore.js" defer></script>
+      <p>Any map location you provide will be published only if you explicitly choose to share it.</p>
+    </li>
+  </ol>
+
+  <section class="space-y-3 border-t border-base-300 pt-8" aria-labelledby="meshcore-thanks">
+    <h2 id="meshcore-thanks" class="text-2xl font-semibold">Thank you</h2>
+    <p>Thanks for helping us learn how far our local radio network reaches and bringing more neighbors into the conversation.</p>
+  </section>
+</main>

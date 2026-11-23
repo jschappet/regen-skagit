@@ -41,3 +41,31 @@ stop the script.
 
 This submits changes for review; it does not merge the PR or upload files to the
 production server. Deployment uses `deploy.site.toml` separately after merging.
+
+## MeshCore verification
+
+The `/meshcore/` page uses the Heron session on the public Regenerate Skagit
+host. Heron keeps both verification options unavailable by default. Set
+`MESHCORE_DM_CONTACT` to the bot's displayed contact name after configuring
+the bot to send verification events to Heron and relay replies by DM. Set
+`MESHCORE_CHANNEL_ENABLED=true` only when the bot supports both reception and
+replies in #skagit.
+
+A first reception must reach Heron before the original code expires. A retry
+of an already accepted event keeps its original reply, even after expiry.
+Web confirmation and map publication are independent.
+
+### Bot welcome invites
+
+Set `MESHCORE_INVITE_BOT_TOKEN` on Heron and share it with the configured bot.
+The bot sends `Authorization: Bearer <token>` to
+`POST /api/meshcore/invites` with the ledger experiment's document UUID as
+`experiment_id` and a stable welcome `event_id`. Heron returns an
+`invite_url` only for an experiment on the public Regenerate Skagit host.
+A retry with the same event and experiment returns the same URL.
+
+The invite link stores pending registration context in the browser session
+and redirects to `/meshcore/`. An unused invite expires after seven days.
+Registration reserves it for the new account, and email confirmation creates
+the ledger relationship and registration event. This flow makes no change
+to map visibility.

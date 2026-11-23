@@ -4,4 +4,8 @@ title: Experiment draft
 permalink: /admin/content/experiment/
 researchKind: experiment
 ---
+<script>
+const experimentId = new URLSearchParams(location.search).get('id');
+if (!experimentId) location.replace('/my/experiment/');
+</script>
 {% include "components/research-editor.njk" %}

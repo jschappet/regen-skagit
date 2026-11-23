@@ -8,13 +8,20 @@ eleventyNavigation:
 ---
 <main class="mx-auto w-full max-w-6xl px-6 py-16" data-pagefind-body>
   <p class="uppercase tracking-widest text-sm text-primary mb-3">Learning together</p>
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-12">
+    <div class="min-w-0 max-w-3xl">
+      <p><a class="link" href="/experiments/map/">Explore the experiment map →</a></p>
   <h1 class="text-4xl md:text-5xl font-bold mb-6">Experiments in regeneration</h1>
-  <p class="text-xl max-w-3xl mb-12">Small tests, shared observations, and lessons for the Skagit watershed. Follow what we're trying and see what we're learning along the way.</p>
+      <p class="text-xl mb-0">Small tests, shared observations, and lessons for the Skagit watershed. Follow what we're trying and see what we're learning along the way.</p>
+    </div>
+    <a href="/my/experiment/" class="inline-flex shrink-0 self-start lg:self-center items-center justify-center rounded-lg experiment-submit-button px-5 py-3 text-sm font-semibold">Start your two-week experiment</a>
+  </div>
   <div class="grid md:grid-cols-2 gap-6">
     {% for experiment in collections.experiments %}
       {% set results = collections.results | resultsFor(experiment.data.experiment_id) %}
       <article class="border rounded-2xl p-6 flex flex-col gap-4">
         <p class="text-sm uppercase tracking-wide">{{ experiment.data.experiment_status | default('planned') | escape }} · {{ results | length }} result{% if results.length != 1 %}s{% endif %}</p>
+        {% if experiment.data.code_name %}<p class="font-semibold">{{ experiment.data.code_name | escape }}</p>{% endif %}
         <h2 class="text-2xl font-semibold"><a class="link" href="{{ experiment.url }}">{{ experiment.data.title | escape }}</a></h2>
         <p>{{ (experiment.data.description or experiment.data.question) | escape }}</p>
         {% if results.length %}
